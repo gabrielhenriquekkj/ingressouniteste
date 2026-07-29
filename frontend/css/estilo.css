@@ -1,0 +1,22 @@
+/* Transição suave para scroll âncora */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Animação do spinner de carregamento */
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+.animate-spin {
+  animation: girar 0.6s linear infinite;
+}
+
+/* Transição do toast */
+#toast.mostrar {
+  opacity: 1;
+  transform: translateY(0);
+}
+#toast {
+  opacity: 0;
+  transform: translateY(1rem);
+}

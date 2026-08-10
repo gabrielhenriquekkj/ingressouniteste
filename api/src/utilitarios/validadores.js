@@ -5,32 +5,52 @@ function sanitizar(texto) {
   return validator.trim(validator.escape(texto || ''))
 }
 
-// Valida e sanitiza os dados recebidos do formulário de lead
-function validarLead(dados) {
+// Valida e sanitiza os dados de busca (RF1)
+function validarBusca(dados) {
   const erros = []
-  const nome = sanitizar(dados.nome_completo)
-  const email = sanitizar(dados.email)
-  const telefone = sanitizar(dados.telefone_whatsapp)
-  const mensagem = sanitizar(dados.mensagem || '')
+  const nome = sanitizar(dados.nome || '')
+  const cidade = sanitizar(dados.cidade || '')
+  const estado = sanitizar(dados.estado || '')
 
-  if (!nome || nome.length < 3 || nome.length > 150)
-    erros.push('Nome completo deve ter entre 3 e 150 caracteres.')
+  if (nome.length > 150)
+    erros.push('Nome deve ter no maximo 150 caracteres.')
 
-  if (!validator.isEmail(email))
-    erros.push('E-mail inválido.')
+  if (cidade.length > 100)
+    erros.push('Cidade deve ter no maximo 100 caracteres.')
 
-  const apenasDigitos = telefone.replace(/\D/g, '')
-  if (apenasDigitos.length < 10 || apenasDigitos.length > 15)
-    erros.push('Telefone WhatsApp inválido. Informe um número com DDD.')
+  if (estado.length > 2)
+    erros.push('Estado deve ter no maximo 2 caracteres.')
 
-  if (mensagem.length > 500)
-    erros.push('Mensagem deve ter no máximo 500 caracteres.')
+  return { valido: erros.length === 0, erros, dados: { nome, cidade, estado } }
+}
+
+// Valida e sanitiza os dados de favorito (RF6)
+function validarFavorito(dados) {
+  const erros = []
+  const sessao = sanitizar(dados.sessao_usuario || '')
+  const cursoId = parseInt(dados.curso_id)
+  const instituicaoId = parseInt(dados.instituicao_id)
+
+  if (!sessao || sessao.length < 5)
+    erros.push('Identificador de sessao invalido.')
+
+  if (!cursoId || cursoId <= 0)
+    erros.push('ID do curso invalido.')
+
+  if (instituicaoId && instituicaoId <= 0)
+    erros.push('ID da instituicao invalido.')
 
   return {
     valido: erros.length === 0,
     erros,
-    dados: { nome_completo: nome, email, telefone_whatsapp: apenasDigitos, mensagem }
+    dados: { sessao_usuario: sessao, curso_id: cursoId, instituicao_id: instituicaoId || null }
   }
 }
 
-module.exports = { sanitizar, validarLead }
+// Valida parametros de ID (inteiro positivo)
+function validarId(valor) {
+  const id = parseInt(valor)
+  return !isNaN(id) && id > 0 ? id : null
+}
+
+module.exports = { sanitizar, validarBusca, validarFavorito, validarId }

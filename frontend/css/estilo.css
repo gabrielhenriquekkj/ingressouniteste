@@ -1,9 +1,9 @@
-/* Transição suave para scroll âncora */
+/* Transicao suave para scroll ancora */
 html {
   scroll-behavior: smooth;
 }
 
-/* Animação do spinner de carregamento */
+/* Animacao do spinner de carregamento */
 @keyframes girar {
   to { transform: rotate(360deg); }
 }
@@ -11,12 +11,52 @@ html {
   animation: girar 0.6s linear infinite;
 }
 
-/* Transição do toast */
-#toast.mostrar {
-  opacity: 1;
-  transform: translateY(0);
-}
+/* Transicao do toast */
 #toast {
   opacity: 0;
   transform: translateY(1rem);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+/* Hover dos cards */
+.card-hover {
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+/* Foco acessivel */
+*:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+/* Scroll horizontal suave em tabelas */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tabelas responsivas */
+table {
+  border-collapse: collapse;
+}
+
+@media (max-width: 640px) {
+  table thead {
+    display: none;
+  }
+  table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+  }
+  table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  table td:last-child {
+    border-bottom: none;
+  }
 }

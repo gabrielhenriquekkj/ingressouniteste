@@ -1,217 +1,349 @@
-# Landing Page de Captura de Leads — Sistema Full Stack (Node.js + Express + SQLite)
+# Ingresso Universitario
 
-> **Projeto Acadêmico:** Aplicação Full Stack moderna para captura, validação e armazenamento de *leads* em tempo real.
-
----
-
-## 📋 Sobre o Projeto
-
-Este projeto consiste em uma **Landing Page de Alta Conversão** integrada a uma **API RESTful** desenvolvida com Node.js e Express, utilizando o banco de dados leve **SQLite** para persistência de dados.
-
-A aplicação foi desenvolvida seguindo boas práticas de arquitetura de software, validação e sanitização de dados, segurança HTTP com Helmet e navegação responsiva sem recarregamento de página (SPA-like via Fetch API).
+> **Projeto Integrador I — Grupo 3**
+> Integrantes: Gabriel Henrique Leal Arruda, Joao Pedro de Paula Rauh Nascimento, Italo Borges Santana e Caua Fernandes Oliveira Domingos
+> Disciplina: Projeto Integrador I — Professor: Andre Lobo
+> Instituicao: IFMT — Instituto Federal de Mato Grosso
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Sobre o Projeto
 
-### **Backend (API RESTful)**
-- **Node.js** — Ambiente de execução JavaScript no servidor.
-- **Express.js** — Framework web minimalista e rápido para rotas e middlewares.
-- **better-sqlite3** — Driver síncrono e de alta performance para o banco SQLite.
-- **Helmet** — Middleware para configuração de cabeçalhos de segurança HTTP.
-- **CORS** — Habilitação de Cross-Origin Resource Sharing.
-- **Validator** — Lib para sanitização e validação avançada de e-mails e textos.
-- **Dotenv** — Gerenciamento de variáveis de ambiente.
+O **Ingresso Universitario** e um aplicativo web que auxilia estudantes na escolha de universidade e curso superior. O sistema reune de forma centralizada e acessivel informacoes que normalmente estao dispersas em varios sites e fontes:
 
-### **Frontend (Interface do Usuário)**
-- **HTML5 Semântico** — Marcação acessível e estruturada.
-- **Tailwind CSS** — Framework CSS utilitário para design responsivo e moderno.
-- **JavaScript ES6+ (Vanilla)** — Lógica do cliente, manipulação do DOM, máscaras de formulário e chamadas assíncronas via `fetch`.
+- **Notas de corte** do SiSU e ProUni
+- **Custos estimados** de moradia e despesas na cidade da universidade
+- **Bolsas, auxilios e oportunidades** de permanencia estudantil
+- **Panorama do mercado de trabalho** e demanda do curso na regiao
+- **Busca por universidades e cursos** com filtros por cidade, estado e nome
+- **Sistema de favoritos** para acesso rapido as opcoes de interesse
+
+### Problema Identificado
+
+Estudantes, especialmente de regioes como Centro-Oeste, enfrentam dificuldade para encontrar de forma clara e centralizada:
+
+- Notas de corte dos processos seletivos
+- Custo real de moradia e vida em outras cidades
+- Disponibilidade de bolsas e auxilios financeiros
+- Mercado de trabalho e oportunidades de estagio na regiao pretendida
+
+### Solucao
+
+Uma plataforma web responsiva que compila essas informacoes em um so lugar, permitindo ao estudante tomar decisoes mais informadas sobre seu ingresso na universidade.
 
 ---
 
-## 📁 Estrutura do Projeto
+## Funcionalidades
 
-```text
-testenodejs/
-├── api/                          # Servidor Backend em Node.js
-│   ├── db/                       # Banco de dados SQLite (criado em runtime)
-│   │   └── landing.db            # Arquivo da base de dados local
+| ID  | Funcionalidade                       | Descricao |
+|-----|--------------------------------------|-----------|
+| RF1 | Busca de Cursos e Instituicoes      | Busca com filtros por cidade, estado e nome |
+| RF2 | Exibicao de Notas de Corte          | Notas do SiSU e ProUni por ano e chamada |
+| RF3 | Painel de Custos Estimados          | Moradia, alimentacao, transporte e outros |
+| RF4 | Mural de Auxilios e Bolsas          | Bolsas, permanencia e auxilios da instituicao |
+| RF5 | Indicador de Mercado e Estagios     | Demanda, salario medio e vagas de estagio |
+| RF6 | Sistema de Favoritos                | Favoritar cursos para acesso rapido |
+
+### Requisitos Nao Funcionais
+
+| ID   | Requisito                    | Diretriz |
+|------|------------------------------|----------|
+| RNF1 | Usabilidade e Simplicidade   | Interface minimalista; informacao em ate 3 cliques |
+| RNF2 | Desempenho                   | Respostas em ate 2 segundos |
+| RNF3 | Responsividade               | Web app responsivo (desktop e mobile) |
+| RNF4 | Confiabilidade dos Dados     | Dados de fontes/APIs com atualizacao periodica |
+| RNF5 | Acessibilidade               | Contraste WCAG AA, fontes legiveis, navegacao por teclado |
+
+---
+
+## Stack Tecnologica
+
+### Backend (`api/`)
+
+| Tecnologia | Versao | Uso |
+|------------|--------|-----|
+| Node.js | 18+ | Runtime JavaScript |
+| Express.js | 4.x | Framework web |
+| better-sqlite3 | 9.x | Driver SQLite (sincrono, prepared statements) |
+| Helmet | 8.x | Seguranca HTTP |
+| CORS | 2.x | Cross-Origin Resource Sharing |
+| Validator | 13.x | Sanitizacao de inputs |
+| Dotenv | 16.x | Variaveis de ambiente |
+
+### Frontend (`frontend/`)
+
+| Tecnologia | Uso |
+|------------|-----|
+| HTML5 semantico | Estrutura das paginas |
+| Tailwind CSS (CDN) | Estilizacao responsiva |
+| JavaScript ES6+ vanilla | Logica e comunicacao com API (Fetch API) |
+
+### Banco de Dados
+
+| Caracteristica | Detalhe |
+|----------------|---------|
+| Motor | SQLite (better-sqlite3) |
+| Modo | WAL (Write-Ahead Logging) para performance |
+| Foreign Keys | Ativadas |
+| Prepared Statements | Em todas as consultas (anti SQL Injection) |
+| Codificacao | Nomes de tabelas e colunas em portugues brasileiro |
+
+---
+
+## Estrutura do Projeto
+
+```
+ingressouniversidade/
+├── api/                                    # Backend Node.js
+│   ├── .env                                # Variaveis de ambiente
+│   ├── package.json                        # Dependencias
+│   ├── iniciarBanco.js                     # DDL + dados seed
 │   ├── src/
+│   │   ├── app.js                          # Middlewares + rotas
+│   │   ├── server.js                       # Startup do servidor
 │   │   ├── config/
-│   │   │   └── conexaoBanco.js   # Inicialização e conexão do SQLite
+│   │   │   └── conexaoBanco.js             # Conexao SQLite
 │   │   ├── controladores/
-│   │   │   └── leadControlador.js# Regras de negócio da API
+│   │   │   ├── buscaControlador.js         # RF1 — Busca unificada
+│   │   │   ├── universidadeControlador.js  # RF2-RF5 — Detalhes
+│   │   │   └── favoritoControlador.js      # RF6 — Favoritos
 │   │   ├── rotas/
-│   │   │   └── leadRotas.js      # Endpoints da aplicação
-│   │   ├── utilitarios/
-│   │   │   └── validadores.js    # Sanitização e validação dos inputs
-│   │   ├── app.js                # Configuração do Express e Middlewares
-│   │   └── server.js             # Inicialização da porta e servidor
-│   ├── .env                      # Variáveis de ambiente
-│   ├── iniciarBanco.js           # DDL de criação da tabela de leads
-│   └── package.json              # Dependências e scripts do Node.js
+│   │   │   ├── buscaRotas.js               # GET /api/busca
+│   │   │   ├── universidadeRotas.js        # GET /api/cursos, /api/instituicoes
+│   │   │   └── favoritoRotas.js            # POST/GET/DELETE /api/favoritos
+│   │   ├── servicos/
+│   │   │   ├── integracaoSisu.js           # Integracao notas de corte
+│   │   │   ├── integracaoCustoVida.js      # Integracao custo de vida
+│   │   │   └── sincronizadorDados.js       # Atualizacao periodica
+│   │   └── utilitarios/
+│   │       └── validadores.js              # Validacao e sanitizacao
+│   └── db/                                 # Banco SQLite (gitignore)
 │
-├── frontend/                     # Interface Web (Landing Page)
+├── frontend/                               # SPA responsivo
+│   ├── index.html                          # Home: busca com filtros
 │   ├── css/
-│   │   └── estilo.css            # Estilos CSS adicionais
+│   │   └── estilo.css                      # Estilos + acessibilidade
 │   ├── js/
-│   │   └── app.js                # Script client-side (máscaras e Fetch API)
-│   └── index.html                # Estrutura visual da Landing Page
+│   │   ├── api.js                          # Modulo Fetch generico
+│   │   ├── busca.js                        # Logica de busca (RF1)
+│   │   ├── detalhes.js                     # Detalhes do curso (RF2-RF6)
+│   │   └── favoritos.js                    # Gestao de favoritos (RF6)
+│   ├── paginas/
+│   │   ├── detalhes.html                   # Pagina de detalhes
+│   │   └── favoritos.html                  # Lista de favoritos
+│   └── assets/                             # Imagens e icones
 │
-├── doc/                          # Documentação técnica do projeto
-│   └── plano_landingpage_nodejs.md
+├── doc/                                    # Documentacao
+│   ├── backup/                             # Documentos de escopo originais
+│   ├── plano_modificacao_ingressouniversidade.md
+│   └── plano_frontend_ingressouniversidade.md
 │
-├── .gitignore                    # Arquivos ignorados pelo Git
-└── README.md                     # Documentação oficial do repositório
+└── README.md                               # Este arquivo
 ```
 
 ---
 
-## 🗄️ Modelagem do Banco de Dados (SQLite)
+## Modelo de Banco de Dados
 
-O banco de dados SQLite é inicializado automaticamente na subida da aplicação através do script `iniciarBanco.js`.
+### Tabelas
 
-### **Tabela `leads`**
-
-```sql
-CREATE TABLE IF NOT EXISTS leads (
-    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome_completo       TEXT    NOT NULL,
-    email               TEXT    NOT NULL,
-    telefone_whatsapp   TEXT    NOT NULL,
-    mensagem            TEXT    DEFAULT NULL,
-    data_cadastro       TEXT    DEFAULT (datetime('now','localtime')),
-    status_atendimento  TEXT    DEFAULT 'novo'
-                                CHECK(status_atendimento IN ('novo','contatado','convertido','perdido'))
-);
-
-CREATE INDEX IF NOT EXISTS idx_leads_email ON leads(email);
-CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status_atendimento);
 ```
+instituicoes ──< cursos ──< notas_corte
+                  │
+                  ├──< mercado_estagios
+                  │
+instituicoes ──< auxilios_bolsas
+
+custos_cidade (por cidade)
+
+favoritos (por sessao de usuario)
+```
+
+### Descricao das Tabelas
+
+| Tabela | Descricao |
+|--------|-----------|
+| `instituicoes` | Universidades/faculdades (nome, sigla, cidade, estado, site) |
+| `cursos` | Cursos de cada instituicao (nome, grau, modalidade, duracao) |
+| `notas_corte` | Notas minimas por processo seletivo, ano e chamada |
+| `custos_cidade` | Custos estimados de moradia, alimentacao, transporte |
+| `auxilios_bolsas` | Bolsas, permanencia e auxilios da instituicao |
+| `mercado_estagios` | Demanda, salario medio e vagas de estagio |
+| `favoritos` | Cursos salvos por sessao de usuario (anonimo) |
+
+### Dados Seed
+
+O sistema ja vem populado com dados iniciais para demonstracao:
+
+- **8 instituicoes** de Mato Grosso e Mato Grosso do Sul (UFMT, UFMS, UNEMAT, IFMT, UFGD, UCDB, UNIAN, UNIC)
+- **20 cursos** de diversas areas (Computacao, Engenharia, Direito, Medicina, Administracao, etc.)
+- **25 registros de notas de corte** (SiSU e ProUni, 2025)
+- **6 cidades** com custos estimados (Cuiaba, Campo Grande, Sinop, Dourados, etc.)
+- **14 bolsas e auxilios** das instituicoes
+- **18 registros de mercado e estagios**
 
 ---
 
-## 🚀 Endpoints da API
+## Como Executar
 
-| Método | Endpoint | Descrição | Payload (Body) |
-|---|---|---|---|
-| `GET` | `/` | Servidor estático da Landing Page | — |
-| `GET` | `/api/health` | Health Check da API | — |
-| `POST` | `/api/leads` | Cadastra um novo lead | JSON (nome, email, telefone, mensagem) |
-| `GET` | `/api/leads` | Lista todos os leads cadastrados | — |
+### Pre-requisitos
 
-### **Exemplo de Requisição `POST /api/leads`**
+- Node.js 18 ou superior
+- npm
 
-**Body (JSON):**
-```json
-{
-  "nome_completo": "Maria Silva",
-  "email": "maria.silva@exemplo.com",
-  "telefone_whatsapp": "(11) 98888-7777",
-  "mensagem": "Gostaria de agendar uma demonstração."
-}
+### Instalacao e Execucao
+
+```bash
+# 1. Clonar o repositorio
+git clone https://github.com/gabrielhenriquekkj/ingressouniversidade.git
+cd ingressouniversidade
+
+# 2. Instalar dependencias
+cd api && npm install
+
+# 3. Iniciar o servidor (com auto-reload)
+npm run dev
+
+# 4. Acessar no navegador
+# http://localhost:3000
 ```
 
-**Resposta de Sucesso (HTTP 201):**
+O servidor inicia automaticamente na porta 3000 (configuravel via `.env`). Na primeira execucao, o banco de dados e criado e populado com os dados seed.
+
+---
+
+## Endpoints da API
+
+### Health Check
+
+| Metodo | Endpoint | Descricao |
+|--------|----------|-----------|
+| `GET` | `/api/health` | Verificacao de saude da API |
+
+### Busca (RF1)
+
+| Metodo | Endpoint | Parametros | Descricao |
+|--------|----------|------------|-----------|
+| `GET` | `/api/busca` | `?nome=&cidade=&estado=` | Busca unificada de cursos e instituicoes |
+
+### Instituicoes
+
+| Metodo | Endpoint | Descricao |
+|--------|----------|-----------|
+| `GET` | `/api/instituicoes` | Lista instituicoes (filtros: nome, cidade, estado) |
+| `GET` | `/api/instituicoes/:id` | Detalhes da instituicao com cursos e auxilios |
+
+### Cursos
+
+| Metodo | Endpoint | Descricao |
+|--------|----------|-----------|
+| `GET` | `/api/cursos` | Lista cursos (filtros: nome, cidade, estado) |
+| `GET` | `/api/cursos/:id` | Detalhes completos do curso |
+| `GET` | `/api/cursos/:id/notas-corte` | Notas de corte (RF2) |
+| `GET` | `/api/cidades/:cidade/custos` | Custos da cidade (RF3) |
+| `GET` | `/api/cursos/:id/auxilios-bolsas` | Bolsas e auxilios (RF4) |
+| `GET` | `/api/cursos/:id/mercado-estagios` | Mercado e estagios (RF5) |
+
+### Favoritos (RF6)
+
+| Metodo | Endpoint | Body/Parametros | Descricao |
+|--------|----------|-----------------|-----------|
+| `POST` | `/api/favoritos` | `{ sessao_usuario, curso_id, instituicao_id }` | Adicionar favorito |
+| `GET` | `/api/favoritos` | `?sessao_usuario=` | Listar favoritos do usuario |
+| `DELETE` | `/api/favoritos/:id` | `?sessao_usuario=` | Remover favorito |
+
+### Formato de Resposta
+
+**Sucesso:**
 ```json
 {
   "sucesso": true,
-  "mensagem": "Lead cadastrado com sucesso!"
+  "mensagem": "Operacao realizada com sucesso!",
+  "dados": { ... }
 }
 ```
 
-**Resposta de Erro de Validação (HTTP 422):**
+**Erro de validacao (HTTP 422):**
 ```json
 {
   "sucesso": false,
-  "mensagem": "E-mail inválido.",
-  "erros": [
-    "Informe um endereço de e-mail válido."
-  ]
+  "mensagem": "Dados invalidos.",
+  "erros": ["Campo obrigatorio nao preenchido."]
 }
 ```
 
 ---
 
-## 🔧 Como Executar o Projeto no VS Code (Windows & Linux Ubuntu)
+## Convencoes de Codigo
 
-### **Pré-requisitos**
-- **Node.js** (v18 ou superior) e **npm** instalados.
-- **Git** instalado.
-
-> 🐧 **Dica para Linux (Ubuntu/Debian):** Caso precise instalar o Node.js e Git no Ubuntu antes de abrir no VS Code:
-> ```bash
-> sudo apt update
-> sudo apt install -y nodejs npm git
-> ```
+- **Linguagem:** Variaveis, funcoes, rotas, colunas do banco e comentarios em **portugues brasileiro**
+- **Modulo:** CommonJS (`require` / `module.exports`)
+- **Respostas HTTP:** Codigos semanticos (200, 201, 400, 404, 409, 422, 500)
+- **Payload:** Limite de 10kb para JSON
+- **Validacao:** Sanitizacao com `validator` (trim, escape) antes de cada operacao no banco
+- **Banco:** Prepared statements em todas as consultas
 
 ---
 
-### 🚀 **Como Iniciar o Projeto (via Terminal do VS Code)**
+## Seguranca
 
-1. **Abra a pasta do projeto no VS Code:**
-   - Acesse o menu **Arquivo > Abrir Pasta...** (ou `File > Open Folder...` no Linux) e selecione a pasta `testenodejs`.
-
-2. **Abra o Terminal Integrado do VS Code:**
-   - Pressione o atalho **`Ctrl` + `'`** (ou `Ctrl` + `J` / `Ctrl` + `~`).
-   - Ou acesse o menu superior **Terminal > Novo Terminal**.
-
-3. **Navegue até a pasta `api` e instale as dependências (necessário na primeira execução):**
-   ```bash
-   cd api
-   npm install
-   ```
-
-4. **Inicie o servidor de desenvolvimento:**
-   ```bash
-   npm run dev
-   ```
-
-5. **Acesse a aplicação no navegador:**
-   - **Landing Page:** [http://localhost:3000/](http://localhost:3000/)
-   - **Health Check da API:** [http://localhost:3000/api/health](http://localhost:3000/api/health)
+| Pratica | Implementacao |
+|---------|---------------|
+| SQL Injection | Prepared statements com better-sqlite3 |
+| XSS | Sanitizacao com `validator` (escape) |
+| Payload grande | `express.json({ limit: '10kb' })` |
+| Headers HTTP | Helmet com configuracao segura |
+| CORS | Configuravel via variavel `ORIGEM_PERMITIDA` |
+| Dados pessoais | Favoritos anonimos por sessao (sem cadastro) |
 
 ---
 
-### 🛑 **Como Parar (Stop) o Servidor**
+## Acessibilidade (RNF5)
 
-1. **Método Padrão no VS Code (Windows & Linux Ubuntu):**
-   - Com a janela do terminal integrada focada no VS Code, pressione **`Ctrl` + `C`**.
-   - No Windows, se perguntado `Deseja fechar o arquivo em lote (S/N)?`, digite **`S`** e pressione **Enter**. No Linux, o processo será encerrado imediatamente.
-
-2. **Encerrar pelo Painel de Terminais do VS Code:**
-   - Clique no ícone de **Lixeira 🗑️** no canto superior direito do painel de terminais do VS Code.
-
-3. **Liberar Porta Ocupada (caso receba o erro `EADDRINUSE: address already in use :::3000`):**
-   - **No Linux (Ubuntu/Debian):**
-     ```bash
-     sudo fuser -k 3000/tcp
-     ```
-     *ou:*
-     ```bash
-     npx kill-port 3000
-     ```
-   - **No Windows (PowerShell):**
-     ```powershell
-     Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
-     ```
-   - **No Windows (CMD / Git Bash):**
-     ```bash
-     npx kill-port 3000
-     ```
+- Contraste de cores adequado (WCAG AA)
+- Fontes legiveis com tamanhos adequados
+- Atributos `aria-label` nos campos de busca
+- Navegacao por teclado suportada (`focus-visible`)
+- Estados de carregamento e vazio comunicados textualmente
+- Feedback visual em todas as acoes (toast de sucesso/erro)
 
 ---
 
-## 🛡️ Segurança e Boas Práticas
+## Documentacao do Projeto
 
-- **Prepared Statements:** Uso de consultas preparadas via `better-sqlite3` prevenindo ataques de **SQL Injection**.
-- **Sanitização de Entradas:** Limpeza de strings com a biblioteca `validator` para evitar inserção de conteúdos maliciosos (**XSS**).
-- **Proteção contra Payload Abusivo:** Middleware configurado com limite de `10kb` por requisição.
-- **Respostas Padronizadas:** Tratamento transparente de erros com códigos HTTP semânticos (200, 201, 400, 422, 500).
+| Arquivo | Descricao |
+|---------|-----------|
+| `doc/plano_modificacao_ingressouniversidade.md` | Plano de reenquadramento do projeto |
+| `doc/plano_frontend_ingressouniversidade.md` | Planejamento do frontend |
+| `doc/backup/*.docx` | Documentos originais de escopo (problema, requisitos, personas) |
+| `doc/backup/*.xlsx` | Pesquisa de dores dos alunos |
 
 ---
 
-## 📜 Licença e Créditos
+## Status do Projeto
 
-Projeto desenvolvido para fins educacionais e acadêmicos. Sinta-se à vontade para utilizar como base para seus próprios aprendizados.
+- [x] Configuracao do banco de dados com tabelas e dados seed
+- [x] Backend completo com 12 endpoints REST
+- [x] Frontend responsivo com 3 paginas
+- [x] Sistema de busca com filtros e debounce
+- [x] Detalhes do curso com abas (notas, custos, bolsas, mercado)
+- [x] Sistema de favoritos com persistencia
+- [x] Documentacao atualizada
+- [ ] Integracao com APIs externas (SiSU, IBGE)
+- [ ] Testes automatizados
+- [ ] Deploy em producao
+
+---
+
+## Equipe
+
+| Nome | GitHub |
+|------|--------|
+| Gabriel Henrique Leal Arruda | [@gabrielhenriquekkj](https://github.com/gabrielhenriquekkj) |
+| Joao Pedro de Paula Rauh Nascimento | — |
+| Italo Borges Santana | — |
+| Caua Fernandes Oliveira Domingos | — |
+
+---
+
+*Projeto Integrador I — IFMT — Grupo 3 — 2026*

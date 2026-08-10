@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes do Curso — Ingresso Universitario</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/estilo.css">
+</head>
+<body class="font-sans antialiased text-gray-800 bg-gray-50">
+
+  <!-- Navbar fixa -->
+  <header class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur z-50 border-b border-gray-100 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="../index.html" class="text-xl font-bold text-indigo-600 flex items-center gap-2">
+        <span class="text-2xl">&#127891;</span>
+        Ingresso Universitario
+      </a>
+      <nav class="flex items-center gap-4">
+        <a href="../index.html" class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition">Busca</a>
+        <a href="favoritos.html" class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition flex items-center gap-1">
+          <span>&#9829;</span> Favoritos
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Espacamento do navbar fixo -->
+  <div class="h-16"></div>
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+
+    <!-- Indicador de carregamento -->
+    <div id="carregando" class="text-center py-12">
+      <div class="inline-block w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+      <p class="mt-3 text-gray-500">Carregando detalhes...</p>
+    </div>
+
+    <!-- Conteudo do curso (oculto ate carregar) -->
+    <div id="conteudoCurso" class="hidden">
+
+      <!-- Voltar -->
+      <a href="../index.html" class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 mb-6 font-medium">
+        <span>&#8592;</span> Voltar a busca
+      </a>
+
+      <!-- Cabecalho do curso -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 id="nomeCurso" class="text-2xl md:text-3xl font-bold text-gray-900"></h1>
+            <p id="nomeInstituicao" class="text-lg text-gray-600 mt-1"></p>
+            <div class="flex flex-wrap gap-2 mt-3">
+              <span id="badgeGrau" class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium"></span>
+              <span id="badgeModalidade" class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium"></span>
+              <span id="badgeDuracao" class="inline-block bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-medium"></span>
+              <span id="badgeLocal" class="inline-block bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium"></span>
+            </div>
+          </div>
+          <button
+            id="btnFavoritar"
+            class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-indigo-700 transition flex items-center gap-2 whitespace-nowrap"
+          >
+            <span id="iconeFavorito">&#9825;</span> <span id="textoFavorito">Favoritar</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Abas de navegacao -->
+      <div class="flex gap-1 mb-6 border-b border-gray-200 overflow-x-auto">
+        <button class="aba px-4 py-3 font-medium text-sm border-b-2 border-indigo-600 text-indigo-600" data-aba="notas">Notas de Corte</button>
+        <button class="aba px-4 py-3 font-medium text-sm border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-aba="custos">Custos da Cidade</button>
+        <button class="aba px-4 py-3 font-medium text-sm border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-aba="bolsas">Bolsas e Auxilios</button>
+        <button class="aba px-4 py-3 font-medium text-sm border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-aba="mercado">Mercado e Estagios</button>
+      </div>
+
+      <!-- Conteudo das abas -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+
+        <!-- Aba: Notas de Corte -->
+        <div id="aba-notas" class="secao-aba">
+          <h2 class="text-xl font-bold text-gray-900 mb-4">&#128200; Notas de Corte</h2>
+          <div id="tabelaNotas" class="overflow-x-auto"></div>
+        </div>
+
+        <!-- Aba: Custos -->
+        <div id="aba-custos" class="secao-aba hidden">
+          <h2 class="text-xl font-bold text-gray-900 mb-4">&#128176; Custos Estimados da Cidade</h2>
+          <div id="painelCustos"></div>
+        </div>
+
+        <!-- Aba: Bolsas -->
+        <div id="aba-bolsas" class="secao-aba hidden">
+          <h2 class="text-xl font-bold text-gray-900 mb-4">&#127873; Bolsas e Auxilios</h2>
+          <div id="listaBolsas"></div>
+        </div>
+
+        <!-- Aba: Mercado -->
+        <div id="aba-mercado" class="secao-aba hidden">
+          <h2 class="text-xl font-bold text-gray-900 mb-4">&#128188; Mercado de Trabalho e Estagios</h2>
+          <div id="painelMercado"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Erro ao carregar -->
+    <div id="erroCarregamento" class="hidden text-center py-12">
+      <div class="text-6xl mb-4">&#128533;</div>
+      <h3 class="text-xl font-semibold text-gray-700">Curso nao encontrado</h3>
+      <p class="mt-2 text-gray-500">O curso solicitado nao foi encontrado no sistema.</p>
+      <a href="../index.html" class="mt-4 inline-block bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700 transition">Voltar a busca</a>
+    </div>
+
+  </main>
+
+  <!-- Toast de feedback -->
+  <div id="toast" class="fixed bottom-6 right-6 px-6 py-3 rounded-lg shadow-lg text-white font-semibold hidden z-50"></div>
+
+  <!-- Scripts -->
+  <script src="../js/api.js"></script>
+  <script src="../js/detalhes.js"></script>
+</body>
+</html>

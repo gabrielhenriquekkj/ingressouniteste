@@ -1,13 +1,14 @@
 {
-  "name": "api-landing-page",
+  "name": "api-ingresso-universitario",
   "version": "1.0.0",
-  "description": "API para captura de leads da Landing Page",
+  "description": "API para o sistema Ingresso Universitario — busca, notas de corte, custos, bolsas e favoritos",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js"
   },
   "dependencies": {
+    "better-sqlite3": "^9.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",

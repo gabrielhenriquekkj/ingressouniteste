@@ -155,9 +155,53 @@ document.addEventListener('click', (evento) => {
     const area = document.getElementById('areaFavoritos')
     if (area) {
       cartao.remove()
+      atualizarResumoFavoritos()
       if (area.querySelectorAll('[data-curso-id]').length === 0) {
         area.innerHTML = estadoVazio('Você ainda não favoritou nenhum curso ou universidade.')
       }
     }
   }
+})
+
+// Atualiza o resumo "X favoritos" na página de favoritos
+function atualizarResumoFavoritos() {
+  const resumo = document.getElementById('resumoFavoritos')
+  if (!resumo) return
+  const quantidade = obterFavoritosLocal().length
+  resumo.textContent = `${quantidade} ${quantidade === 1 ? 'favorito' : 'favoritos'}`
+}
+
+// Renderiza a lista de favoritos salvos (RF6)
+function renderizarPaginaFavoritos() {
+  const area = document.getElementById('areaFavoritos')
+  if (!area) return
+
+  const lista = obterFavoritosLocal()
+  atualizarResumoFavoritos()
+
+  if (lista.length === 0) {
+    area.innerHTML = estadoVazio('Você ainda não favoritou nenhum curso ou universidade. Use o botão Favoritar na busca ou na página de detalhes.')
+    return
+  }
+
+  area.innerHTML = lista.map((favorito) => cardResultado({
+    id: favorito.curso_id,
+    nome: favorito.nome,
+    instituicao: favorito.instituicao,
+    sigla: favorito.sigla,
+    cidade: favorito.cidade,
+    estado: favorito.estado,
+    grau: favorito.grau,
+    modalidade: favorito.modalidade,
+    nota_minima: favorito.nota_minima,
+    demanda: ''
+  })).join('')
+}
+
+// Inicializa a página de favoritos
+document.addEventListener('DOMContentLoaded', () => {
+  if (!window.location.pathname.includes('favoritos.html')) return
+  montarNavbar('favoritos')
+  renderizarPaginaFavoritos()
+  sincronizarComAPI().then(renderizarPaginaFavoritos)
 })

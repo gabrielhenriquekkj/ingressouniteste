@@ -3,133 +3,133 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ingresso Universitario</title>
+  <meta name="description" content="Busque cursos e universidades com notas de corte, custos da cidade, bolsas e mercado de trabalho em um só lugar.">
+  <title>Ingresso Universitário — Escolha a sua universidade</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/estilo.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] }
+        }
+      }
+    }
+  </script>
 </head>
-<body class="font-sans antialiased text-gray-800 bg-gray-50">
+<body class="font-sans antialiased text-gray-800 bg-gray-50 min-h-screen flex flex-col">
 
-  <!-- Navbar fixa -->
-  <header class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur z-50 border-b border-gray-100 shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-      <a href="index.html" class="text-xl font-bold text-indigo-600 flex items-center gap-2">
-        <span class="text-2xl">&#127891;</span>
-        Ingresso Universitario
-      </a>
-      <nav class="flex items-center gap-4">
-        <a href="index.html" class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition">Busca</a>
-        <a href="paginas/favoritos.html" class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition flex items-center gap-1">
-          <span>&#9829;</span> Favoritos
-        </a>
-      </nav>
-    </div>
-  </header>
+  <div id="navbar"></div>
 
-  <!-- Espacamento do navbar fixo -->
-  <div class="h-16"></div>
+  <main class="flex-1 pt-16">
 
-  <main>
-
-    <!-- Hero Section -->
-    <section class="bg-gradient-to-br from-indigo-50 via-white to-indigo-100 py-16 px-4">
-      <div class="max-w-6xl mx-auto text-center">
-        <h1 class="text-4xl md:text-5xl font-extrabold leading-tight text-gray-900">
-          Encontre a <span class="text-indigo-600">universidade ideal</span> para voce
+    <!-- Hero -->
+    <section class="bg-gradient-to-br from-indigo-50 via-white to-indigo-100">
+      <div class="max-w-6xl mx-auto px-4 py-12 md:py-16">
+        <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+          Escolha com segurança a sua <span class="text-indigo-700">universidade</span>
         </h1>
-        <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-          Compare notas de corte, custos de vida, bolsas de estudo e oportunidades de mercado em um so lugar.
+        <p class="mt-3 text-gray-600 text-lg max-w-2xl">
+          Compare notas de corte, custos de moradia, bolsas, auxílios e mercado de trabalho antes de tomar a sua decisão.
         </p>
+
+        <!-- Resumo dos 4 pilares -->
+        <ul class="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-3" aria-label="O que você encontra no app">
+          <li class="bg-white/80 ring-1 ring-gray-200 rounded-2xl p-4 flex items-start gap-3">
+            <span class="text-indigo-600 shrink-0"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15v4M10 11v8M16 7v12M22 4v16"/></svg></span>
+            <span>
+              <span class="block font-bold text-gray-900 text-sm">Notas de corte</span>
+              <span class="block text-xs text-gray-500 mt-0.5">SiSU e ProUni por chamada</span>
+            </span>
+          </li>
+          <li class="bg-white/80 ring-1 ring-gray-200 rounded-2xl p-4 flex items-start gap-3">
+            <span class="text-indigo-600 shrink-0"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span>
+            <span>
+              <span class="block font-bold text-gray-900 text-sm">Custos da cidade</span>
+              <span class="block text-xs text-gray-500 mt-0.5">Moradia, alimentação e transporte</span>
+            </span>
+          </li>
+          <li class="bg-white/80 ring-1 ring-gray-200 rounded-2xl p-4 flex items-start gap-3">
+            <span class="text-indigo-600 shrink-0"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
+            <span>
+              <span class="block font-bold text-gray-900 text-sm">Bolsas e auxílios</span>
+              <span class="block text-xs text-gray-500 mt-0.5">Permanência, bolsas e apoio</span>
+            </span>
+          </li>
+          <li class="bg-white/80 ring-1 ring-gray-200 rounded-2xl p-4 flex items-start gap-3">
+            <span class="text-indigo-600 shrink-0"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span>
+            <span>
+              <span class="block font-bold text-gray-900 text-sm">Mercado e estágios</span>
+              <span class="block text-xs text-gray-500 mt-0.5">Demanda na região e salários</span>
+            </span>
+          </li>
+        </ul>
       </div>
     </section>
 
-    <!-- Barra de Busca e Filtros -->
-    <section class="py-8 px-4 bg-white border-b border-gray-200 sticky top-16 z-40">
-      <div class="max-w-6xl mx-auto">
-        <form id="formBusca" class="flex flex-col md:flex-row gap-3">
-          <div class="flex-1">
-            <input
-              type="text"
-              id="campoBusca"
-              name="nome"
-              placeholder="Buscar por curso ou universidade..."
-              class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-              aria-label="Buscar curso ou universidade"
-            >
+    <!-- Filtros de busca (RF1) -->
+    <section class="max-w-6xl mx-auto px-4 py-10">
+      <form id="formBusca" class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-5 md:p-6" aria-label="Filtros de busca de cursos">
+        <div class="grid md:grid-cols-4 gap-4">
+          <div>
+            <label for="filtroNome" class="block text-sm font-semibold text-gray-700 mb-1.5">Nome do curso ou instituição</label>
+            <input type="search" id="filtroNome" name="nome" placeholder="Ex.: Engenharia, USP..." autocomplete="off"
+              class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
           </div>
-          <div class="w-full md:w-40">
-            <input
-              type="text"
-              id="campoCidade"
-              name="cidade"
-              placeholder="Cidade"
-              class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-              aria-label="Filtrar por cidade"
-            >
+          <div>
+            <label for="filtroEstado" class="block text-sm font-semibold text-gray-700 mb-1.5">Estado</label>
+            <select id="filtroEstado" name="estado"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+              <option value="">Todos os estados</option>
+            </select>
           </div>
-          <div class="w-full md:w-24">
-            <input
-              type="text"
-              id="campoEstado"
-              name="estado"
-              placeholder="UF"
-              maxlength="2"
-              class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition uppercase"
-              aria-label="Filtrar por estado"
-            >
+          <div>
+            <label for="filtroCidade" class="block text-sm font-semibold text-gray-700 mb-1.5">Cidade</label>
+            <select id="filtroCidade" name="cidade"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+              <option value="">Todas as cidades</option>
+            </select>
           </div>
-          <button
-            type="submit"
-            class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
-          >
-            <span>&#128269;</span> Buscar
-          </button>
-        </form>
-      </div>
+          <div class="flex items-end">
+            <button type="submit" class="w-full inline-flex items-center justify-center gap-2 bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-indigo-800 transition">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              Buscar
+            </button>
+          </div>
+        </div>
+      </form>
     </section>
 
     <!-- Resultados -->
-    <section class="py-8 px-4">
-      <div class="max-w-6xl mx-auto">
-
-        <!-- Indicador de carregamento -->
-        <div id="carregando" class="hidden text-center py-12">
-          <div class="inline-block w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-          <p class="mt-3 text-gray-500">Buscando resultados...</p>
-        </div>
-
-        <!-- Estado vazio -->
-        <div id="estadoVazio" class="text-center py-12">
-          <div class="text-6xl mb-4">&#128218;</div>
-          <h3 class="text-xl font-semibold text-gray-700">Comece sua busca</h3>
-          <p class="mt-2 text-gray-500">Digite o nome de um curso, universidade ou cidade para encontrar as melhores opcoes.</p>
-        </div>
-
-        <!-- Contador de resultados -->
-        <div id="contadorResultados" class="hidden mb-6">
-          <p class="text-gray-600 font-medium">
-            <span id="totalResultados">0</span> resultado(s) encontrado(s)
-          </p>
-        </div>
-
-        <!-- Lista de cursos -->
-        <div id="listaCursos" class="hidden space-y-4"></div>
-
-        <!-- Lista de instituicoes -->
-        <div id="listaInstituicoes" class="hidden mt-8">
-          <h2 class="text-xl font-bold text-gray-900 mb-4">Instituicoes encontradas</h2>
-          <div id="gridInstituicoes" class="grid md:grid-cols-2 gap-4"></div>
-        </div>
-
+    <section class="max-w-6xl mx-auto px-4 pb-16">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Resultados</h2>
+        <p id="resumoResultados" class="text-sm text-gray-500" aria-live="polite"></p>
+      </div>
+      <div id="areaResultados" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      <div id="areaCarregarMais" class="mt-8 text-center hidden">
+        <button id="btnCarregarMais" type="button" class="inline-flex items-center gap-2 bg-white ring-1 ring-gray-300 text-indigo-700 font-semibold px-6 py-2.5 rounded-full hover:bg-indigo-50 transition">
+          Carregar mais resultados
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </button>
       </div>
     </section>
 
   </main>
 
-  <!-- Toast de feedback -->
-  <div id="toast" class="fixed bottom-6 right-6 px-6 py-3 rounded-lg shadow-lg text-white font-semibold hidden z-50"></div>
+  <footer class="bg-gray-900 text-gray-400 text-center py-8 px-4">
+    <p class="text-sm">© 2026 Ingresso Universitário — Projeto Integrador I · Grupo 3</p>
+    <p class="text-xs mt-1 text-gray-500">Dados de demonstração. A fonte de cada informação é exibida nas páginas de detalhes.</p>
+  </footer>
 
-  <!-- Scripts -->
+  <script src="js/util.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/dadosDemo.js"></script>
+  <script src="js/componentes.js"></script>
+  <script src="js/favoritos.js"></script>
   <script src="js/busca.js"></script>
 </body>
 </html>

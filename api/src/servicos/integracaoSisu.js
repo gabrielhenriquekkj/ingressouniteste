@@ -4,7 +4,7 @@ const banco = require('../config/conexaoBanco')
 // Em producao, consumiria APIs externas como SiSU/ProUni
 // Por enquanto, retorna dados do banco local
 
-function buscarNotasCorte-curso(cursoId) {
+function buscarNotasCorteCurso(cursoId) {
   return banco.prepare(
     'SELECT * FROM notas_corte WHERE curso_id = ? ORDER BY ano DESC, chamada'
   ).all(cursoId)
@@ -20,4 +20,4 @@ function buscarNotasPorInstituicao(instituicaoId) {
   `).all(instituicaoId)
 }
 
-module.exports = { buscarNotasCorte_curso: buscarNotasCorte_curso, buscarNotasPorInstituicao }
+module.exports = { buscarNotasCorteCurso, buscarNotasPorInstituicao }

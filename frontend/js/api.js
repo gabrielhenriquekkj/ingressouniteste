@@ -1,25 +1,25 @@
-// api.js — Cliente Fetch genérico para a API do Ingresso Universitário (Express/REST).
+// api.js — Cliente Fetch generico para a API do Ingresso Universitario (Express/REST).
 
-// URL base da API (centralizada, mesmo padrão do app.js antigo)
-const URL_API = 'http://localhost:3000/api'
+// URL base relativa (funciona em qualquer host/porta)
+const URL_API = '/api'
 
-// Executa uma requisição (GET/POST/DELETE) e retorna o JSON tratado.
-// Lança um erro amigável caso haja falha de conexão ou resposta não-ok.
+// Executa uma requisicao (GET/POST/DELETE) e retorna o JSON tratado.
 async function api(metodo, caminho, corpo) {
   let resposta
   try {
-    resposta = await fetch(`${URL_API}${caminho}`, {
+    const opcoes = {
       method: metodo,
-      headers: { 'Content-Type': 'application/json' },
-      body: corpo ? JSON.stringify(corpo) : undefined
-    })
+      headers: { 'Content-Type': 'application/json' }
+    }
+    if (corpo) opcoes.body = JSON.stringify(corpo)
+    resposta = await fetch(`${URL_API}${caminho}`, opcoes)
   } catch {
-    throw new Error('Sem conexão com o servidor.')
+    throw new Error('Sem conexao com o servidor.')
   }
 
   const dados = await resposta.json().catch(() => ({}))
   if (!resposta.ok || dados.sucesso === false) {
-    const mensagem = dados.mensagem || 'Falha ao concluir a operação.'
+    const mensagem = dados.mensagem || 'Falha ao concluir a operacao.'
     throw new Error(mensagem)
   }
   return dados

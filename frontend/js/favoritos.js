@@ -1,9 +1,8 @@
-// favoritos.js — Sistema de favoritos (RF6): armazenamento local + sincronização com a API.
+// favoritos.js — Sistema de favoritos (RF6): armazenamento local + sincronizacao com a API.
 
 const CHAVE_FAVORITOS = 'ingresso_universitario_favoritos'
 const CHAVE_SESSAO = 'ingresso_universitario_sessao'
 
-// Identificador anônimo de sessão (uuid gerado na primeira visita)
 function obterSessao() {
   let sessao = localStorage.getItem(CHAVE_SESSAO)
   if (!sessao) {
@@ -13,99 +12,96 @@ function obterSessao() {
   return sessao
 }
 
-// Lista de favoritos armazenada localmente (fonte principal, funciona offline)
 function obterFavoritosLocal() {
   try {
     return JSON.parse(localStorage.getItem(CHAVE_FAVORITOS)) || []
-  } catch {
+  } catch (e) {
     return []
   }
 }
 
 function salvarFavoritosLocal(lista) {
   localStorage.setItem(CHAVE_FAVORITOS, JSON.stringify(lista))
-  atualizarContadorFavoritos()
+  if (typeof atualizarContadorFavoritos === 'function') atualizarContadorFavoritos()
 }
 
-// Verifica se um curso já está nos favoritos
 function estaFavoritado(cursoId) {
-  return obterFavoritosLocal().some((f) => String(f.curso_id) === String(cursoId))
+  return obterFavoritosLocal().some(function (f) { return String(f.curso_id) === String(cursoId) })
 }
 
-// Sincroniza favoritos com a API (melhor esforço — falhas de conexão são ignoradas)
 async function sincronizarComAPI() {
   try {
-    const resultado = await api('GET', `/favoritos?sessao_usuario=${encodeURIComponent(obterSessao())}`)
-    const remotos = (resultado.dados || []).map((item) => ({
-      id: item.id,
-      curso_id: item.curso_id,
-      nome: item.nome || item.curso_nome,
-      instituicao: item.instituicao || item.instituicao_nome,
-      sigla: item.sigla || '',
-      cidade: item.cidade || '',
-      estado: item.estado || '',
-      grau: item.grau || '',
-      modalidade: item.modalidade || '',
-      nota_minima: item.nota_minima || null,
-      criado_em: item.criado_em
-    }))
-    let local = obterFavoritosLocal()
-    remotos.forEach((favorito) => {
+    var resultado = await api('GET', '/favoritos?sessao_usuario=' + encodeURIComponent(obterSessao()))
+    var remotos = (resultado.dados || []).map(function (item) {
+      return {
+        id: item.id,
+        curso_id: item.curso_id,
+        nome: item.curso_nome || item.nome || '',
+        instituicao: item.instituicao_nome || item.instituicao || '',
+        sigla: item.sigla || '',
+        cidade: item.cidade || '',
+        estado: item.estado || '',
+        grau: item.grau || '',
+        modalidade: item.modalidade || '',
+        instituicao_id: item.instituicao_id || null,
+        criado_em: item.criado_em
+      }
+    })
+    var local = obterFavoritosLocal()
+    remotos.forEach(function (favorito) {
       if (!favorito.curso_id) return
-      if (!local.some((f) => String(f.curso_id) === String(favorito.curso_id))) {
+      if (!local.some(function (f) { return String(f.curso_id) === String(favorito.curso_id) })) {
         local.push(favorito)
       }
     })
-    local = local.sort((a, b) => (b.criado_em || '').localeCompare(a.criado_em || ''))
+    local = local.sort(function (a, b) { return (b.criado_em || '').localeCompare(a.criado_em || '') })
     salvarFavoritosLocal(local)
-  } catch {
-    // Modo offline: mantém apenas os dados locais
+  } catch (e) {
+    // Modo offline
   }
 }
 
-// Adiciona um curso aos favoritos (local + tentativa de POST na API)
 function adicionarFavorito(curso) {
-  const lista = obterFavoritosLocal()
+  var lista = obterFavoritosLocal()
   if (estaFavoritado(curso.id)) return
 
   lista.push({
     id: Date.now(),
     curso_id: curso.id,
     nome: curso.nome,
-    instituicao: curso.instituicao,
+    instituicao: curso.instituicao || '',
     sigla: curso.sigla || '',
-    cidade: curso.cidade,
-    estado: curso.estado,
+    cidade: curso.cidade || '',
+    estado: curso.estado || '',
     grau: curso.grau || '',
     modalidade: curso.modalidade || '',
-    nota_minima: curso.nota_minima || null,
+    instituicao_id: curso.instituicao_id || null,
     criado_em: new Date().toISOString()
   })
   salvarFavoritosLocal(lista)
   atualizarBotoesFavorito(curso.id)
-  toast(`${curso.nome} adicionado aos favoritos.`, 'sucesso')
+  toast(curso.nome + ' adicionado aos favoritos.', 'sucesso')
 
   api('POST', '/favoritos', {
     sessao_usuario: obterSessao(),
-    curso_id: curso.id
-  }).catch(() => {})
+    curso_id: curso.id,
+    instituicao_id: curso.instituicao_id || null
+  }).catch(function () {})
 }
 
-// Remove um curso dos favoritos (local + tentativa de DELETE na API)
 function removerFavorito(cursoId) {
-  const favorito = obterFavoritosLocal().find((f) => String(f.curso_id) === String(cursoId))
-  const nome = favorito ? favorito.nome : 'Curso'
-  const listaFiltrada = obterFavoritosLocal().filter((f) => String(f.curso_id) !== String(cursoId))
+  var favorito = obterFavoritosLocal().find(function (f) { return String(f.curso_id) === String(cursoId) })
+  var nome = favorito ? favorito.nome : 'Curso'
+  var listaFiltrada = obterFavoritosLocal().filter(function (f) { return String(f.curso_id) !== String(cursoId) })
   salvarFavoritosLocal(listaFiltrada)
   atualizarBotoesFavorito(cursoId)
-  toast(`${nome} removido dos favoritos.`, 'sucesso')
+  toast(nome + ' removido dos favoritos.', 'sucesso')
 
   if (favorito && favorito.id && String(favorito.id).length < 15) {
-    api('DELETE', `/favoritos/${favorito.id}`).catch(() => {})
+    api('DELETE', '/favoritos/' + favorito.id).catch(function () {})
   }
 }
 
-// Alterna o estado de favorito de um curso
 function alternarFavorito(curso) {
   if (estaFavoritado(curso.id)) {
     removerFavorito(curso.id)
@@ -114,12 +110,11 @@ function alternarFavorito(curso) {
   }
 }
 
-// Atualiza todos os botões de favoritar que apontam para o mesmo curso
 function atualizarBotoesFavorito(cursoId) {
-  document.querySelectorAll(`[data-favoritar="${CSS.escape(String(cursoId))}"]`).forEach((botao) => {
-    const favoritado = estaFavoritado(cursoId)
+  document.querySelectorAll('[data-favoritar="' + CSS.escape(String(cursoId)) + '"]').forEach(function (botao) {
+    var favoritado = estaFavoritado(cursoId)
     botao.setAttribute('aria-pressed', String(favoritado))
-    const rotulo = botao.querySelector('span')
+    var rotulo = botao.querySelector('span')
     if (rotulo) rotulo.textContent = favoritado ? 'Favoritado' : 'Favoritar'
     botao.classList.toggle('bg-amber-500', favoritado)
     botao.classList.toggle('text-white', favoritado)
@@ -131,11 +126,11 @@ function atualizarBotoesFavorito(cursoId) {
   })
 }
 
-// Delegação global: qualquer clique em [data-favoritar] aciona o toggle de favorito
-document.addEventListener('click', (evento) => {
-  const alvo = evento.target.closest('[data-favoritar]')
+document.addEventListener('click', function (evento) {
+  var alvo = evento.target.closest('[data-favoritar]')
   if (!alvo) return
   evento.preventDefault()
+  evento.stopPropagation()
   alternarFavorito({
     id: alvo.dataset.favoritar,
     nome: alvo.dataset.nome,
@@ -144,64 +139,62 @@ document.addEventListener('click', (evento) => {
     cidade: alvo.dataset.cidade,
     estado: alvo.dataset.estado,
     grau: alvo.dataset.grau,
-    modalidade: alvo.dataset.modalidade,
-    nota_minima: alvo.dataset.nota || null
+    modalidade: alvo.dataset.modalidade
   })
 
-  // Na página de favoritos, remove o card da grade quando desfavoritado
-  const paginaFavoritos = window.location.pathname.includes('favoritos.html')
-  const cartao = alvo.closest('[data-curso-id]')
+  var paginaFavoritos = window.location.pathname.includes('favoritos.html')
+  var cartao = alvo.closest('[data-curso-id]')
   if (paginaFavoritos && cartao && !estaFavoritado(cartao.dataset.cursoId)) {
-    const area = document.getElementById('areaFavoritos')
-    if (area) {
+    cartao.style.transition = 'opacity 0.3s, transform 0.3s'
+    cartao.style.opacity = '0'
+    cartao.style.transform = 'scale(0.95)'
+    setTimeout(function () {
       cartao.remove()
-      atualizarResumoFavoritos()
-      if (area.querySelectorAll('[data-curso-id]').length === 0) {
-        area.innerHTML = estadoVazio('Você ainda não favoritou nenhum curso ou universidade.')
+      var area = document.getElementById('areaFavoritos')
+      if (area && area.querySelectorAll('[data-curso-id]').length === 0) {
+        area.innerHTML = estadoVazio('Voce ainda nao favoritou nenhum curso.')
       }
-    }
+    }, 300)
   }
 })
 
-// Atualiza o resumo "X favoritos" na página de favoritos
 function atualizarResumoFavoritos() {
-  const resumo = document.getElementById('resumoFavoritos')
+  var resumo = document.getElementById('resumoFavoritos')
   if (!resumo) return
-  const quantidade = obterFavoritosLocal().length
-  resumo.textContent = `${quantidade} ${quantidade === 1 ? 'favorito' : 'favoritos'}`
+  var quantidade = obterFavoritosLocal().length
+  resumo.textContent = quantidade + (quantidade === 1 ? ' favorito' : ' favoritos')
 }
 
-// Renderiza a lista de favoritos salvos (RF6)
 function renderizarPaginaFavoritos() {
-  const area = document.getElementById('areaFavoritos')
+  var area = document.getElementById('areaFavoritos')
   if (!area) return
 
-  const lista = obterFavoritosLocal()
+  var lista = obterFavoritosLocal()
   atualizarResumoFavoritos()
 
   if (lista.length === 0) {
-    area.innerHTML = estadoVazio('Você ainda não favoritou nenhum curso ou universidade. Use o botão Favoritar na busca ou na página de detalhes.')
+    area.innerHTML = estadoVazio('Voce ainda nao favoritou nenhum curso. Use o botao Favoritar na busca ou na pagina de detalhes.')
     return
   }
 
-  area.innerHTML = lista.map((favorito) => cardResultado({
-    id: favorito.curso_id,
-    nome: favorito.nome,
-    instituicao: favorito.instituicao,
-    sigla: favorito.sigla,
-    cidade: favorito.cidade,
-    estado: favorito.estado,
-    grau: favorito.grau,
-    modalidade: favorito.modalidade,
-    nota_minima: favorito.nota_minima,
-    demanda: ''
-  })).join('')
+  area.innerHTML = lista.map(function (favorito) {
+    return cardResultado({
+      id: favorito.curso_id,
+      nome: favorito.nome,
+      instituicao_nome: favorito.instituicao,
+      sigla: favorito.sigla,
+      cidade: favorito.cidade,
+      estado: favorito.estado,
+      grau: favorito.grau,
+      modalidade: favorito.modalidade,
+      demanda: ''
+    })
+  }).join('')
 }
 
-// Inicializa a página de favoritos
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function () {
   if (!window.location.pathname.includes('favoritos.html')) return
   montarNavbar('favoritos')
   renderizarPaginaFavoritos()
-  sincronizarComAPI().then(renderizarPaginaFavoritos)
+  sincronizarComAPI().then(function () { renderizarPaginaFavoritos() })
 })

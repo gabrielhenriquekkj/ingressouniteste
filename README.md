@@ -1,92 +1,92 @@
-# Ingresso Universitario
+# Ingresso Universitário
 
 > **Projeto Integrador I — Grupo 3**
-> Integrantes: Gabriel Henrique Leal Arruda, Joao Pedro de Paula Rauh Nascimento, Italo Borges Santana e Caua Fernandes Oliveira Domingos
-> Disciplina: Projeto Integrador I — Professor: Andre Lobo
-> Instituicao: IFMT — Instituto Federal de Mato Grosso
+> Integrantes: Gabriel Henrique Leal Arruda, João Pedro de Paula Rauh Nascimento, Italo Borges Santana e Cauã Fernandes Oliveira Domingos
+> Disciplina: Projeto Integrador I — Professor: André Lôbo
+> Instituição: IFMT — Instituto Federal de Mato Grosso
 
 ---
 
 ## Sobre o Projeto
 
-O **Ingresso Universitario** e um aplicativo web que auxilia estudantes na escolha de universidade e curso superior. O sistema reune de forma centralizada e acessivel informacoes que normalmente estao dispersas em varios sites e fontes:
+O **Ingresso Universitário** é um aplicativo web que auxilia estudantes na escolha de universidade e curso superior. O sistema reúne de forma centralizada e acessível informações que normalmente estão dispersas em vários sites e fontes:
 
 - **Notas de corte** do SiSU e ProUni
 - **Custos estimados** de moradia e despesas na cidade da universidade
-- **Bolsas, auxilios e oportunidades** de permanencia estudantil
-- **Panorama do mercado de trabalho** e demanda do curso na regiao
+- **Bolsas, auxílios e oportunidades** de permanência estudantil
+- **Panorama do mercado de trabalho** e demanda do curso na região
 - **Busca por universidades e cursos** com filtros por cidade, estado e nome
-- **Sistema de favoritos** para acesso rapido as opcoes de interesse
+- **Sistema de favoritos** para acesso rápido às opções de interesse
 
 ### Problema Identificado
 
-Estudantes, especialmente de regioes como Centro-Oeste, enfrentam dificuldade para encontrar de forma clara e centralizada:
+Estudantes, especialmente de regiões como Centro-Oeste, enfrentam dificuldade para encontrar de forma clara e centralizada:
 
 - Notas de corte dos processos seletivos
 - Custo real de moradia e vida em outras cidades
-- Disponibilidade de bolsas e auxilios financeiros
-- Mercado de trabalho e oportunidades de estagio na regiao pretendida
+- Disponibilidade de bolsas e auxílios financeiros
+- Mercado de trabalho e oportunidades de estágio na região pretendida
 
-### Solucao
+### Solução
 
-Uma plataforma web responsiva que compila essas informacoes em um so lugar, permitindo ao estudante tomar decisoes mais informadas sobre seu ingresso na universidade.
+Uma plataforma web responsiva que compila essas informações em um só lugar, permitindo ao estudante tomar decisões mais informadas sobre seu ingresso na universidade.
 
 ---
 
 ## Funcionalidades
 
-| ID  | Funcionalidade                       | Descricao |
+| ID  | Funcionalidade                       | Descrição |
 |-----|--------------------------------------|-----------|
-| RF1 | Busca de Cursos e Instituicoes      | Busca com filtros por cidade, estado e nome |
-| RF2 | Exibicao de Notas de Corte          | Notas do SiSU e ProUni por ano e chamada |
-| RF3 | Painel de Custos Estimados          | Moradia, alimentacao, transporte e outros |
-| RF4 | Mural de Auxilios e Bolsas          | Bolsas, permanencia e auxilios da instituicao |
-| RF5 | Indicador de Mercado e Estagios     | Demanda, salario medio e vagas de estagio |
-| RF6 | Sistema de Favoritos                | Favoritar cursos para acesso rapido |
+| RF1 | Busca de Cursos e Instituições      | Busca com filtros por cidade, estado e nome |
+| RF2 | Exibição de Notas de Corte          | Notas do SiSU e ProUni por ano e chamada |
+| RF3 | Painel de Custos Estimados          | Moradia, alimentação, transporte e outros |
+| RF4 | Mural de Auxílios e Bolsas          | Bolsas, permanência e auxílios da instituição |
+| RF5 | Indicador de Mercado e Estágios     | Demanda, salário médio e vagas de estágio |
+| RF6 | Sistema de Favoritos                | Favoritar cursos para acesso rápido |
 
-### Requisitos Nao Funcionais
+### Requisitos Não Funcionais
 
 | ID   | Requisito                    | Diretriz |
 |------|------------------------------|----------|
-| RNF1 | Usabilidade e Simplicidade   | Interface minimalista; informacao em ate 3 cliques |
-| RNF2 | Desempenho                   | Respostas em ate 2 segundos |
+| RNF1 | Usabilidade e Simplicidade   | Interface minimalista; informação em até 3 cliques |
+| RNF2 | Desempenho                   | Respostas em até 2 segundos |
 | RNF3 | Responsividade               | Web app responsivo (desktop e mobile) |
-| RNF4 | Confiabilidade dos Dados     | Dados de fontes/APIs com atualizacao periodica |
-| RNF5 | Acessibilidade               | Contraste WCAG AA, fontes legiveis, navegacao por teclado |
+| RNF4 | Confiabilidade dos Dados     | Dados de fontes/APIs com atualização periódica |
+| RNF5 | Acessibilidade               | Contraste WCAG AA, fontes legíveis, navegação por teclado |
 
 ---
 
-## Stack Tecnologica
+## Stack Tecnológica
 
 ### Backend (`api/`)
 
-| Tecnologia | Versao | Uso |
+| Tecnologia | Versão | Uso |
 |------------|--------|-----|
 | Node.js | 18+ | Runtime JavaScript |
 | Express.js | 4.x | Framework web |
-| better-sqlite3 | 9.x | Driver SQLite (sincrono, prepared statements) |
-| Helmet | 8.x | Seguranca HTTP |
+| better-sqlite3 | 9.x | Driver SQLite (síncrono, prepared statements) |
+| Helmet | 8.x | Segurança HTTP |
 | CORS | 2.x | Cross-Origin Resource Sharing |
-| Validator | 13.x | Sanitizacao de inputs |
-| Dotenv | 16.x | Variaveis de ambiente |
+| Validator | 13.x | Sanitização de inputs |
+| Dotenv | 16.x | Variáveis de ambiente |
 
 ### Frontend (`frontend/`)
 
 | Tecnologia | Uso |
 |------------|-----|
-| HTML5 semantico | Estrutura das paginas |
-| Tailwind CSS (CDN) | Estilizacao responsiva |
-| JavaScript ES6+ vanilla | Logica e comunicacao com API (Fetch API) |
+| HTML5 semântico | Estrutura das páginas |
+| Tailwind CSS (CDN) | Estilização responsiva |
+| JavaScript ES6+ vanilla | Lógica e comunicação com API (Fetch API) |
 
 ### Banco de Dados
 
-| Caracteristica | Detalhe |
+| Característica | Detalhe |
 |----------------|---------|
 | Motor | SQLite (better-sqlite3) |
 | Modo | WAL (Write-Ahead Logging) para performance |
 | Foreign Keys | Ativadas |
 | Prepared Statements | Em todas as consultas (anti SQL Injection) |
-| Codificacao | Nomes de tabelas e colunas em portugues brasileiro |
+| Codificação | Nomes de tabelas e colunas em português brasileiro |
 
 ---
 
@@ -95,14 +95,14 @@ Uma plataforma web responsiva que compila essas informacoes em um so lugar, perm
 ```
 ingressouniversidade/
 ├── api/                                    # Backend Node.js
-│   ├── .env                                # Variaveis de ambiente
-│   ├── package.json                        # Dependencias
+│   ├── .env                                # Variáveis de ambiente
+│   ├── package.json                        # Dependências
 │   ├── iniciarBanco.js                     # DDL + dados seed
 │   ├── src/
 │   │   ├── app.js                          # Middlewares + rotas
 │   │   ├── server.js                       # Startup do servidor
 │   │   ├── config/
-│   │   │   └── conexaoBanco.js             # Conexao SQLite
+│   │   │   └── conexaoBanco.js             # Conexão SQLite
 │   │   ├── controladores/
 │   │   │   ├── buscaControlador.js         # RF1 — Busca unificada
 │   │   │   ├── universidadeControlador.js  # RF2-RF5 — Detalhes
@@ -112,11 +112,11 @@ ingressouniversidade/
 │   │   │   ├── universidadeRotas.js        # GET /api/cursos, /api/instituicoes
 │   │   │   └── favoritoRotas.js            # POST/GET/DELETE /api/favoritos
 │   │   ├── servicos/
-│   │   │   ├── integracaoSisu.js           # Integracao notas de corte
-│   │   │   ├── integracaoCustoVida.js      # Integracao custo de vida
-│   │   │   └── sincronizadorDados.js       # Atualizacao periodica
+│   │   │   ├── integracaoSisu.js           # Integração notas de corte
+│   │   │   ├── integracaoCustoVida.js      # Integração custo de vida
+│   │   │   └── sincronizadorDados.js       # Atualização periódica
 │   │   └── utilitarios/
-│   │       └── validadores.js              # Validacao e sanitizacao
+│   │       └── validadores.js              # Validação e sanitização
 │   └── db/                                 # Banco SQLite (gitignore)
 │
 ├── frontend/                               # SPA responsivo
@@ -124,18 +124,22 @@ ingressouniversidade/
 │   ├── css/
 │   │   └── estilo.css                      # Estilos + acessibilidade
 │   ├── js/
-│   │   ├── api.js                          # Modulo Fetch generico
-│   │   ├── busca.js                        # Logica de busca (RF1)
+│   │   ├── api.js                          # Módulo Fetch genérico
+│   │   ├── busca.js                        # Lógica de busca (RF1)
 │   │   ├── detalhes.js                     # Detalhes do curso (RF2-RF6)
-│   │   └── favoritos.js                    # Gestao de favoritos (RF6)
+│   │   ├── favoritos.js                    # Gestão de favoritos (RF6)
+│   │   ├── componentes.js                  # Componentes de UI reutilizáveis
+│   │   ├── dadosDemo.js                    # Dados de demonstração (fallback)
+│   │   └── util.js                         # Funções utilitárias
 │   ├── paginas/
-│   │   ├── detalhes.html                   # Pagina de detalhes
+│   │   ├── detalhes.html                   # Página de detalhes
 │   │   └── favoritos.html                  # Lista de favoritos
-│   └── assets/                             # Imagens e icones
+│   └── assets/                             # Imagens e ícones
 │
-├── doc/                                    # Documentacao
+├── doc/                                    # Documentação
 │   ├── backup/                             # Documentos de escopo originais
 │   ├── plano_modificacao_ingressouniversidade.md
+│   ├── plano_landingpage_nodejs.md
 │   └── plano_frontend_ingressouniversidade.md
 │
 └── README.md                               # Este arquivo
@@ -156,49 +160,59 @@ instituicoes ──< auxilios_bolsas
 
 custos_cidade (por cidade)
 
-favoritos (por sessao de usuario)
+favoritos (por sessão de usuário)
 ```
 
-### Descricao das Tabelas
+### Descrição das Tabelas
 
-| Tabela | Descricao |
-|--------|-----------|
-| `instituicoes` | Universidades/faculdades (nome, sigla, cidade, estado, site) |
-| `cursos` | Cursos de cada instituicao (nome, grau, modalidade, duracao) |
-| `notas_corte` | Notas minimas por processo seletivo, ano e chamada |
-| `custos_cidade` | Custos estimados de moradia, alimentacao, transporte |
-| `auxilios_bolsas` | Bolsas, permanencia e auxilios da instituicao |
-| `mercado_estagios` | Demanda, salario medio e vagas de estagio |
-| `favoritos` | Cursos salvos por sessao de usuario (anonimo) |
+| Tabela | Colunas Principais | Descrição |
+|--------|-------------------|-----------|
+| `instituicoes` | id, nome, sigla, cidade, estado, site | Universidades/faculdades |
+| `cursos` | id, instituicao_id, nome, grau, modalidade, duracao_semestres | Cursos de cada instituição |
+| `notas_corte` | id, curso_id, modalidade_acesso, ano, chamada, nota_minima | Notas mínimas por processo seletivo |
+| `custos_cidade` | id, cidade, estado, moradia, alimentacao, transporte, outros, mes_referencia | Custos estimados por cidade |
+| `auxilios_bolsas` | id, instituicao_id, nome, tipo, descricao, url | Bolsas e auxílios da instituição |
+| `mercado_estagios` | id, curso_id, regiao, demanda, salario_medio, vagas_estagio, fonte, atualizado_em | Demanda e estágios |
+| `favoritos` | id, sessao_usuario, curso_id, instituicao_id, criado_em | Cursos salvos por sessão |
+
+### Índices
+
+```sql
+idx_instituicoes_nome    -- Busca por nome da instituição
+idx_instituicoes_cidade  -- Busca por cidade/estado
+idx_cursos_instituicao   -- Cursos por instituição
+idx_notas_curso          -- Notas de corte por curso/ano
+idx_favoritos_usuario    -- Favoritos por sessão de usuário
+```
 
 ### Dados Seed
 
-O sistema ja vem populado com dados iniciais para demonstracao:
+O sistema já vem populado com dados iniciais para demonstração:
 
-- **8 instituicoes** de Mato Grosso e Mato Grosso do Sul (UFMT, UFMS, UNEMAT, IFMT, UFGD, UCDB, UNIAN, UNIC)
-- **20 cursos** de diversas areas (Computacao, Engenharia, Direito, Medicina, Administracao, etc.)
+- **8 instituições** de Mato Grosso e Mato Grosso do Sul (UFMT, UFMS, UNEMAT, IFMT, UFGD, UCDB, UNIAN, UNIC)
+- **20 cursos** de diversas áreas (Computação, Engenharia, Direito, Medicina, Administração, etc.)
 - **25 registros de notas de corte** (SiSU e ProUni, 2025)
-- **6 cidades** com custos estimados (Cuiaba, Campo Grande, Sinop, Dourados, etc.)
-- **14 bolsas e auxilios** das instituicoes
-- **18 registros de mercado e estagios**
+- **6 cidades** com custos estimados (Cuiabá, Campo Grande, Sinop, Dourados, Rondonópolis, Tangará da Serra)
+- **14 bolsas e auxílios** das instituições
+- **18 registros de mercado e estágios**
 
 ---
 
 ## Como Executar
 
-### Pre-requisitos
+### Pré-requisitos
 
 - Node.js 18 ou superior
 - npm
 
-### Instalacao e Execucao
+### Instalação e Execução
 
 ```bash
-# 1. Clonar o repositorio
+# 1. Clonar o repositório
 git clone https://github.com/gabrielhenriquekkj/ingressouniversidade.git
 cd ingressouniversidade
 
-# 2. Instalar dependencias
+# 2. Instalar dependências
 cd api && npm install
 
 # 3. Iniciar o servidor (com auto-reload)
@@ -208,7 +222,14 @@ npm run dev
 # http://localhost:3000
 ```
 
-O servidor inicia automaticamente na porta 3000 (configuravel via `.env`). Na primeira execucao, o banco de dados e criado e populado com os dados seed.
+O servidor inicia automaticamente na porta 3000 (configurável via `.env`). Na primeira execução, o banco de dados é criado e populado com os dados seed.
+
+### Variáveis de Ambiente
+
+| Variável | Valor Padrão | Descrição |
+|----------|--------------|-----------|
+| `PORT` | `3000` | Porta do servidor |
+| `ORIGEM_PERMITIDA` | `*` | Origens permitidas (CORS) |
 
 ---
 
@@ -216,40 +237,40 @@ O servidor inicia automaticamente na porta 3000 (configuravel via `.env`). Na pr
 
 ### Health Check
 
-| Metodo | Endpoint | Descricao |
+| Método | Endpoint | Descrição |
 |--------|----------|-----------|
-| `GET` | `/api/health` | Verificacao de saude da API |
+| `GET` | `/api/health` | Verificação de saúde da API |
 
 ### Busca (RF1)
 
-| Metodo | Endpoint | Parametros | Descricao |
+| Método | Endpoint | Parâmetros | Descrição |
 |--------|----------|------------|-----------|
-| `GET` | `/api/busca` | `?nome=&cidade=&estado=` | Busca unificada de cursos e instituicoes |
+| `GET` | `/api/busca` | `?nome=&cidade=&estado=` | Busca unificada de cursos e instituições |
 
-### Instituicoes
+### Instituições
 
-| Metodo | Endpoint | Descricao |
+| Método | Endpoint | Descrição |
 |--------|----------|-----------|
-| `GET` | `/api/instituicoes` | Lista instituicoes (filtros: nome, cidade, estado) |
-| `GET` | `/api/instituicoes/:id` | Detalhes da instituicao com cursos e auxilios |
+| `GET` | `/api/instituicoes` | Lista instituições (filtros: nome, cidade, estado) |
+| `GET` | `/api/instituicoes/:id` | Detalhes da instituição com cursos e auxílios |
 
 ### Cursos
 
-| Metodo | Endpoint | Descricao |
+| Método | Endpoint | Descrição |
 |--------|----------|-----------|
 | `GET` | `/api/cursos` | Lista cursos (filtros: nome, cidade, estado) |
 | `GET` | `/api/cursos/:id` | Detalhes completos do curso |
 | `GET` | `/api/cursos/:id/notas-corte` | Notas de corte (RF2) |
 | `GET` | `/api/cidades/:cidade/custos` | Custos da cidade (RF3) |
-| `GET` | `/api/cursos/:id/auxilios-bolsas` | Bolsas e auxilios (RF4) |
-| `GET` | `/api/cursos/:id/mercado-estagios` | Mercado e estagios (RF5) |
+| `GET` | `/api/cursos/:id/auxilios-bolsas` | Bolsas e auxílios (RF4) |
+| `GET` | `/api/cursos/:id/mercado-estagios` | Mercado e estágios (RF5) |
 
 ### Favoritos (RF6)
 
-| Metodo | Endpoint | Body/Parametros | Descricao |
+| Método | Endpoint | Body/Parâmetros | Descrição |
 |--------|----------|-----------------|-----------|
 | `POST` | `/api/favoritos` | `{ sessao_usuario, curso_id, instituicao_id }` | Adicionar favorito |
-| `GET` | `/api/favoritos` | `?sessao_usuario=` | Listar favoritos do usuario |
+| `GET` | `/api/favoritos` | `?sessao_usuario=` | Listar favoritos do usuário |
 | `DELETE` | `/api/favoritos/:id` | `?sessao_usuario=` | Remover favorito |
 
 ### Formato de Resposta
@@ -258,62 +279,116 @@ O servidor inicia automaticamente na porta 3000 (configuravel via `.env`). Na pr
 ```json
 {
   "sucesso": true,
-  "mensagem": "Operacao realizada com sucesso!",
+  "mensagem": "Operação realizada com sucesso!",
   "dados": { ... }
 }
 ```
 
-**Erro de validacao (HTTP 422):**
+**Erro de validação (HTTP 422):**
 ```json
 {
   "sucesso": false,
-  "mensagem": "Dados invalidos.",
-  "erros": ["Campo obrigatorio nao preenchido."]
+  "mensagem": "Dados inválidos.",
+  "erros": ["Campo obrigatório não preenchido."]
 }
 ```
 
 ---
 
-## Convencoes de Codigo
+## Frontend
 
-- **Linguagem:** Variaveis, funcoes, rotas, colunas do banco e comentarios em **portugues brasileiro**
-- **Modulo:** CommonJS (`require` / `module.exports`)
-- **Respostas HTTP:** Codigos semanticos (200, 201, 400, 404, 409, 422, 500)
+### Páginas
+
+| Página | Arquivo | Descrição |
+|--------|---------|-----------|
+| Home / Busca | `index.html` | Busca com filtros e grid de resultados (RF1) |
+| Detalhes | `paginas/detalhes.html` | Detalhes do curso com abas (RF2-RF5) |
+| Favoritos | `paginas/favoritos.html` | Lista de cursos favoritados (RF6) |
+
+### Fluxo de Navegação
+
+```
+             ┌───────────┐
+             │  index    │  busca + filtros (RF1)
+             └─────┬─────┘
+                   │ click num card
+             ┌─────▼─────┐
+             │ detalhes  │  ?id=<curso> (RF2–RF5) + "Favoritar" (RF6)
+             └─────┬─────┘
+                   │ navbar → Favoritos
+             ┌─────▼─────┐
+             │ favoritos │  lista salva (RF6)
+             └───────────┘
+```
+
+### Componentes Reutilizáveis (`js/componentes.js`)
+
+| Componente | Descrição |
+|------------|-----------|
+| `cardResultado(curso)` | Card da busca com highlight de nota mínima |
+| `botaoFavorito(curso, grande)` | Botão de favoritar/desfavoritar |
+| `tabelaNotas(notas)` | Tabela responsiva de notas de corte |
+| `listaAuxilios(auxilios)` | Lista de bolsas/auxílios com link externo |
+| `cardInfo(icone, titulo, valor, destaque)` | Card de indicador (custos, demanda) |
+| `badge(texto, classes)` | Rótulos de demanda/seguro |
+
+### Funções Utilitárias (`js/util.js`)
+
+| Função | Descrição |
+|--------|-----------|
+| `escapeHTML(texto)` | Escapa caracteres especiais (anti XSS) |
+| `gerarUUID()` | Gera UUID para sessão de usuário |
+| `debounce(func, atraso)` | Controle de frequência de chamadas |
+| `toast(mensagem, tipo)` | Feedback visual de sucesso/erro |
+| `formatarMoeda(valor)` | Formata valor em R$ |
+| `skeleton(quantidade)` | Placeholder de carregamento |
+| `estadoVazio(mensagem)` | Estado de ausência de dados |
+| `estadoErro(mensagem)` | Estado de erro |
+
+---
+
+## Convencões de Código
+
+- **Linguagem:** Variáveis, funções, rotas, colunas do banco e comentários em **português brasileiro**
+- **Módulo:** CommonJS (`require` / `module.exports`)
+- **Respostas HTTP:** Códigos semânticos (200, 201, 400, 404, 409, 422, 500)
 - **Payload:** Limite de 10kb para JSON
-- **Validacao:** Sanitizacao com `validator` (trim, escape) antes de cada operacao no banco
+- **Validação:** Sanitização com `validator` (trim, escape) antes de cada operação no banco
 - **Banco:** Prepared statements em todas as consultas
 
 ---
 
-## Seguranca
+## Segurança
 
-| Pratica | Implementacao |
+| Prática | Implementação |
 |---------|---------------|
 | SQL Injection | Prepared statements com better-sqlite3 |
-| XSS | Sanitizacao com `validator` (escape) |
+| XSS | Sanitização com `validator` (escape) |
 | Payload grande | `express.json({ limit: '10kb' })` |
-| Headers HTTP | Helmet com configuracao segura |
-| CORS | Configuravel via variavel `ORIGEM_PERMITIDA` |
-| Dados pessoais | Favoritos anonimos por sessao (sem cadastro) |
+| Headers HTTP | Helmet com configuração segura |
+| CORS | Configurável via variável `ORIGEM_PERMITIDA` |
+| Dados pessoais | Favoritos anônimos por sessão (sem cadastro) |
 
 ---
 
 ## Acessibilidade (RNF5)
 
 - Contraste de cores adequado (WCAG AA)
-- Fontes legiveis com tamanhos adequados
+- Fontes legíveis com tamanhos adequados
 - Atributos `aria-label` nos campos de busca
-- Navegacao por teclado suportada (`focus-visible`)
+- Navegação por teclado suportada (`focus-visible`)
 - Estados de carregamento e vazio comunicados textualmente
-- Feedback visual em todas as acoes (toast de sucesso/erro)
+- Feedback visual em todas as ações (toast de sucesso/erro)
+- Abas com navegação por setas (`ArrowRight`, `ArrowLeft`)
 
 ---
 
-## Documentacao do Projeto
+## Documentação do Projeto
 
-| Arquivo | Descricao |
+| Arquivo | Descrição |
 |---------|-----------|
 | `doc/plano_modificacao_ingressouniversidade.md` | Plano de reenquadramento do projeto |
+| `doc/plano_landingpage_nodejs.md` | Arquitetura original (landing page) |
 | `doc/plano_frontend_ingressouniversidade.md` | Planejamento do frontend |
 | `doc/backup/*.docx` | Documentos originais de escopo (problema, requisitos, personas) |
 | `doc/backup/*.xlsx` | Pesquisa de dores dos alunos |
@@ -322,16 +397,18 @@ O servidor inicia automaticamente na porta 3000 (configuravel via `.env`). Na pr
 
 ## Status do Projeto
 
-- [x] Configuracao do banco de dados com tabelas e dados seed
+- [x] Configuração do banco de dados com tabelas e dados seed
 - [x] Backend completo com 12 endpoints REST
-- [x] Frontend responsivo com 3 paginas
+- [x] Frontend responsivo com 3 páginas
 - [x] Sistema de busca com filtros e debounce
 - [x] Detalhes do curso com abas (notas, custos, bolsas, mercado)
-- [x] Sistema de favoritos com persistencia
-- [x] Documentacao atualizada
-- [ ] Integracao com APIs externas (SiSU, IBGE)
+- [x] Sistema de favoritos com persistência (localStorage + API)
+- [x] Componentes de UI reutilizáveis
+- [x] Dados de demonstração (fallback)
+- [x] Documentação atualizada
+- [ ] Integração com APIs externas (SiSU, IBGE)
 - [ ] Testes automatizados
-- [ ] Deploy em producao
+- [ ] Deploy em produção
 
 ---
 
@@ -340,9 +417,9 @@ O servidor inicia automaticamente na porta 3000 (configuravel via `.env`). Na pr
 | Nome | GitHub |
 |------|--------|
 | Gabriel Henrique Leal Arruda | [@gabrielhenriquekkj](https://github.com/gabrielhenriquekkj) |
-| Joao Pedro de Paula Rauh Nascimento | — |
+| João Pedro de Paula Rauh Nascimento | — |
 | Italo Borges Santana | — |
-| Caua Fernandes Oliveira Domingos | — |
+| Cauã Fernandes Oliveira Domingos | — |
 
 ---
 

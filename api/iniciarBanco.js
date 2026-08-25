@@ -1,4 +1,4 @@
-const banco = require('./src/config/conexaoBanco')
+const banco = require('./src/configuracoes/conexaoBanco')
 
 // DDL das novas tabelas para o sistema de Ingresso Universitario
 banco.exec(`

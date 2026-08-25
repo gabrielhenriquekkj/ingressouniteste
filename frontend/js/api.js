@@ -1,17 +1,18 @@
 // api.js — Cliente Fetch generico para a API do Ingresso Universitario (Express/REST).
 
-// URL base relativa (funciona em qualquer host/porta)
 const URL_API = '/api'
 
-// Executa uma requisicao (GET/POST/DELETE) e retorna o JSON tratado.
 async function api(metodo, caminho, corpo) {
   let resposta
   try {
     const opcoes = {
       method: metodo,
-      headers: { 'Content-Type': 'application/json' }
+      headers: {}
     }
-    if (corpo) opcoes.body = JSON.stringify(corpo)
+    if (corpo) {
+      opcoes.headers['Content-Type'] = 'application/json'
+      opcoes.body = JSON.stringify(corpo)
+    }
     resposta = await fetch(`${URL_API}${caminho}`, opcoes)
   } catch {
     throw new Error('Sem conexao com o servidor.')

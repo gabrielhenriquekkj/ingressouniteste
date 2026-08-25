@@ -87,7 +87,7 @@ function renderizarCabecalho(curso) {
     '</span>' +
     '<span class="px-3 py-1 bg-white ring-1 ring-gray-200 rounded-full font-semibold text-gray-700">' + escapeHTML(curso.modalidade || 'Presencial') + '</span>' +
     '<span class="px-3 py-1 bg-white ring-1 ring-gray-200 rounded-full font-semibold text-gray-700">' + escapeHTML(curso.grau || '\u2014') + '</span>' +
-    (curso.duracao_semestres ? '<span class="px-3 py-1 bg-white ring-1 ring-gray-200 rounded-full font-semibold text-gray-700">' + curso.duracao_semestres + ' semestres</span>' : '') +
+    (curso.duracao_semestres ? '<span class="px-3 py-1 bg-white ring-1 ring-gray-200 rounded-full font-semibold text-gray-700">' + escapeHTML(String(curso.duracao_semestres)) + ' semestres</span>' : '') +
     '</div>' +
     '</div>' +
     '<div class="flex flex-col gap-3 shrink-0">' +

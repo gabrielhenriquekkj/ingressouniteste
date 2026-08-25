@@ -19,7 +19,7 @@ body {
 @keyframes girar {
   to { transform: rotate(360deg); }
 }
-.animate-spin {
+.animate-girar {
   animation: girar 0.6s linear infinite;
 }
 
@@ -70,7 +70,3 @@ body {
   display: none;
 }
 
-/* Contraste mínimo para textos pequenos (RNF5) */
-.text-gray-500 {
-  color: #6b7280;
-}

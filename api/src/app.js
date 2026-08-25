@@ -7,6 +7,8 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
 const rotasBusca = require('./rotas/buscaRotas')
 const rotasUniversidade = require('./rotas/universidadeRotas')
 const rotasFavorito = require('./rotas/favoritoRotas')
+const logger = require('./intermediarios/logger')
+const tratamentoErros = require('./intermediarios/tratamentoErros')
 
 const app = express()
 
@@ -16,6 +18,7 @@ app.use(helmet({
 }))
 app.use(cors({ origin: process.env.ORIGEM_PERMITIDA || '*' }))
 app.use(express.json({ limit: '10kb' }))
+app.use(logger)
 
 // Servir arquivos estaticos do frontend
 const caminhoFrontend = path.resolve(__dirname, '../../frontend')
@@ -34,5 +37,8 @@ app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) return next()
   res.sendFile(path.join(caminhoFrontend, 'index.html'))
 })
+
+// Middleware global de tratamento de erros (DEVE ser o ultimo)
+app.use(tratamentoErros)
 
 module.exports = app

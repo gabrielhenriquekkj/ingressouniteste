@@ -37,7 +37,7 @@ function validarFavorito(dados) {
   if (!cursoId || cursoId <= 0)
     erros.push('ID do curso invalido.')
 
-  if (instituicaoId && instituicaoId <= 0)
+  if (instituicaoId && (isNaN(instituicaoId) || instituicaoId <= 0))
     erros.push('ID da instituicao invalido.')
 
   return {

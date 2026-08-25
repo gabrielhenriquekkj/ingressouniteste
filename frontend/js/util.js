@@ -1,9 +1,10 @@
 // util.js — Funcoes utilitarias compartilhadas por todas as paginas
 
+const _divEscape = document.createElement('div')
 function escapeHTML(texto) {
-  const div = document.createElement('div')
-  div.appendChild(document.createTextNode(texto || ''))
-  return div.innerHTML
+  if (texto == null) return ''
+  _divEscape.textContent = String(texto)
+  return _divEscape.innerHTML
 }
 
 function gerarUUID() {
@@ -54,7 +55,7 @@ function toast(mensagem, tipo) {
 }
 
 function formatarMoeda(valor) {
-  if (valor == null || valor === '') return '\u2014'
+  if (valor == null || valor === '' || isNaN(Number(valor))) return '\u2014'
   return Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
@@ -117,14 +118,19 @@ const ICONES = {
   moeda: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10h8"/></svg>',
   grafico: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>',
   mala: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>',
-  estrela: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
+  estrela: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
+  estrelaVazia: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
 }
 
 function montarNavbar(paginaAtiva) {
   const base = caminhoBase()
+  const qtdFavoritos = obterFavoritosLocal().length
+  const badgeFav = qtdFavoritos > 0
+    ? '<span id="contadorFavoritos" class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-amber-500 text-white rounded-full">' + qtdFavoritos + '</span>'
+    : '<span id="contadorFavoritos" class="ml-1 hidden inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-amber-500 text-white rounded-full"></span>'
   const links = [
     { chave: 'home', href: base + '/index.html', rotulo: 'Busca' },
-    { chave: 'favoritos', href: base + '/paginas/favoritos.html', rotulo: 'Favoritos' }
+    { chave: 'favoritos', href: base + '/paginas/favoritos.html', rotulo: 'Favoritos' + badgeFav }
   ]
   const itens = links.map((link) => {
     const ativo = link.chave === paginaAtiva

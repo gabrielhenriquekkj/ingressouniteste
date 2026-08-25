@@ -56,6 +56,71 @@ Uma plataforma web responsiva que compila essas informações em um só lugar, p
 
 ---
 
+## Arquitetura do Sistema
+
+O projeto segue o padrão **MVC (Model-View-Controller)** com nomenclatura em português brasileiro, aplicando princípios **SOLID** e *Clean Architecture*.
+
+### Fluxo de Requisição
+
+```
+Requisição HTTP
+    │
+    ▼
+┌──────────────────────────────────┐
+│  app.js                          │
+│  ├── Helmet (segurança)          │
+│  ├── CORS                        │
+│  ├── JSON Parser (10kb limit)    │
+│  ├── Logger (intermediários/)    │
+│  ├── Static Files (frontend/)    │
+│  └── Rotas (rotas/)              │
+│        │                         │
+│        ▼                         │
+│  Controladores (controladores/)  │
+│        │                         │
+│        ├── Valida (utilitários/) │
+│        │                         │
+│        ├── Chama Modelo          │
+│        │     │                   │
+│        │     ▼                   │
+│        │  Modelos (modelos/)     │
+│        │     │                   │
+│        │     ▼                   │
+│        │  conexaoBanco           │
+│        │  (configurações/)       │
+│        │     │                   │
+│        │     ▼                   │
+│        │  SQLite DB              │
+│        │                         │
+│        └── Retorna Response      │
+│                                  │
+│  tratamentoErros ←── erros via next(erro)
+└──────────────────────────────────┘
+```
+
+### Camadas
+
+| Camada | Diretório | Responsabilidade |
+|--------|-----------|------------------|
+| **Configurações** | `configuracoes/` | Conexão com banco de dados, variáveis de ambiente |
+| **Modelos** | `modelos/` | Lógica de acesso a dados, queries SQL, regras de domínio |
+| **Controladores** | `controladores/` | Intermediação HTTP, validação de input, comunicação entre camadas |
+| **Intermediários** | `intermediarios/` | Middlewares Express (logger, tratamento de erros) |
+| **Rotas** | `rotas/` | Definição de endpoints e mapeamento para controladores |
+| **Serviços** | `servicos/` | Orquestração de modelos, integração com fontes externas |
+| **Utilitários** | `utilitarios/` | Funções de validação e sanitização |
+| **Visões** | `frontend/` | Interface HTML + JavaScript estático |
+
+### Princípios Aplicados
+
+- **Separação de Responsabilidades (SRP):** Cada camada tem uma única responsabilidade
+- **Baixo Acoplamento:** Controladores dependem de modelos, não do banco diretamente
+- **Tratamento de Erros Centralizado:** Middleware global via `next(erro)`
+- **DRY:** Queries SQL extraídas para modelos reutilizáveis
+- **Prepared Statements:** Todas as consultas usam parâmetros preparados (anti SQL Injection)
+
+---
+
 ## Stack Tecnológica
 
 ### Backend (`api/`)
@@ -94,55 +159,72 @@ Uma plataforma web responsiva que compila essas informações em um só lugar, p
 
 ```
 ingressouniversidade/
-├── api/                                    # Backend Node.js
-│   ├── .env                                # Variáveis de ambiente
-│   ├── package.json                        # Dependências
-│   ├── iniciarBanco.js                     # DDL + dados seed
+├── api/                                        # Backend Node.js
+│   ├── .env                                    # Variáveis de ambiente
+│   ├── package.json                            # Dependências
+│   ├── iniciarBanco.js                         # DDL + dados seed
 │   ├── src/
-│   │   ├── app.js                          # Middlewares + rotas
-│   │   ├── server.js                       # Startup do servidor
-│   │   ├── config/
-│   │   │   └── conexaoBanco.js             # Conexão SQLite
-│   │   ├── controladores/
-│   │   │   ├── buscaControlador.js         # RF1 — Busca unificada
-│   │   │   ├── universidadeControlador.js  # RF2-RF5 — Detalhes
-│   │   │   └── favoritoControlador.js      # RF6 — Favoritos
-│   │   ├── rotas/
-│   │   │   ├── buscaRotas.js               # GET /api/busca
-│   │   │   ├── universidadeRotas.js        # GET /api/cursos, /api/instituicoes
-│   │   │   └── favoritoRotas.js            # POST/GET/DELETE /api/favoritos
-│   │   ├── servicos/
-│   │   │   ├── integracaoSisu.js           # Integração notas de corte
-│   │   │   ├── integracaoCustoVida.js      # Integração custo de vida
-│   │   │   └── sincronizadorDados.js       # Atualização periódica
-│   │   └── utilitarios/
-│   │       └── validadores.js              # Validação e sanitização
-│   └── db/                                 # Banco SQLite (gitignore)
+│   │   ├── app.js                              # Middlewares + rotas + tratamento de erros
+│   │   ├── server.js                           # Startup do servidor
+│   │   │
+│   │   ├── configuracoes/                      # Configurações do sistema
+│   │   │   └── conexaoBanco.js                 # Conexão SQLite (WAL, FK)
+│   │   │
+│   │   ├── modelos/                            # Camada de acesso a dados (MVC - M)
+│   │   │   ├── instituicaoModelo.js            # Consultas de instituições
+│   │   │   ├── cursoModelo.js                  # Consultas de cursos
+│   │   │   ├── notaCorteModelo.js              # Consultas de notas de corte
+│   │   │   ├── custoCidadeModelo.js            # Consultas de custos por cidade
+│   │   │   ├── auxilioBolsaModelo.js           # Consultas de auxílios e bolsas
+│   │   │   ├── mercadoEstagioModelo.js         # Consultas de mercado e estágios
+│   │   │   └── favoritoModelo.js               # CRUD de favoritos
+│   │   │
+│   │   ├── controladores/                      # Lógica de HTTP (MVC - C)
+│   │   │   ├── buscaControlador.js             # RF1 — Busca unificada
+│   │   │   ├── universidadeControlador.js      # RF2-RF5 — Detalhes
+│   │   │   └── favoritoControlador.js          # RF6 — Favoritos
+│   │   │
+│   │   ├── intermediarios/                     # Middlewares Express
+│   │   │   ├── tratamentoErros.js              # Handler global de erros
+│   │   │   └── logger.js                       # Log de requisições (method, url, status, ms)
+│   │   │
+│   │   ├── rotas/                              # Definição de endpoints
+│   │   │   ├── buscaRotas.js                   # GET /api/busca
+│   │   │   ├── universidadeRotas.js            # GET /api/cursos, /api/instituicoes
+│   │   │   └── favoritoRotas.js                # POST/GET/DELETE /api/favoritos
+│   │   │
+│   │   ├── servicos/                           # Orquestração e integração
+│   │   │   ├── integracaoSisu.js               # Integração notas de corte
+│   │   │   └── integracaoCustoVida.js          # Integração custo de vida
+│   │   │
+│   │   └── utilitarios/                        # Funções auxiliares
+│   │       └── validadores.js                  # Validação e sanitização (validator)
+│   │
+│   └── db/                                     # Banco SQLite (gitignore)
 │
-├── frontend/                               # SPA responsivo
-│   ├── index.html                          # Home: busca com filtros
+├── frontend/                                   # Visões estáticas (MVC - V)
+│   ├── index.html                              # Home: busca com filtros
 │   ├── css/
-│   │   └── estilo.css                      # Estilos + acessibilidade
+│   │   └── estilo.css                          # Estilos + acessibilidade
 │   ├── js/
-│   │   ├── api.js                          # Módulo Fetch genérico
-│   │   ├── busca.js                        # Lógica de busca (RF1)
-│   │   ├── detalhes.js                     # Detalhes do curso (RF2-RF6)
-│   │   ├── favoritos.js                    # Gestão de favoritos (RF6)
-│   │   ├── componentes.js                  # Componentes de UI reutilizáveis
-│   │   ├── dadosDemo.js                    # Dados de demonstração (fallback)
-│   │   └── util.js                         # Funções utilitárias
+│   │   ├── api.js                              # Módulo Fetch genérico
+│   │   ├── busca.js                            # Lógica de busca (RF1)
+│   │   ├── detalhes.js                         # Detalhes do curso (RF2-RF5)
+│   │   ├── favoritos.js                        # Gestão de favoritos (RF6)
+│   │   ├── componentes.js                      # Componentes de UI reutilizáveis
+│   │   ├── dadosDemo.js                        # Dados de demonstração (fallback)
+│   │   └── util.js                             # Funções utilitárias
 │   ├── paginas/
-│   │   ├── detalhes.html                   # Página de detalhes
-│   │   └── favoritos.html                  # Lista de favoritos
-│   └── assets/                             # Imagens e ícones
+│   │   ├── detalhes.html                       # Página de detalhes
+│   │   └── favoritos.html                      # Lista de favoritos
+│   └── assets/                                 # Imagens e ícones
 │
-├── doc/                                    # Documentação
-│   ├── backup/                             # Documentos de escopo originais
-│   ├── plano_modificacao_ingressouniversidade.md
-│   ├── plano_landingpage_nodejs.md
-│   └── plano_frontend_ingressouniversidade.md
+├── doc/                                        # Documentação
+│   ├── reestruturacao.md                       # Plano de reestruturação MVC
+│   ├── prompt_mvc_deepseek_v2.md               # Prompt de reestruturação
+│   └── backup/                                 # Documentos originais de escopo
 │
-└── README.md                               # Este arquivo
+└── README.md                                   # Este arquivo
 ```
 
 ---
@@ -259,11 +341,11 @@ O servidor inicia automaticamente na porta 3000 (configurável via `.env`). Na p
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
 | `GET` | `/api/cursos` | Lista cursos (filtros: nome, cidade, estado) |
-| `GET` | `/api/cursos/:id` | Detalhes completos do curso |
-| `GET` | `/api/cursos/:id/notas-corte` | Notas de corte (RF2) |
-| `GET` | `/api/cidades/:cidade/custos` | Custos da cidade (RF3) |
-| `GET` | `/api/cursos/:id/auxilios-bolsas` | Bolsas e auxílios (RF4) |
-| `GET` | `/api/cursos/:id/mercado-estagios` | Mercado e estágios (RF5) |
+| `GET` | `/api/cursos/:id` | Detalhes completos do curso (notas, custos, bolsas, mercado) |
+| `GET` | `/api/cursos/:id/notas-corte` | Notas de corte do curso (RF2) |
+| `GET` | `/api/cursos/:id/auxilios-bolsas` | Bolsas e auxílios da instituição (RF4) |
+| `GET` | `/api/cursos/:id/mercado-estagios` | Mercado de trabalho e estágios (RF5) |
+| `GET` | `/api/cidades/:cidade/custos` | Custos de vida da cidade (RF3) |
 
 ### Favoritos (RF6)
 
@@ -272,6 +354,8 @@ O servidor inicia automaticamente na porta 3000 (configurável via `.env`). Na p
 | `POST` | `/api/favoritos` | `{ sessao_usuario, curso_id, instituicao_id }` | Adicionar favorito |
 | `GET` | `/api/favoritos` | `?sessao_usuario=` | Listar favoritos do usuário |
 | `DELETE` | `/api/favoritos/:id` | `?sessao_usuario=` | Remover favorito |
+
+**Total: 13 endpoints**
 
 ### Formato de Resposta
 
@@ -290,6 +374,14 @@ O servidor inicia automaticamente na porta 3000 (configurável via `.env`). Na p
   "sucesso": false,
   "mensagem": "Dados inválidos.",
   "erros": ["Campo obrigatório não preenchido."]
+}
+```
+
+**Erro genérico (HTTP 400/404/500):**
+```json
+{
+  "sucesso": false,
+  "mensagem": "Descrição do erro."
 }
 ```
 
@@ -356,6 +448,39 @@ O servidor inicia automaticamente na porta 3000 (configurável via `.env`). Na p
 - **Validação:** Sanitização com `validator` (trim, escape) antes de cada operação no banco
 - **Banco:** Prepared statements em todas as consultas
 
+### Padrões de Código
+
+**Modelo** — retorna dados puros (objetos/arrays):
+```javascript
+const banco = require('../configuracoes/conexaoBanco')
+
+function listar() {
+  return banco.prepare('SELECT * FROM tabela').all()
+}
+
+function detalhar(id) {
+  return banco.prepare('SELECT * FROM tabela WHERE id = ?').get(id)
+}
+
+module.exports = { listar, detalhar }
+```
+
+**Controlador** — intermedia HTTP, delega ao modelo:
+```javascript
+const modelo = require('../modelos/entidadeModelo')
+
+function listar(req, res, next) {
+  try {
+    const dados = modelo.listar()
+    res.json({ sucesso: true, dados })
+  } catch (erro) {
+    next(erro)
+  }
+}
+
+module.exports = { listar }
+```
+
 ---
 
 ## Segurança
@@ -368,6 +493,8 @@ O servidor inicia automaticamente na porta 3000 (configurável via `.env`). Na p
 | Headers HTTP | Helmet com configuração segura |
 | CORS | Configurável via variável `ORIGEM_PERMITIDA` |
 | Dados pessoais | Favoritos anônimos por sessão (sem cadastro) |
+| Tratamento de erros | Middleware global que retorna JSON (não expõe stack traces) |
+| Logging | Middleware de log registra method, url, status e duração |
 
 ---
 
@@ -387,25 +514,26 @@ O servidor inicia automaticamente na porta 3000 (configurável via `.env`). Na p
 
 | Arquivo | Descrição |
 |---------|-----------|
-| `doc/plano_modificacao_ingressouniversidade.md` | Plano de reenquadramento do projeto |
-| `doc/plano_landingpage_nodejs.md` | Arquitetura original (landing page) |
-| `doc/plano_frontend_ingressouniversidade.md` | Planejamento do frontend |
-| `doc/backup/*.docx` | Documentos originais de escopo (problema, requisitos, personas) |
-| `doc/backup/*.xlsx` | Pesquisa de dores dos alunos |
+| `doc/reestruturacao.md` | Plano detalhado de reestruturação para MVC |
+| `doc/prompt_mvc_deepseek_v2.md` | Prompt de reestruturação arquitetural |
+| `doc/backup/` | Documentos originais de escopo (problema, requisitos, personas, pesquisas) |
 
 ---
 
 ## Status do Projeto
 
 - [x] Configuração do banco de dados com tabelas e dados seed
-- [x] Backend completo com 12 endpoints REST
+- [x] Backend com 13 endpoints REST (arquitetura MVC)
+- [x] Camada de Modelos com 7 arquivos (desacoplamento do banco)
+- [x] Middleware global de tratamento de erros
+- [x] Middleware de log de requisições
+- [x] Serviços de integração reescritos (orquestram modelos)
 - [x] Frontend responsivo com 3 páginas
 - [x] Sistema de busca com filtros e debounce
 - [x] Detalhes do curso com abas (notas, custos, bolsas, mercado)
 - [x] Sistema de favoritos com persistência (localStorage + API)
 - [x] Componentes de UI reutilizáveis
 - [x] Dados de demonstração (fallback)
-- [x] Documentação atualizada
 - [ ] Integração com APIs externas (SiSU, IBGE)
 - [ ] Testes automatizados
 - [ ] Deploy em produção

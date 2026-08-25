@@ -1,9 +1,9 @@
 // busca.js — Logica da Home: filtros (RF1), debounce (RNF2), render de cards e skeleton
 
-var POR_PAGINA = 6
-var cacheBusca = new Map()
-var listaCompleta = []
-var paginaAtual = 0
+const POR_PAGINA = 6
+let cacheBusca = new Map()
+let listaCompleta = []
+let paginaAtual = 0
 
 document.addEventListener('DOMContentLoaded', iniciarPaginaBusca)
 
@@ -16,15 +16,15 @@ function iniciarPaginaBusca() {
 }
 
 function preencherSelects() {
-  var selectEstado = document.getElementById('filtroEstado')
-  var selectCidade = document.getElementById('filtroCidade')
+  const selectEstado = document.getElementById('filtroEstado')
+  const selectCidade = document.getElementById('filtroCidade')
 
   selectEstado.innerHTML = '<option value="">Todos os estados</option>' +
     listarEstadosDemo().map(function (estado) {
       return '<option value="' + escapeHTML(estado) + '">' + escapeHTML(estado) + '</option>'
     }).join('')
 
-  var cidades = listarCidadesDemo()
+  const cidades = listarCidadesDemo()
   selectCidade.innerHTML = '<option value="">Todas as cidades</option>' +
     cidades.map(function (cidade) {
       return '<option value="' + escapeHTML(cidade) + '">' + escapeHTML(cidade) + '</option>'
@@ -39,9 +39,9 @@ function preencherSelects() {
 }
 
 function vincularEventos() {
-  var formBusca = document.getElementById('formBusca')
-  var inputNome = document.getElementById('filtroNome')
-  var btnCarregarMais = document.getElementById('btnCarregarMais')
+  const formBusca = document.getElementById('formBusca')
+  const inputNome = document.getElementById('filtroNome')
+  const btnCarregarMais = document.getElementById('btnCarregarMais')
 
   formBusca.addEventListener('submit', function (evento) {
     evento.preventDefault()
@@ -52,8 +52,8 @@ function vincularEventos() {
 
   if (btnCarregarMais) {
     btnCarregarMais.addEventListener('click', function () {
-      var area = document.getElementById('areaResultados')
-      var proximos = listaCompleta.slice(paginaAtual, paginaAtual + POR_PAGINA)
+      const area = document.getElementById('areaResultados')
+      const proximos = listaCompleta.slice(paginaAtual, paginaAtual + POR_PAGINA)
       area.insertAdjacentHTML('beforeend', proximos.map(function (curso) { return cardResultado(curso) }).join(''))
       paginaAtual += POR_PAGINA
       atualizarBotaoCarregarMais()
@@ -70,14 +70,14 @@ function obterFiltros() {
 }
 
 async function buscarCursos(filtros) {
-  var chaveCache = JSON.stringify(filtros)
+  const chaveCache = JSON.stringify(filtros)
   if (cacheBusca.has(chaveCache)) return cacheBusca.get(chaveCache)
 
-  var params = new URLSearchParams(filtros)
-  var cursos
+  const params = new URLSearchParams(filtros)
+  let cursos
   try {
-    var resultado = await api('GET', '/cursos?' + params.toString())
-    cursos = resultado.dados || []
+    const resultado = await api('GET', '/busca?' + params.toString())
+    cursos = (resultado.dados && resultado.dados.cursos) || []
   } catch (e) {
     cursos = buscarCursosDemo(filtros)
   }
@@ -86,11 +86,12 @@ async function buscarCursos(filtros) {
 }
 
 async function executarBusca() {
-  var area = document.getElementById('areaResultados')
-  var resumo = document.getElementById('resumoResultados')
-  var filtros = obterFiltros()
+  const area = document.getElementById('areaResultados')
+  const resumo = document.getElementById('resumoResultados')
+  const filtros = obterFiltros()
 
   paginaAtual = 0
+  cacheBusca.clear()
   area.innerHTML = skeleton(3)
   resumo.textContent = 'Buscando...'
 
@@ -105,15 +106,15 @@ async function executarBusca() {
 }
 
 function renderizarResultados(cursos) {
-  var area = document.getElementById('areaResultados')
-  var resumo = document.getElementById('resumoResultados')
+  const area = document.getElementById('areaResultados')
+  const resumo = document.getElementById('resumoResultados')
 
   if (cursos.length === 0) {
     area.innerHTML = estadoVazio('Nenhum curso encontrado com os filtros selecionados. Tente modificar a busca.')
     resumo.textContent = ''
   } else {
     resumo.textContent = cursos.length + (cursos.length === 1 ? ' resultado encontrado' : ' resultados encontrados')
-    var iniciais = cursos.slice(paginaAtual, paginaAtual + POR_PAGINA)
+    const iniciais = cursos.slice(paginaAtual, paginaAtual + POR_PAGINA)
     area.innerHTML = iniciais.map(function (curso) { return cardResultado(curso) }).join('')
     paginaAtual += iniciais.length
   }
@@ -121,8 +122,8 @@ function renderizarResultados(cursos) {
 }
 
 function atualizarBotaoCarregarMais() {
-  var areaCarregarMais = document.getElementById('areaCarregarMais')
+  const areaCarregarMais = document.getElementById('areaCarregarMais')
   if (!areaCarregarMais) return
-  var temMais = paginaAtual < listaCompleta.length
+  const temMais = paginaAtual < listaCompleta.length
   areaCarregarMais.classList.toggle('hidden', !temMais)
 }

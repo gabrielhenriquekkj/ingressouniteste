@@ -16,9 +16,11 @@ function cardResultado(curso) {
     : 'bg-white text-indigo-700 border-indigo-200 hover:bg-indigo-50'
 
   const favLabel = favoritado ? 'Favoritado' : 'Favoritar'
+  const iconeFav = favoritado ? ICONES.estrela : ICONES.estrelaVazia
 
-  return '<a href="' + base + '/paginas/detalhes.html?id=' + curso.id + '" ' +
-    'class="block bg-white rounded-2xl ring-1 ring-gray-200 p-5 hover:shadow-lg hover:ring-indigo-300 transition group">' +
+  return '<div data-curso-id="' + curso.id + '" ' +
+    'class="block bg-white rounded-2xl ring-1 ring-gray-200 p-5 hover:shadow-lg hover:ring-indigo-300 transition group cursor-pointer" ' +
+    'onclick="window.location.href=\'' + base + '/paginas/detalhes.html?id=' + curso.id + '\'" role="link" tabindex="0">' +
     '<div class="flex items-start justify-between gap-2">' +
     '<div class="flex-1 min-w-0">' +
     '<span class="text-xs font-bold uppercase tracking-wide text-indigo-600">' + escapeHTML(sigla || nomeInst) + '</span>' +
@@ -33,10 +35,11 @@ function cardResultado(curso) {
     'data-estado="' + escapeHTML(estado) + '" ' +
     'data-grau="' + escapeHTML(grau) + '" ' +
     'data-modalidade="' + escapeHTML(modalidade) + '" ' +
+    'aria-label="' + favLabel + ' ' + escapeHTML(curso.nome) + '" ' +
     'aria-pressed="' + favoritado + '" ' +
     'class="shrink-0 p-2 rounded-full border transition ' + favClasses + '" title="' + favLabel + '">' +
     '<span class="sr-only">' + favLabel + '</span>' +
-    (favoritado ? ICONES.estrela : ICONES.estrela) +
+    iconeFav +
     '</button>' +
     '</div>' +
     '<div class="mt-3 flex flex-wrap gap-1.5">' +
@@ -45,7 +48,7 @@ function cardResultado(curso) {
     (cidade ? '<span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">' + escapeHTML(cidade) + '/' + escapeHTML(estado) + '</span>' : '') +
     (demanda ? badge(rotuloDemanda(demanda), corDemanda(demanda)) : '') +
     '</div>' +
-    '</a>'
+    '</div>'
 }
 
 function botaoFavorito(curso, grande) {
@@ -54,6 +57,7 @@ function botaoFavorito(curso, grande) {
     ? (favoritado ? 'bg-amber-500 text-white border-amber-500 hover:bg-amber-600' : 'bg-white text-indigo-700 border-indigo-200 hover:bg-indigo-50')
     : (favoritado ? 'bg-amber-500 text-white border-amber-500' : 'bg-white text-indigo-700 border-indigo-200 hover:bg-indigo-50')
   const tamanho = grande ? 'px-5 py-2.5 text-sm' : 'px-3 py-1.5 text-xs'
+  const iconeFav = favoritado ? ICONES.estrela : ICONES.estrelaVazia
 
   const nomeInst = curso.instituicao_nome || curso.instituicao || ''
 
@@ -65,9 +69,10 @@ function botaoFavorito(curso, grande) {
     'data-estado="' + escapeHTML(curso.estado || '') + '" ' +
     'data-grau="' + escapeHTML(curso.grau || '') + '" ' +
     'data-modalidade="' + escapeHTML(curso.modalidade || '') + '" ' +
+    'aria-label="' + (favoritado ? 'Remover' : 'Adicionar') + ' ' + escapeHTML(curso.nome) + ' dos favoritos" ' +
     'aria-pressed="' + favoritado + '" ' +
     'class="inline-flex items-center gap-2 rounded-full border font-semibold transition ' + cls + ' ' + tamanho + '">' +
-    ICONES.estrela +
+    iconeFav +
     '<span>' + (favoritado ? 'Favoritado' : 'Favoritar') + '</span>' +
     '</button>'
 }
@@ -85,13 +90,13 @@ function tabelaNotas(notas) {
     '</tr></thead><tbody>'
 
   for (const nota of notas) {
-    const cor = nota.modalidade_acesso === 'SiSU'
+    const cor = (nota.modalidade_acesso || '').toLowerCase() === 'sisu'
       ? 'bg-blue-100 text-blue-700'
       : 'bg-purple-100 text-purple-700'
     html += '<tr class="border-b border-gray-100 hover:bg-gray-50">' +
       '<td class="py-3 px-3">' + badge(nota.modalidade_acesso || '\u2014', cor) + '</td>' +
-      '<td class="py-3 px-3">' + nota.ano + '</td>' +
-      '<td class="py-3 px-3">' + nota.chamada + '\u00aa chamada</td>' +
+      '<td class="py-3 px-3">' + escapeHTML(String(nota.ano || '')) + '</td>' +
+      '<td class="py-3 px-3">' + escapeHTML(String(nota.chamada || '')) + '\u00aa chamada</td>' +
       '<td class="py-3 px-3 text-right font-bold text-gray-900">' + (nota.nota_minima ? nota.nota_minima.toFixed(1) : '\u2014') + '</td>' +
       '</tr>'
   }
@@ -116,6 +121,9 @@ function listaAuxilios(auxilios) {
       const cor = a.tipo === 'bolsa'
         ? 'bg-green-100 text-green-700'
         : 'bg-yellow-100 text-yellow-700'
+      const urlSegura = a.url && (a.url.startsWith('http://') || a.url.startsWith('https://'))
+        ? '<a href="' + escapeHTML(a.url) + '" target="_blank" rel="noopener" class="text-indigo-600 text-sm hover:underline whitespace-nowrap">Mais info &#8599;</a>'
+        : ''
       return '<div class="bg-white rounded-xl ring-1 ring-gray-200 p-4">' +
         '<div class="flex items-start justify-between gap-3">' +
         '<div class="flex-1">' +
@@ -123,7 +131,7 @@ function listaAuxilios(auxilios) {
         badge(a.tipo || 'aux\u00edlio', cor) +
         (a.descricao ? '<p class="mt-2 text-sm text-gray-600">' + escapeHTML(a.descricao) + '</p>' : '') +
         '</div>' +
-        (a.url ? '<a href="' + a.url + '" target="_blank" rel="noopener" class="text-indigo-600 text-sm hover:underline whitespace-nowrap">Mais info &#8599;</a>' : '') +
+        urlSegura +
         '</div></div>'
     }).join('') +
     '</div>'

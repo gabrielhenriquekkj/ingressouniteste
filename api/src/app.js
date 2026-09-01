@@ -7,6 +7,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
 const rotasBusca = require('./rotas/buscaRotas')
 const rotasUniversidade = require('./rotas/universidadeRotas')
 const rotasFavorito = require('./rotas/favoritoRotas')
+const rotasGroq = require('./rotas/groqRotas')
 const logger = require('./intermediarios/logger')
 const tratamentoErros = require('./intermediarios/tratamentoErros')
 
@@ -28,6 +29,7 @@ app.use(express.static(caminhoFrontend))
 app.use('/api', rotasBusca)
 app.use('/api', rotasUniversidade)
 app.use('/api', rotasFavorito)
+app.use('/api', rotasGroq)
 
 // Rota de health check
 app.get('/api/health', (_, res) => res.json({ sucesso: true, mensagem: 'API do Ingresso Universitario funcionando!' }))

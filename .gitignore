@@ -20,3 +20,6 @@ api/testapi.js
 api/validar.js
 api/verificar.js
 api/temp/
+
+# Dados grandes
+doc/Sisu2026.csv.csv

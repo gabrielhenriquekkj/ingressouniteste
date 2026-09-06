@@ -1,7 +1,5 @@
 node_modules/
 .env
-api/db/
-*.db
 *.db-shm
 *.db-wal
 *.log

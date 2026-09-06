@@ -1,4 +1,4 @@
-// detalhes.js — Pagina de detalhes do curso (RF2-RF5) com abas e botao de favoritar (RF6).
+// detalhes.js — Página de detalhes do curso (RF2-RF5) com abas e botão de favoritar (RF6).
 
 let cursoDetalhe = null
 
@@ -19,29 +19,54 @@ async function carregarCurso(id) {
   mostrarCarregando(true)
   let curso = null
 
-  try {
-    const resultado = await api('GET', '/cursos/' + id)
-    const dados = resultado.dados || null
-    if (dados) {
-      // Normaliza campos da API para o formato esperado pelo frontend
-      curso = Object.assign({}, dados, {
-        instituicao: dados.instituicao_nome || dados.instituicao || '',
-        auxilios: dados.auxilios_bolsas || dados.auxilios || [],
-        mercado: dados.mercado_estagios && dados.mercado_estagios.length > 0
-          ? dados.mercado_estagios[0]
-          : dados.mercado || null,
-        demanda: dados.mercado_estagios && dados.mercado_estagios.length > 0
-          ? dados.mercado_estagios[0].demanda
-          : dados.demanda || ''
-      })
-    }
-  } catch {
-    curso = detalheCursoDemo(id)
+try {
+     const resultado = await api('GET', '/cursos/' + id)
+     const dados = resultado.dados || null
+     if (dados) {
+       curso = Object.assign({}, dados, {
+         instituicao: dados.instituicao_nome || dados.instituicao || '',
+         auxilios: dados.auxilios_bolsas || dados.auxilios || [],
+         mercado: dados.mercado_estagios && dados.mercado_estagios.length > 0
+           ? dados.mercado_estagios[0]
+           : dados.mercado || null,
+         demanda: dados.mercado_estagios && dados.mercado_estagios.length > 0
+           ? dados.mercado_estagios[0].demanda
+           : dados.demanda || ''
+       })
+     }
+   } catch (e) {
+     console.warn('Erro ao carregar curso:', e.message)
+   }
+
+  if (!curso) {
+try {
+       const resultado = await api('GET', '/instituicoes/' + id)
+       const dados = resultado.dados || null
+       if (dados) {
+         curso = Object.assign({}, dados, {
+           nome: dados.nome || '',
+           instituicao: dados.nome || '',
+           sigla: dados.sigla || '',
+           cidade: dados.cidade || '',
+           estado: dados.uf || dados.estado || '',
+           auxilios: dados.auxilios || [],
+           cursos: dados.cursos || [],
+           campi: dados.campi || [],
+           mercado: null,
+           demanda: '',
+           notas_corte: [],
+           custos: null,
+           _isInstituicao: true
+         })
+       }
+     } catch (e) {
+       console.warn('Erro ao carregar instituição:', e.message)
+     }
   }
 
   if (!curso) {
     mostrarCarregando(false)
-    mostrarIndisponivel('Curso nao encontrado.')
+    mostrarIndisponivel('Curso não encontrado.')
     return
   }
 
@@ -97,11 +122,143 @@ function renderizarCabecalho(curso) {
     '</div></div>'
 }
 
+function renderizarNotasInstituicao(curso) {
+  const area = document.getElementById('atmNotas')
+  const notas = curso.notas_corte || []
+  const cursos = curso.cursos || []
+
+  if (notas.length === 0 && cursos.length === 0) {
+    area.innerHTML = estadoVazio('Nenhuma nota de corte registrada para esta instituição.')
+    return
+  }
+
+  if (notas.length === 0) {
+    area.innerHTML = estadoVazio('Nota de corte SiSU indisponível. Esta instituição pode não participar do SiSU ou os dados ainda não foram publicados.')
+    return
+  }
+
+  const porCurso = {}
+  for (const n of notas) {
+    const cid = n.curso_id || 'desconhecido'
+    if (!porCurso[cid]) porCurso[cid] = { nome: n.curso_nome || 'Curso #' + cid, notas: [] }
+    porCurso[cid].notas.push(n)
+  }
+
+  const fonteLabel = notas[0]?.fonte_tipo === 'oficial' ? 'Fonte oficial MEC' : 'Dados abertos'
+
+  let html = '<div class="flex items-center justify-between mb-3">' +
+    '<h3 class="text-lg font-bold text-gray-900">Notas de Corte SiSU (' + notas.length + ' registros)</h3>' +
+    badge(fonteLabel, 'bg-green-100 text-green-700') +
+    '</div>'
+  html += '<div class="space-y-4">'
+  for (const cid of Object.keys(porCurso)) {
+    const item = porCurso[cid]
+    html += '<div class="bg-white rounded-xl ring-1 ring-gray-200 p-4">'
+    html += '<h4 class="font-bold text-gray-900">' + escapeHTML(item.nome) + '</h4>'
+    html += '<div class="mt-2 overflow-x-auto"><table class="w-full text-sm">'
+    html += '<thead><tr class="border-b border-gray-200"><th class="text-left py-2 px-2 font-semibold text-gray-700">Modalidade</th><th class="text-left py-2 px-2 font-semibold text-gray-700">Ano</th><th class="text-right py-2 px-2 font-semibold text-gray-700">Nota</th><th class="text-right py-2 px-2 font-semibold text-gray-700">Tipo</th></tr></thead><tbody>'
+    for (const n of item.notas) {
+      const modalidade = (n.modalidade_acesso || '').replace(/_/g, ' ')
+      const tipoNota = n.tipo_nota === 'final' ? 'Histórica' : n.tipo_nota === 'parcial' ? 'Parcial' : ''
+      html += '<tr class="border-b border-gray-50 hover:bg-gray-50">'
+      html += '<td class="py-2 px-2">' + badge(modalidade, 'bg-blue-100 text-blue-700') + '</td>'
+      html += '<td class="py-2 px-2">' + escapeHTML(String(n.ano || '')) + '</td>'
+      html += '<td class="py-2 px-2 text-right font-bold text-gray-900">' + (n.nota_corte ? n.nota_corte.toFixed(1) : '-') + '</td>'
+      html += '<td class="py-2 px-2 text-right">' + (tipoNota ? badge(tipoNota, 'bg-gray-100 text-gray-600') : '-') + '</td>'
+      html += '</tr>'
+    }
+    html += '</tbody></table></div></div>'
+  }
+  html += '</div>'
+  area.innerHTML = html
+}
+
 function renderizarAbas(curso) {
-  document.getElementById('atmNotas').innerHTML = tabelaNotas(curso.notas_corte)
-  renderizarCustos(curso)
-  renderizarBolsas(curso)
-  renderizarMercado(curso)
+  if (curso._isInstituicao) {
+    renderizarNotasInstituicao(curso)
+    renderizarCampiECustos(curso)
+    renderizarBolsas(curso)
+    renderizarMercadoVazio()
+    renderizarCursosInstituicao(curso)
+  } else {
+    document.getElementById('atmNotas').innerHTML = tabelaNotas(curso.notas_corte)
+    renderizarCustos(curso)
+    renderizarBolsas(curso)
+    renderizarMercado(curso)
+  }
+}
+
+function renderizarCursosInstituicao(curso) {
+  const area = document.getElementById('atmCursos')
+  const cursos = curso.cursos || []
+
+  if (cursos.length === 0) {
+    area.innerHTML = estadoVazio('Nenhum curso listado para esta instituição.')
+    return
+  }
+
+  let html = '<h3 class="text-lg font-bold text-gray-900 mb-3">Cursos (' + cursos.length + ')</h3>'
+  html += '<div class="space-y-2">'
+  for (const c of cursos) {
+    html += '<div class="bg-white rounded-xl ring-1 ring-gray-200 p-4">' +
+      '<h4 class="font-bold text-gray-900">' + escapeHTML(c.nome) + '</h4>'
+    if (c.modalidade) html += '<span class="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-medium mt-1 inline-block">' + escapeHTML(c.modalidade) + '</span>'
+    if (c.grau) html += '<span class="text-xs bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full font-medium mt-1 inline-block ml-1">' + escapeHTML(c.grau) + '</span>'
+    if (c.turno) html += '<span class="text-xs bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full font-medium mt-1 inline-block ml-1">' + escapeHTML(c.turno) + '</span>'
+    html += '</div>'
+  }
+  html += '</div>'
+  area.innerHTML = html
+}
+
+function renderizarMercadoVazio() {
+  document.getElementById('atmMercado').innerHTML = estadoVazio('Informações de mercado ainda não disponíveis para esta instituição.')
+}
+
+function renderizarCampiECustos(curso) {
+  const area = document.getElementById('atmCustos')
+  const campi = curso.campi || []
+  const custos = curso.custos
+
+  let html = ''
+
+  if (campi.length > 0) {
+    html += '<h3 class="text-lg font-bold text-gray-900 mb-3">Campi (' + campi.length + ')</h3>'
+    html += '<div class="space-y-2">'
+    for (const c of campi) {
+      html += '<div class="bg-white rounded-xl ring-1 ring-gray-200 p-4">' +
+        '<h4 class="font-bold text-gray-900">' + escapeHTML(c.nome) + '</h4>'
+      if (c.cidade) html += '<p class="text-sm text-gray-500">' + escapeHTML(c.cidade) + '/' + escapeHTML(c.uf || c.estado || '') + '</p>'
+      if (c.endereco) html += '<p class="text-xs text-gray-400 mt-1">' + escapeHTML(c.endereco) + '</p>'
+      if (c.site_oficial) html += '<a href="' + escapeHTML(c.site_oficial) + '" target="_blank" rel="noopener" class="text-indigo-600 text-xs hover:underline mt-1 inline-block">Site oficial &#8599;</a>'
+      html += '</div>'
+    }
+    html += '</div>'
+  }
+
+  if (custos) {
+    const fonteLabel = custos.tipo_fonte === 'estimativa_pib'
+      ? badge('Indicador econômico (PIB per capita)', 'bg-amber-100 text-amber-700')
+      : badge(custos.tipo_fonte || 'Dados', 'bg-blue-100 text-blue-700')
+    html += '<div class="flex items-center justify-between mb-4 mt-4">' +
+      '<h3 class="text-lg font-bold text-gray-900">Indicadores Econômicos</h3>' +
+      fonteLabel +
+      '</div>' +
+      '<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">' +
+      cardInfo(ICONES.casa, 'Moradia', formatarMoeda(custos.moradia)) +
+      cardInfo(ICONES.comida, 'Alimentação', formatarMoeda(custos.alimentacao)) +
+      cardInfo(ICONES.onibus, 'Transporte', formatarMoeda(custos.transporte)) +
+      cardInfo(ICONES.cartao, 'Outros', formatarMoeda(custos.outros)) +
+      '</div>' +
+      '<div class="mt-5">' +
+      cardInfo(ICONES.moeda, 'Total mensal estimado em ' + (custos.cidade || curso.cidade || '') + '/' + (custos.estado || curso.estado || ''), formatarMoeda(custos.custo_total), true) +
+      '</div>' +
+      '<p class="mt-3 text-xs text-gray-400">Fonte: IBGE PIB per capita 2023 - Indicador econômico, não custo de vida real</p>'
+  } else if (campi.length === 0) {
+    html = estadoVazio('Informações de campus e indicadores econômicos ainda não disponíveis.')
+  }
+
+  area.innerHTML = html
 }
 
 function renderizarCustos(curso) {
@@ -109,21 +266,29 @@ function renderizarCustos(curso) {
   const custos = curso.custos
 
   if (!custos) {
-    area.innerHTML = estadoVazio('Custos da cidade ainda nao mapeados para este curso.')
+    area.innerHTML = estadoVazio('Indicadores econômicos ainda não disponíveis para esta cidade.')
     return
   }
 
-  const total = (custos.moradia || 0) + (custos.alimentacao || 0) + (custos.transporte || 0) + (custos.outros || 0)
+  const fonteLabel = custos.tipo_fonte === 'estimativa_pib'
+    ? badge('Indicador economico (PIB per capita)', 'bg-amber-100 text-amber-700')
+    : badge(custos.tipo_fonte || 'Dados', 'bg-blue-100 text-blue-700')
+
   area.innerHTML =
+    '<div class="flex items-center justify-between mb-4">' +
+    '<h3 class="text-lg font-bold text-gray-900">Indicadores Econômicos</h3>' +
+    fonteLabel +
+    '</div>' +
     '<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">' +
     cardInfo(ICONES.casa, 'Moradia', formatarMoeda(custos.moradia)) +
-    cardInfo(ICONES.comida, 'Alimentacao', formatarMoeda(custos.alimentacao)) +
+    cardInfo(ICONES.comida, 'Alimentação', formatarMoeda(custos.alimentacao)) +
     cardInfo(ICONES.onibus, 'Transporte', formatarMoeda(custos.transporte)) +
     cardInfo(ICONES.cartao, 'Outros', formatarMoeda(custos.outros)) +
     '</div>' +
     '<div class="mt-5">' +
-    cardInfo(ICONES.moeda, 'Total mensal estimado em ' + (custos.cidade || curso.cidade || '') + '/' + (custos.estado || curso.estado || ''), formatarMoeda(total), true) +
-    '</div>'
+    cardInfo(ICONES.moeda, 'Total mensal estimado em ' + (custos.cidade || curso.cidade || '') + '/' + (custos.estado || curso.estado || ''), formatarMoeda(custos.custo_total), true) +
+    '</div>' +
+    '<p class="mt-3 text-xs text-gray-400">Fonte: IBGE PIB per capita 2023 - Indicador economico, nao custo de vida real</p>'
 }
 
 function renderizarBolsas(curso) {
@@ -137,14 +302,14 @@ function renderizarMercado(curso) {
 
   const cards =
     '<div class="grid sm:grid-cols-3 gap-4">' +
-    cardInfo(ICONES.grafico, 'Demanda na regiao', mercado.regiao ? 'Mercado em ' + escapeHTML(mercado.regiao) : '\u2014') +
-    cardInfo(ICONES.moeda, 'Salario medio', formatarMoeda(mercado.salario_medio)) +
-    cardInfo(ICONES.mala, 'Vagas de estagio', mercado.vagas_estagio ? Number(mercado.vagas_estagio).toLocaleString('pt-BR') + ' vagas' : '\u2014') +
+    cardInfo(ICONES.grafico, 'Demanda na região', mercado.regiao ? 'Mercado em ' + escapeHTML(mercado.regiao) : '\u2014') +
+    cardInfo(ICONES.moeda, 'Salário médio', formatarMoeda(mercado.salario_medio)) +
+    cardInfo(ICONES.mala, 'Vagas de estágio', mercado.vagas_estagio ? Number(mercado.vagas_estagio).toLocaleString('pt-BR') + ' vagas' : '\u2014') +
     '</div>'
 
   const demandaExtra = demanda
     ? '<div class="mt-5 flex items-center gap-2">' +
-      '<span class="text-sm font-semibold text-gray-600">Classificacao da demanda:</span>' +
+      '<span class="text-sm font-semibold text-gray-600">Classificação da demanda:</span>' +
       badge(rotuloDemanda(demanda), corDemanda(demanda)) +
       '</div>'
     : ''

@@ -11,21 +11,17 @@
 
 O **Ingresso Universitário** é um aplicativo web que auxilia estudantes na escolha de universidade e curso superior. O sistema reúne de forma centralizada e acessível informações que normalmente estão dispersas em vários sites e fontes:
 
-- **Notas de corte** do SiSU e ProUni
-- **Custos estimados** de moradia e despesas na cidade da universidade
-- **Bolsas, auxílios e oportunidades** de permanência estudantil
-- **Panorama do mercado de trabalho** e demanda do curso na região
-- **Busca por universidades e cursos** com filtros por cidade, estado e nome
+- **Notas de corte** do SiSU 2026 (obtidas de arquivo CSV baixado do site oficial do MEC)
+- **Busca por universidades e cursos** com filtros por estado e categoria
 - **Sistema de favoritos** para acesso rápido às opções de interesse
+- **Autocomplete** no campo de busca com sugestões clicáveis
 
 ### Problema Identificado
 
 Estudantes, especialmente de regiões como Centro-Oeste, enfrentam dificuldade para encontrar de forma clara e centralizada:
 
 - Notas de corte dos processos seletivos
-- Custo real de moradia e vida em outras cidades
-- Disponibilidade de bolsas e auxílios financeiros
-- Mercado de trabalho e oportunidades de estágio na região pretendida
+- Informações sobre cursos e universidades em um só lugar
 
 ### Solução
 
@@ -35,89 +31,159 @@ Uma plataforma web responsiva que compila essas informações em um só lugar, p
 
 ## Funcionalidades
 
-| ID  | Funcionalidade                       | Descrição |
-|-----|--------------------------------------|-----------|
-| RF1 | Busca de Cursos e Instituições      | Busca com filtros por cidade, estado e nome |
-| RF2 | Exibição de Notas de Corte          | Notas do SiSU e ProUni por ano e chamada |
-| RF3 | Painel de Custos Estimados          | Moradia, alimentação, transporte e outros |
-| RF4 | Mural de Auxílios e Bolsas          | Bolsas, permanência e auxílios da instituição |
-| RF5 | Indicador de Mercado e Estágios     | Demanda, salário médio e vagas de estágio |
-| RF6 | Sistema de Favoritos                | Favoritar cursos para acesso rápido |
+| ID  | Funcionalidade                       | Status | Descrição |
+|-----|--------------------------------------|--------|-----------|
+| RF1 | Busca de Cursos e Instituições      | ✅ Funcional | Busca com filtros por estado, categoria e nome |
+| RF1b | Autocomplete no campo de busca     | ✅ Funcional | Sugestões clicáveis de cursos e instituições |
+| RF2 | Exibição de Notas de Corte          | ✅ Funcional | Notas do SiSU 2026 por modalidade de acesso |
+| RF3 | Painel de Custos Estimados          | ❌ Não implementado | Requer dados do IBGE PIB per capita |
+| RF4 | Mural de Auxílios e Bolsas          | ⚠️ Parcial | Dados disponíveis mas sem coleta automatizada |
+| RF5 | Indicador de Mercado e Estágios     | ⚠️ Parcial | Dados limitados sem coleta automatizada |
+| RF6 | Sistema de Favoritos                | ✅ Funcional | Favoritar cursos para acesso rápido |
 
 ### Requisitos Não Funcionais
 
-| ID   | Requisito                    | Diretriz |
-|------|------------------------------|----------|
-| RNF1 | Usabilidade e Simplicidade   | Interface minimalista; informação em até 3 cliques |
-| RNF2 | Desempenho                   | Respostas em até 2 segundos |
-| RNF3 | Responsividade               | Web app responsivo (desktop e mobile) |
-| RNF4 | Confiabilidade dos Dados     | Dados de fontes/APIs com atualização periódica |
-| RNF5 | Acessibilidade               | Contraste WCAG AA, fontes legíveis, navegação por teclado |
+| ID   | Requisito                    | Status | Observação |
+|------|------------------------------|--------|------------|
+| RNF1 | Usabilidade e Simplicidade   | ✅ | Interface minimalista |
+| RNF2 | Desempenho                   | ✅ | Respostas rápidas via SQLite |
+| RNF3 | Responsividade               | ✅ | Web app responsivo (Tailwind CSS) |
+| RNF4 | Confiabilidade dos Dados     | ⚠️ | Dados do SiSU 2026; outras fontes incompletas |
+| RNF5 | Acessibilidade               | ✅ | Contraste adequado, navegação por teclado |
+
+---
+
+## Fontes de Dados
+
+### Dados Atualmente no Sistema
+
+| Categoria | Quantidade | Fonte | Status |
+|-----------|------------|-------|--------|
+| Instituições | 136 | SiSU 2026 (arquivo CSV baixado) + EMEC/MEC (CSV GitHub) | ✅ Dados reais |
+| Cursos | 4.837 | SiSU 2026 (arquivo CSV baixado) + INEP (parcial) | ✅ Dados reais |
+| Notas de corte | 30.995 | SiSU 2026 (arquivo CSV baixado do MEC) | ✅ Dados oficiais |
+| Cursos com notas | 4.590 | SiSU 2026 (arquivo CSV baixado do MEC) | ✅ 95% dos cursos |
+| Auxílios/Bolsas | 571 | Dados abertos MEC | ⚠️ Dados limitados |
+| Mercado de trabalho | 3.332 | Estimativas | ⚠️ Dados incompletos |
+
+### Detalhamento das Fontes
+
+#### 1. SiSU 2026 (Dados Oficiais MEC)
+- **Status:** ✅ Implementado e funcional
+- **Dados:** Notas de corte por curso, modalidade de acesso e ano
+- **Origem:** Arquivo CSV baixado manualmente do site oficial do MEC/SiSU
+- **Arquivo:** `doc/Sisu2026.csv.csv` (62.567 registros, delimitador `;`, codificação latin1)
+- **Importação:** Script `api/src/cli/importarSisu2026.js` (importação manual, não automatizada)
+- **Observação:** Não é mineração de dados. O arquivo foi disponibilizado pelo MEC e importado via script sob demanda.
+
+#### 2. EMEC/MEC (Lista de Instituições)
+- **Status:** ✅ Implementado
+- **Dados:** Lista de instituições públicas ativas
+- **Origem:** Arquivo CSV baixado do GitHub (gustavofidelisc/BrasilUniversidades)
+- **Observação:** 78 instituições públicas federais e estaduais. Dados coletados de fonte secundária.
+
+#### 3. INEP Microdados (Cursos e Campi)
+- **Status:** ❌ Não implementado
+- **Dados necessários:** Cursos, campi e detalhes das instituições
+- **Problema:** Arquivos de microdados não encontrados no diretório `api/temp/microdados_2023/`
+- **Consequência:** Não foi possível vincular automaticamente os cursos com suas instituições via INEP
+- **Solução aplicada:** Cursos foram importados a partir do arquivo SiSU 2026 (que contém código da instituição e do curso)
+
+#### 4. IBGE PIB per capita (Custos de Vida)
+- **Status:** ❌ Não implementado
+- **Dados necessários:** Moradia, alimentação, transporte por município
+- **Problema:** Requer coleta e processamento de dados do IBGE
+- **Impacto:** Aba "Custos da cidade" mostra mensagem de dados indisponíveis
+
+#### 5. Dados Abertos MEC (Auxílios e Bolsas)
+- **Status:** ⚠️ Parcialmente implementado
+- **Dados:** 571 registros de auxílios e bolsas
+- **Problema:** Coleta não automatizada, dados limitados
+- **Impacto:** Aba "Bolsas e auxílios" mostra poucos resultados
+
+#### 6. Mercado de Trabalho
+- **Status:** ⚠️ Parcialmente implementado
+- **Dados:** 3.332 registros com demanda estimada
+- **Problema:** Dados baseados em estimativas, não em dados oficiais
+- **Impacto:** Aba "Mercado e estágios" mostra informações limitadas
+
+---
+
+## O que está Funcional e o que Não Está
+
+### ✅ Funcional
+
+1. **Busca de cursos e instituições**
+   - Filtros por estado, categoria e nome
+   - Autocomplete com sugestões clicáveis
+   - Paginação de resultados
+
+2. **Notas de corte do SiSU 2026**
+   - 30.995 notas reais importadas
+   - Exibição por modalidade de acesso
+   - Dados oficiais do MEC
+
+3. **Detalhes do curso**
+   - Informações básicas (nome, grau, turno, cidade)
+   - Notas de corte disponíveis na aba correspondente
+
+4. **Sistema de favoritos**
+   - Adicionar/remover cursos favoritos
+   - Persistência em localStorage
+   - Acesso rápido pela navbar
+
+5. **Interface responsiva**
+   - Layout adaptável para desktop e mobile
+   - Componentes de UI reutilizáveis
+   - Estados de carregamento e erro
+
+### ❌ Não Funcional (ou parcialmente)
+
+1. **Custos de vida por cidade (RF3)**
+   - **Motivo:** Requer dados do IBGE PIB per capita por município
+   - **Solução necessária:** Implementar coletor de dados do IBGE ou usar API do IBGE
+   - **Estado atual:** Aba mostra "Indicadores econômicos ainda não disponíveis"
+
+2. **Auxílios e bolsas completos (RF4)**
+   - **Motivo:** Coleta não automatizada, dados limitados a 571 registros
+   - **Solução necessária:** Implementar coletor de dados do MEC ou usar API do Programa Universidade
+   - **Estado atual:** Aba mostra poucos resultados para a maioria das instituições
+
+3. **Mercado de trabalho e estágios (RF5)**
+   - **Motivo:** Requer dados de mercado de trabalho por região e curso
+   - **Solução necessária:** Integração com APIs de mercado de trabalho (e.g., InfoJobs, LinkedIn)
+   - **Estado atual:** Dados baseados em estimativas, não em dados oficiais
 
 ---
 
 ## Arquitetura do Sistema
 
-O projeto segue o padrão **MVC (Model-View-Controller)** com nomenclatura em português brasileiro, aplicando princípios **SOLID** e *Clean Architecture*.
+O projeto segue o padrão **MVC (Model-View-Controller)** com nomenclatura em português brasileiro.
 
-### Fluxo de Requisição
+### Estrutura de Diretórios
 
 ```
-Requisição HTTP
-    │
-    ▼
-┌──────────────────────────────────┐
-│  app.js                          │
-│  ├── Helmet (segurança)          │
-│  ├── CORS                        │
-│  ├── JSON Parser (10kb limit)    │
-│  ├── Logger (intermediários/)    │
-│  ├── Static Files (frontend/)    │
-│  └── Rotas (rotas/)              │
-│        │                         │
-│        ▼                         │
-│  Controladores (controladores/)  │
-│        │                         │
-│        ├── Valida (utilitários/) │
-│        │                         │
-│        ├── Chama Modelo          │
-│        │     │                   │
-│        │     ▼                   │
-│        │  Modelos (modelos/)     │
-│        │     │                   │
-│        │     ▼                   │
-│        │  conexaoBanco           │
-│        │  (configurações/)       │
-│        │     │                   │
-│        │     ▼                   │
-│        │  SQLite DB              │
-│        │                         │
-│        └── Retorna Response      │
-│                                  │
-│  tratamentoErros ←── erros via next(erro)
-└──────────────────────────────────┘
+ingressouniversidade/
+├── api/                                        # Backend Node.js
+│   ├── src/
+│   │   ├── app.js                              # Middlewares + rotas
+│   │   ├── server.js                           # Startup do servidor
+│   │   ├── configuracoes/                      # Configurações
+│   │   ├── modelos/                            # Acesso a dados (MVC - M)
+│   │   ├── controladores/                      # Lógica HTTP (MVC - C)
+│   │   ├── rotas/                              # Endpoints
+│   │   ├── mineracao/                          # Sistema de mineração
+│   │   └── cli/                                # Scripts de linha de comando
+│   └── db/                                     # Banco SQLite
+│
+├── frontend/                                   # Interface (MVC - V)
+│   ├── index.html                              # Home: busca com filtros
+│   ├── css/estilo.css                          # Estilos
+│   ├── js/                                     # Lógica JavaScript
+│   └── paginas/                                # Páginas internas
+│
+└── doc/                                        # Documentação
 ```
-
-### Camadas
-
-| Camada | Diretório | Responsabilidade |
-|--------|-----------|------------------|
-| **Configurações** | `configuracoes/` | Conexão com banco de dados, variáveis de ambiente |
-| **Modelos** | `modelos/` | Lógica de acesso a dados, queries SQL, regras de domínio |
-| **Controladores** | `controladores/` | Intermediação HTTP, validação de input, comunicação entre camadas |
-| **Intermediários** | `intermediarios/` | Middlewares Express (logger, tratamento de erros) |
-| **Rotas** | `rotas/` | Definição de endpoints e mapeamento para controladores |
-| **Serviços** | `servicos/` | Orquestração de modelos, integração com fontes externas |
-| **Utilitários** | `utilitarios/` | Funções de validação e sanitização |
-| **Visões** | `frontend/` | Interface HTML + JavaScript estático |
-
-### Princípios Aplicados
-
-- **Separação de Responsabilidades (SRP):** Cada camada tem uma única responsabilidade
-- **Baixo Acoplamento:** Controladores dependem de modelos, não do banco diretamente
-- **Tratamento de Erros Centralizado:** Middleware global via `next(erro)`
-- **DRY:** Queries SQL extraídas para modelos reutilizáveis
-- **Prepared Statements:** Todas as consultas usam parâmetros preparados (anti SQL Injection)
 
 ---
 
@@ -129,11 +195,14 @@ Requisição HTTP
 |------------|--------|-----|
 | Node.js | 18+ | Runtime JavaScript |
 | Express.js | 4.x | Framework web |
-| better-sqlite3 | 9.x | Driver SQLite (síncrono, prepared statements) |
+| better-sqlite3 | 13.x | Driver SQLite |
 | Helmet | 8.x | Segurança HTTP |
 | CORS | 2.x | Cross-Origin Resource Sharing |
 | Validator | 13.x | Sanitização de inputs |
 | Dotenv | 16.x | Variáveis de ambiente |
+| Axios | 1.x | HTTP client |
+| Cheerio | 1.x | Parseamento HTML |
+| node-cron | 3.x | Agendamento de tarefas |
 
 ### Frontend (`frontend/`)
 
@@ -141,142 +210,52 @@ Requisição HTTP
 |------------|-----|
 | HTML5 semântico | Estrutura das páginas |
 | Tailwind CSS (CDN) | Estilização responsiva |
-| JavaScript ES6+ vanilla | Lógica e comunicação com API (Fetch API) |
+| JavaScript ES6+ vanilla | Lógica e comunicação com API |
 
 ### Banco de Dados
 
 | Característica | Detalhe |
 |----------------|---------|
 | Motor | SQLite (better-sqlite3) |
-| Modo | WAL (Write-Ahead Logging) para performance |
+| Modo | WAL (Write-Ahead Logging) |
 | Foreign Keys | Ativadas |
-| Prepared Statements | Em todas as consultas (anti SQL Injection) |
-| Codificação | Nomes de tabelas e colunas em português brasileiro |
+| Prepared Statements | Em todas as consultas |
 
 ---
 
-## Estrutura do Projeto
+## Endpoints da API
 
-```
-ingressouniversidade/
-├── api/                                        # Backend Node.js
-│   ├── .env                                    # Variáveis de ambiente
-│   ├── package.json                            # Dependências
-│   ├── iniciarBanco.js                         # DDL + dados seed
-│   ├── src/
-│   │   ├── app.js                              # Middlewares + rotas + tratamento de erros
-│   │   ├── server.js                           # Startup do servidor
-│   │   │
-│   │   ├── configuracoes/                      # Configurações do sistema
-│   │   │   └── conexaoBanco.js                 # Conexão SQLite (WAL, FK)
-│   │   │
-│   │   ├── modelos/                            # Camada de acesso a dados (MVC - M)
-│   │   │   ├── instituicaoModelo.js            # Consultas de instituições
-│   │   │   ├── cursoModelo.js                  # Consultas de cursos
-│   │   │   ├── notaCorteModelo.js              # Consultas de notas de corte
-│   │   │   ├── custoCidadeModelo.js            # Consultas de custos por cidade
-│   │   │   ├── auxilioBolsaModelo.js           # Consultas de auxílios e bolsas
-│   │   │   ├── mercadoEstagioModelo.js         # Consultas de mercado e estágios
-│   │   │   └── favoritoModelo.js               # CRUD de favoritos
-│   │   │
-│   │   ├── controladores/                      # Lógica de HTTP (MVC - C)
-│   │   │   ├── buscaControlador.js             # RF1 — Busca unificada
-│   │   │   ├── universidadeControlador.js      # RF2-RF5 — Detalhes
-│   │   │   └── favoritoControlador.js          # RF6 — Favoritos
-│   │   │
-│   │   ├── intermediarios/                     # Middlewares Express
-│   │   │   ├── tratamentoErros.js              # Handler global de erros
-│   │   │   └── logger.js                       # Log de requisições (method, url, status, ms)
-│   │   │
-│   │   ├── rotas/                              # Definição de endpoints
-│   │   │   ├── buscaRotas.js                   # GET /api/busca
-│   │   │   ├── universidadeRotas.js            # GET /api/cursos, /api/instituicoes
-│   │   │   └── favoritoRotas.js                # POST/GET/DELETE /api/favoritos
-│   │   │
-│   │   ├── servicos/                           # Orquestração e integração
-│   │   │   ├── integracaoSisu.js               # Integração notas de corte
-│   │   │   └── integracaoCustoVida.js          # Integração custo de vida
-│   │   │
-│   │   └── utilitarios/                        # Funções auxiliares
-│   │       └── validadores.js                  # Validação e sanitização (validator)
-│   │
-│   └── db/                                     # Banco SQLite (gitignore)
-│
-├── frontend/                                   # Visões estáticas (MVC - V)
-│   ├── index.html                              # Home: busca com filtros
-│   ├── css/
-│   │   └── estilo.css                          # Estilos + acessibilidade
-│   ├── js/
-│   │   ├── api.js                              # Módulo Fetch genérico
-│   │   ├── busca.js                            # Lógica de busca (RF1)
-│   │   ├── detalhes.js                         # Detalhes do curso (RF2-RF5)
-│   │   ├── favoritos.js                        # Gestão de favoritos (RF6)
-│   │   ├── componentes.js                      # Componentes de UI reutilizáveis
-│   │   ├── dadosDemo.js                        # Dados de demonstração (fallback)
-│   │   └── util.js                             # Funções utilitárias
-│   ├── paginas/
-│   │   ├── detalhes.html                       # Página de detalhes
-│   │   └── favoritos.html                      # Lista de favoritos
-│   └── assets/                                 # Imagens e ícones
-│
-├── doc/                                        # Documentação
-│   ├── reestruturacao.md                       # Plano de reestruturação MVC
-│   ├── prompt_mvc_deepseek_v2.md               # Prompt de reestruturação
-│   └── backup/                                 # Documentos originais de escopo
-│
-└── README.md                                   # Este arquivo
-```
+### Busca e Sugestões
 
----
+| Método | Endpoint | Parâmetros | Descrição |
+|--------|----------|------------|-----------|
+| `GET` | `/api/busca` | `?q=&estado=&categoria=` | Busca unificada |
+| `GET` | `/api/sugestoes` | `?q=&limite=` | Sugestões para autocomplete |
 
-## Modelo de Banco de Dados
+### Instituições e Cursos
 
-### Tabelas
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `GET` | `/api/instituicoes` | Lista instituições |
+| `GET` | `/api/instituicoes/:id` | Detalhes da instituição |
+| `GET` | `/api/cursos` | Lista cursos |
+| `GET` | `/api/cursos/:id` | Detalhes do curso (com notas de corte) |
 
-```
-instituicoes ──< cursos ──< notas_corte
-                  │
-                  ├──< mercado_estagios
-                  │
-instituicoes ──< auxilios_bolsas
+### Favoritos
 
-custos_cidade (por cidade)
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `POST` | `/api/favoritos` | Adicionar favorito |
+| `GET` | `/api/favoritos` | Listar favoritos |
+| `DELETE` | `/api/favoritos/:id` | Remover favorito |
 
-favoritos (por sessão de usuário)
-```
+### Health Check
 
-### Descrição das Tabelas
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `GET` | `/api/health` | Verificação de saúde |
 
-| Tabela | Colunas Principais | Descrição |
-|--------|-------------------|-----------|
-| `instituicoes` | id, nome, sigla, cidade, estado, site | Universidades/faculdades |
-| `cursos` | id, instituicao_id, nome, grau, modalidade, duracao_semestres | Cursos de cada instituição |
-| `notas_corte` | id, curso_id, modalidade_acesso, ano, chamada, nota_minima | Notas mínimas por processo seletivo |
-| `custos_cidade` | id, cidade, estado, moradia, alimentacao, transporte, outros, mes_referencia | Custos estimados por cidade |
-| `auxilios_bolsas` | id, instituicao_id, nome, tipo, descricao, url | Bolsas e auxílios da instituição |
-| `mercado_estagios` | id, curso_id, regiao, demanda, salario_medio, vagas_estagio, fonte, atualizado_em | Demanda e estágios |
-| `favoritos` | id, sessao_usuario, curso_id, instituicao_id, criado_em | Cursos salvos por sessão |
-
-### Índices
-
-```sql
-idx_instituicoes_nome    -- Busca por nome da instituição
-idx_instituicoes_cidade  -- Busca por cidade/estado
-idx_cursos_instituicao   -- Cursos por instituição
-idx_notas_curso          -- Notas de corte por curso/ano
-idx_favoritos_usuario    -- Favoritos por sessão de usuário
-```
-
-### Dados Seed
-
-O sistema já vem populado com dados iniciais para demonstração:
-
-- **8 instituições** de Mato Grosso e Mato Grosso do Sul (UFMT, UFMS, UNEMAT, IFMT, UFGD, UCDB, UNIAN, UNIC)
-- **20 cursos** de diversas áreas (Computação, Engenharia, Direito, Medicina, Administração, etc.)
-- **25 registros de notas de corte** (SiSU e ProUni, 2025)
-- **6 cidades** com custos estimados (Cuiabá, Campo Grande, Sinop, Dourados, Rondonópolis, Tangará da Serra)
-- **14 bolsas e auxílios** das instituições
-- **18 registros de mercado e estágios**
+**Total: 11 endpoints**
 
 ---
 
@@ -297,14 +276,19 @@ cd ingressouniversidade
 # 2. Instalar dependências
 cd api && npm install
 
-# 3. Iniciar o servidor (com auto-reload)
-npm run dev
+# 3. Iniciar o servidor
+npm start
 
 # 4. Acessar no navegador
 # http://localhost:3000
 ```
 
-O servidor inicia automaticamente na porta 3000 (configurável via `.env`). Na primeira execução, o banco de dados é criado e populado com os dados seed.
+### Importação dos Dados SiSU 2026
+
+```bash
+# Importar notas de corte do SiSU 2026
+node src/cli/importarSisu2026.js
+```
 
 ### Variáveis de Ambiente
 
@@ -312,174 +296,34 @@ O servidor inicia automaticamente na porta 3000 (configurável via `.env`). Na p
 |----------|--------------|-----------|
 | `PORT` | `3000` | Porta do servidor |
 | `ORIGEM_PERMITIDA` | `*` | Origens permitidas (CORS) |
+| `MINERACAO_ENABLED` | `false` | Ativar mineração automática |
 
 ---
 
-## Endpoints da API
+## Banco de Dados
 
-### Health Check
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `GET` | `/api/health` | Verificação de saúde da API |
-
-### Busca (RF1)
-
-| Método | Endpoint | Parâmetros | Descrição |
-|--------|----------|------------|-----------|
-| `GET` | `/api/busca` | `?nome=&cidade=&estado=` | Busca unificada de cursos e instituições |
-
-### Instituições
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `GET` | `/api/instituicoes` | Lista instituições (filtros: nome, cidade, estado) |
-| `GET` | `/api/instituicoes/:id` | Detalhes da instituição com cursos e auxílios |
-
-### Cursos
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `GET` | `/api/cursos` | Lista cursos (filtros: nome, cidade, estado) |
-| `GET` | `/api/cursos/:id` | Detalhes completos do curso (notas, custos, bolsas, mercado) |
-| `GET` | `/api/cursos/:id/notas-corte` | Notas de corte do curso (RF2) |
-| `GET` | `/api/cursos/:id/auxilios-bolsas` | Bolsas e auxílios da instituição (RF4) |
-| `GET` | `/api/cursos/:id/mercado-estagios` | Mercado de trabalho e estágios (RF5) |
-| `GET` | `/api/cidades/:cidade/custos` | Custos de vida da cidade (RF3) |
-
-### Favoritos (RF6)
-
-| Método | Endpoint | Body/Parâmetros | Descrição |
-|--------|----------|-----------------|-----------|
-| `POST` | `/api/favoritos` | `{ sessao_usuario, curso_id, instituicao_id }` | Adicionar favorito |
-| `GET` | `/api/favoritos` | `?sessao_usuario=` | Listar favoritos do usuário |
-| `DELETE` | `/api/favoritos/:id` | `?sessao_usuario=` | Remover favorito |
-
-**Total: 13 endpoints**
-
-### Formato de Resposta
-
-**Sucesso:**
-```json
-{
-  "sucesso": true,
-  "mensagem": "Operação realizada com sucesso!",
-  "dados": { ... }
-}
-```
-
-**Erro de validação (HTTP 422):**
-```json
-{
-  "sucesso": false,
-  "mensagem": "Dados inválidos.",
-  "erros": ["Campo obrigatório não preenchido."]
-}
-```
-
-**Erro genérico (HTTP 400/404/500):**
-```json
-{
-  "sucesso": false,
-  "mensagem": "Descrição do erro."
-}
-```
-
----
-
-## Frontend
-
-### Páginas
-
-| Página | Arquivo | Descrição |
-|--------|---------|-----------|
-| Home / Busca | `index.html` | Busca com filtros e grid de resultados (RF1) |
-| Detalhes | `paginas/detalhes.html` | Detalhes do curso com abas (RF2-RF5) |
-| Favoritos | `paginas/favoritos.html` | Lista de cursos favoritados (RF6) |
-
-### Fluxo de Navegação
+### Tabelas Principais
 
 ```
-             ┌───────────┐
-             │  index    │  busca + filtros (RF1)
-             └─────┬─────┘
-                   │ click num card
-             ┌─────▼─────┐
-             │ detalhes  │  ?id=<curso> (RF2–RF5) + "Favoritar" (RF6)
-             └─────┬─────┘
-                   │ navbar → Favoritos
-             ┌─────▼─────┐
-             │ favoritos │  lista salva (RF6)
-             └───────────┘
+instituicoes ──< cursos ──< notas_corte
+                  │
+                  ├──< mercado_estagios
+                  │
+instituicoes ──< auxilios_bolsas
+
+favoritos (por sessão de usuário)
 ```
 
-### Componentes Reutilizáveis (`js/componentes.js`)
+### Dados Atuais
 
-| Componente | Descrição |
-|------------|-----------|
-| `cardResultado(curso)` | Card da busca com highlight de nota mínima |
-| `botaoFavorito(curso, grande)` | Botão de favoritar/desfavoritar |
-| `tabelaNotas(notas)` | Tabela responsiva de notas de corte |
-| `listaAuxilios(auxilios)` | Lista de bolsas/auxílios com link externo |
-| `cardInfo(icone, titulo, valor, destaque)` | Card de indicador (custos, demanda) |
-| `badge(texto, classes)` | Rótulos de demanda/seguro |
-
-### Funções Utilitárias (`js/util.js`)
-
-| Função | Descrição |
-|--------|-----------|
-| `escapeHTML(texto)` | Escapa caracteres especiais (anti XSS) |
-| `gerarUUID()` | Gera UUID para sessão de usuário |
-| `debounce(func, atraso)` | Controle de frequência de chamadas |
-| `toast(mensagem, tipo)` | Feedback visual de sucesso/erro |
-| `formatarMoeda(valor)` | Formata valor em R$ |
-| `skeleton(quantidade)` | Placeholder de carregamento |
-| `estadoVazio(mensagem)` | Estado de ausência de dados |
-| `estadoErro(mensagem)` | Estado de erro |
-
----
-
-## Convencões de Código
-
-- **Linguagem:** Variáveis, funções, rotas, colunas do banco e comentários em **português brasileiro**
-- **Módulo:** CommonJS (`require` / `module.exports`)
-- **Respostas HTTP:** Códigos semânticos (200, 201, 400, 404, 409, 422, 500)
-- **Payload:** Limite de 10kb para JSON
-- **Validação:** Sanitização com `validator` (trim, escape) antes de cada operação no banco
-- **Banco:** Prepared statements em todas as consultas
-
-### Padrões de Código
-
-**Modelo** — retorna dados puros (objetos/arrays):
-```javascript
-const banco = require('../configuracoes/conexaoBanco')
-
-function listar() {
-  return banco.prepare('SELECT * FROM tabela').all()
-}
-
-function detalhar(id) {
-  return banco.prepare('SELECT * FROM tabela WHERE id = ?').get(id)
-}
-
-module.exports = { listar, detalhar }
-```
-
-**Controlador** — intermedia HTTP, delega ao modelo:
-```javascript
-const modelo = require('../modelos/entidadeModelo')
-
-function listar(req, res, next) {
-  try {
-    const dados = modelo.listar()
-    res.json({ sucesso: true, dados })
-  } catch (erro) {
-    next(erro)
-  }
-}
-
-module.exports = { listar }
-```
+| Tabela | Registros | Descrição |
+|--------|-----------|-----------|
+| `instituicoes` | 136 | Universidades e faculdades |
+| `cursos` | 4.837 | Cursos de graduação |
+| `notas_corte` | 30.995 | Notas do SiSU 2026 |
+| `auxilios_bolsas` | 571 | Bolsas e auxílios |
+| `mercado_estagios` | 3.332 | Dados de mercado |
+| `favoritos` | 0 | Cursos favoritados (por sessão) |
 
 ---
 
@@ -488,55 +332,46 @@ module.exports = { listar }
 | Prática | Implementação |
 |---------|---------------|
 | SQL Injection | Prepared statements com better-sqlite3 |
-| XSS | Sanitização com `validator` (escape) |
+| XSS | Sanitização com `validator` |
 | Payload grande | `express.json({ limit: '10kb' })` |
 | Headers HTTP | Helmet com configuração segura |
 | CORS | Configurável via variável `ORIGEM_PERMITIDA` |
-| Dados pessoais | Favoritos anônimos por sessão (sem cadastro) |
-| Tratamento de erros | Middleware global que retorna JSON (não expõe stack traces) |
-| Logging | Middleware de log registra method, url, status e duração |
+| Dados pessoais | Favoritos anônimos por sessão |
 
 ---
 
-## Acessibilidade (RNF5)
+## Acessibilidade
 
 - Contraste de cores adequado (WCAG AA)
 - Fontes legíveis com tamanhos adequados
 - Atributos `aria-label` nos campos de busca
-- Navegação por teclado suportada (`focus-visible`)
+- Navegação por teclado suportada
 - Estados de carregamento e vazio comunicados textualmente
-- Feedback visual em todas as ações (toast de sucesso/erro)
-- Abas com navegação por setas (`ArrowRight`, `ArrowLeft`)
+- Abas com navegação por setas
 
 ---
 
-## Documentação do Projeto
+## Limitações Conhecidas
 
-| Arquivo | Descrição |
-|---------|-----------|
-| `doc/reestruturacao.md` | Plano detalhado de reestruturação para MVC |
-| `doc/prompt_mvc_deepseek_v2.md` | Prompt de reestruturação arquitetural |
-| `doc/backup/` | Documentos originais de escopo (problema, requisitos, personas, pesquisas) |
+1. **Dados de custos de vida não disponíveis**
+   - Requer implementação de coletor IBGE
+   - Solução: Integrar API do IBGE ou usar dados abertos
 
----
+2. **Auxílios e bolsas limitados**
+   - Apenas 571 registros disponíveis
+   - Solução: Implementar coletor do MEC ou API do Programa Universidade
 
-## Status do Projeto
+3. **Dados de mercado incompletos**
+   - Baseados em estimativas, não em dados oficiais
+   - Solução: Integrar APIs de mercado de trabalho
 
-- [x] Configuração do banco de dados com tabelas e dados seed
-- [x] Backend com 13 endpoints REST (arquitetura MVC)
-- [x] Camada de Modelos com 7 arquivos (desacoplamento do banco)
-- [x] Middleware global de tratamento de erros
-- [x] Middleware de log de requisições
-- [x] Serviços de integração reescritos (orquestram modelos)
-- [x] Frontend responsivo com 3 páginas
-- [x] Sistema de busca com filtros e debounce
-- [x] Detalhes do curso com abas (notas, custos, bolsas, mercado)
-- [x] Sistema de favoritos com persistência (localStorage + API)
-- [x] Componentes de UI reutilizáveis
-- [x] Dados de demonstração (fallback)
-- [ ] Integração com APIs externas (SiSU, IBGE)
-- [ ] Testes automatizados
-- [ ] Deploy em produção
+4. **Instituições particulares não incluídas**
+   - Sistema focado em instituições públicas
+   - Solução: Expandir coleta para incluir particulares
+
+5. **Notas de corte apenas do SiSU 2026**
+   - Dados de anos anteriores não disponíveis
+   - Solução: Implementar histórico de notas
 
 ---
 

@@ -8,18 +8,18 @@ function sanitizar(texto) {
 // Valida e sanitiza os dados de busca (RF1)
 function validarBusca(dados) {
   const erros = []
-  const nome = sanitizar(dados.nome || '')
+  const nome = sanitizar(dados.nome || dados.q || '')
   const cidade = sanitizar(dados.cidade || '')
-  const estado = sanitizar(dados.estado || '')
+  const estado = sanitizar(dados.estado || dados.uf || '')
 
   if (nome.length > 150)
-    erros.push('Nome deve ter no maximo 150 caracteres.')
+    erros.push('Nome deve ter no máximo 150 caracteres.')
 
   if (cidade.length > 100)
-    erros.push('Cidade deve ter no maximo 100 caracteres.')
+    erros.push('Cidade deve ter no máximo 100 caracteres.')
 
   if (estado.length > 2)
-    erros.push('Estado deve ter no maximo 2 caracteres.')
+    erros.push('Estado deve ter no máximo 2 caracteres.')
 
   return { valido: erros.length === 0, erros, dados: { nome, cidade, estado } }
 }
@@ -32,13 +32,13 @@ function validarFavorito(dados) {
   const instituicaoId = parseInt(dados.instituicao_id)
 
   if (!sessao || sessao.length < 5)
-    erros.push('Identificador de sessao invalido.')
+    erros.push('Identificador de sessão inválido.')
 
   if (!cursoId || cursoId <= 0)
-    erros.push('ID do curso invalido.')
+    erros.push('ID do curso inválido.')
 
   if (instituicaoId && (isNaN(instituicaoId) || instituicaoId <= 0))
-    erros.push('ID da instituicao invalido.')
+    erros.push('ID da instituição inválido.')
 
   return {
     valido: erros.length === 0,

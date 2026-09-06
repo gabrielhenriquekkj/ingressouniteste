@@ -6,4 +6,10 @@ function buscarPorInstituicao(instituicaoId) {
   ).all(instituicaoId)
 }
 
-module.exports = { buscarPorInstituicao }
+function buscarPorCampus(campusId) {
+  return banco.prepare(
+    'SELECT * FROM auxilios_bolsas WHERE campus_id = ? ORDER BY nome'
+  ).all(campusId)
+}
+
+module.exports = { buscarPorInstituicao, buscarPorCampus }

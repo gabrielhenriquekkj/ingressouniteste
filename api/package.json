@@ -1,18 +1,31 @@
 {
   "name": "api-ingresso-universitario",
-  "version": "1.0.0",
-  "description": "API para o sistema Ingresso Universitario — busca, notas de corte, custos, bolsas e favoritos",
+  "version": "2.0.0",
+  "description": "API para o sistema Ingresso Universitário — catálogo nacional de instituições públicas",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch src/server.js"
+    "dev": "node --watch src/server.js",
+    "iniciar-banco": "node iniciarBanco.js",
+    "minerar:catalogo": "node src/cli/minerarCatalogo.js",
+    "minerar:sisu": "node -e \"require('./src/mineracao/coletores/coletorSisu').coletarTodosAnos()\"",
+    "minerar:custos": "node src/cli/minerarCustos.js",
+    "minerar:auxilios": "node -e \"require('./src/mineracao/coletores/coletorAuxilios').coletar()\"",
+    "minerar:mercado": "node -e \"require('./src/mineracao/coletores/coletorMercado').coletar()\"",
+    "migrar": "node migracoes/002_tipo_nota_fonte_tipo.js",
+    "minerar:tudo": "node src/cli/minerarTudo.js",
+    "test": "node --test src/testes/normalizadores.test.js",
+    "test:all": "node --test src/testes/**/*.test.js"
   },
   "dependencies": {
-    "better-sqlite3": "^9.4.3",
+    "axios": "^1.7.0",
+    "better-sqlite3": "^13.0.3",
+    "cheerio": "^1.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "helmet": "^8.0.0",
+    "node-cron": "^3.0.3",
     "validator": "^13.12.0"
   }
 }

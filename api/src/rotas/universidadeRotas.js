@@ -7,7 +7,8 @@ const {
   notasCorte,
   custosCidade,
   auxiliosBolsas,
-  mercadoEstagios
+  mercadoEstagios,
+  listarCampi
 } = require('../controladores/universidadeControlador')
 
 const rotas = Router()
@@ -15,6 +16,9 @@ const rotas = Router()
 // Instituicoes
 rotas.get('/instituicoes', listarInstituicoes)
 rotas.get('/instituicoes/:id', detalharInstituicao)
+
+// Campi
+rotas.get('/campi', listarCampi)
 
 // Cursos
 rotas.get('/cursos', listarCursos)

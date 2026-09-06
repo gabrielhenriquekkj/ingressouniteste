@@ -6,3 +6,17 @@ api/db/
 *.db-wal
 *.log
 *.err
+
+# Debug/temp files
+api/check*.js
+api/diagnostico.js
+api/listarSemCurso.js
+api/analiseSisu2026.js
+api/clearc*.js
+api/clearcurso*.js
+api/rem*.js
+api/runPipeline.js
+api/testapi.js
+api/validar.js
+api/verificar.js
+api/temp/

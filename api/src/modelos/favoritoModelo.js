@@ -1,16 +1,18 @@
 const banco = require('../configuracoes/conexaoBanco')
 
-function existePorCursoESessao(cursoId, sessaoUsuario) {
-  return banco.prepare(
-    'SELECT id FROM favoritos WHERE sessao_usuario = ? AND curso_id = ?'
-  ).get(sessaoUsuario, cursoId)
-}
-
-function inserir(sessaoUsuario, cursoId, instituicaoId) {
-  const resultado = banco.prepare(
-    'INSERT INTO favoritos (sessao_usuario, curso_id, instituicao_id) VALUES (?, ?, ?)'
-  ).run(sessaoUsuario, cursoId, instituicaoId)
-  return { id: resultado.lastInsertRowid }
+function inserirSeguro(sessaoUsuario, cursoId, instituicaoId) {
+  try {
+    const stmtInserir = banco.prepare(
+      'INSERT INTO favoritos (sessao_usuario, curso_id, instituicao_id) VALUES (?, ?, ?)'
+    )
+    const resultado = stmtInserir.run(sessaoUsuario, cursoId, instituicaoId)
+    return { id: resultado.lastInsertRowid, duplicate: false }
+  } catch (e) {
+    if (e.code === 'SQLITE_CONSTRAINT') {
+      return { id: null, duplicate: true }
+    }
+    throw e
+  }
 }
 
 function listarPorSessao(sessaoUsuario) {
@@ -34,4 +36,4 @@ function remover(id) {
   banco.prepare('DELETE FROM favoritos WHERE id = ?').run(id)
 }
 
-module.exports = { existePorCursoESessao, inserir, listarPorSessao, buscarPorId, remover }
+module.exports = { inserirSeguro, listarPorSessao, buscarPorId, remover }

@@ -1,4 +1,4 @@
-// util.js — Funcoes utilitarias compartilhadas por todas as paginas
+// util.js — Funções utilitárias compartilhadas por todas as páginas
 
 const _divEscape = document.createElement('div')
 function escapeHTML(texto) {
@@ -46,7 +46,7 @@ function toast(mensagem, tipo) {
     : tipo === 'erro'
       ? 'bg-red-600 text-white'
       : 'bg-gray-800 text-white'
-  elemento.className = 'fixed bottom-6 right-6 z-50 px-5 py-3 rounded-xl shadow-lg text-sm font-semibold ' + cores + ' mostrar'
+  elemento.className = 'fixed bottom-20 right-6 z-50 px-5 py-3 rounded-xl shadow-lg text-sm font-semibold ' + cores + ' mostrar'
   elemento.textContent = mensagem
   clearTimeout(elemento._temporizador)
   elemento._temporizador = setTimeout(() => {

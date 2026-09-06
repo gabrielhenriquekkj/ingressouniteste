@@ -1,4 +1,4 @@
-// favoritos.js — Sistema de favoritos (RF6): armazenamento local + sincronizacao com a API.
+// favoritos.js — Sistema de favoritos (RF6): armazenamento local + sincronização com a API.
 
 const CHAVE_FAVORITOS = 'ingresso_universitario_favoritos'
 const CHAVE_SESSAO = 'ingresso_universitario_sessao'
@@ -175,7 +175,7 @@ document.addEventListener('click', function (evento) {
       cartao.remove()
       const area = document.getElementById('areaFavoritos')
       if (area && area.querySelectorAll('[data-curso-id]').length === 0) {
-        area.innerHTML = estadoVazio('Voce ainda nao favoritou nenhum curso.')
+        area.innerHTML = estadoVazio('Você ainda não favoritou nenhum curso.')
       }
     }, 300)
   }
@@ -196,7 +196,7 @@ function renderizarPaginaFavoritos() {
   atualizarResumoFavoritos()
 
   if (lista.length === 0) {
-    area.innerHTML = estadoVazio('Voce ainda nao favoritou nenhum curso. Use o botao Favoritar na busca ou na pagina de detalhes.')
+    area.innerHTML = estadoVazio('Você ainda não favoritou nenhum curso. Use o botão Favoritar na busca ou na página de detalhes.')
     return
   }
 

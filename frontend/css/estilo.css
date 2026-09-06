@@ -70,3 +70,21 @@ body {
   display: none;
 }
 
+/* Autocomplete sugestoes */
+[data-sugestao] {
+  transition: background-color 0.1s;
+}
+[data-sugestao][data-ativo="true"] {
+  background-color: #eef2ff;
+}
+#areaSugestoes {
+  scrollbar-width: thin;
+}
+#areaSugestoes::-webkit-scrollbar {
+  width: 6px;
+}
+#areaSugestoes::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+

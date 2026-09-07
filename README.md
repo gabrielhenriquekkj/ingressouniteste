@@ -276,18 +276,14 @@ cd ingressouniversidade
 # 2. Instalar dependências
 cd api && npm install
 
-# 3. Iniciar o servidor
+# 3. Importar os dados do SiSU 2026 (obrigatório na primeira vez)
+node src/cli/importarSisu2026.js
+
+# 4. Iniciar o servidor
 npm start
 
-# 4. Acessar no navegador
+# 5. Acessar no navegador
 # http://localhost:3000
-```
-
-### Importação dos Dados SiSU 2026
-
-```bash
-# Importar notas de corte do SiSU 2026
-node src/cli/importarSisu2026.js
 ```
 
 ### Variáveis de Ambiente

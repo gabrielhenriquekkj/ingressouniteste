@@ -1,0 +1,46 @@
+const express = require('express')
+const cors = require('cors')
+const helmet = require('helmet')
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
+
+const rotasBusca = require('./rotas/buscaRotas')
+const rotasUniversidade = require('./rotas/universidadeRotas')
+const rotasFavorito = require('./rotas/favoritoRotas')
+const rotasSugestao = require('./rotas/sugestaoRotas')
+const logger = require('./intermediarios/logger')
+const tratamentoErros = require('./intermediarios/tratamentoErros')
+
+const app = express()
+
+// Middlewares de seguranca e parsing
+app.use(helmet({
+  contentSecurityPolicy: false
+}))
+app.use(cors({ origin: process.env.ORIGEM_PERMITIDA || '*' }))
+app.use(express.json({ limit: '10kb' }))
+app.use(logger)
+
+// Servir arquivos estaticos do frontend (sem cache em dev)
+const caminhoFrontend = path.resolve(__dirname, '../../frontend')
+app.use(express.static(caminhoFrontend, { maxAge: 0, etag: false }))
+
+// Rotas da API
+app.use('/api', rotasBusca)
+app.use('/api', rotasUniversidade)
+app.use('/api', rotasFavorito)
+app.use('/api', rotasSugestao)
+
+// Rota de health check
+app.get('/api/health', (_, res) => res.json({ sucesso: true, mensagem: 'API do Ingresso Universitário funcionando!' }))
+
+// Fallback para o frontend (SPA)
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) return next()
+  res.sendFile(path.join(caminhoFrontend, 'index.html'))
+})
+
+// Middleware global de tratamento de erros (DEVE ser o ultimo)
+app.use(tratamentoErros)
+
+module.exports = app

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sua lista de cursos e universidades favoritos para acesso rápido.">
+  <title>Favoritos — Ingresso Universitário</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" charset="utf-8">
+  <link rel="stylesheet" href="../css/estilo.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="font-sans antialiased text-gray-800 bg-gray-50 min-h-screen flex flex-col">
+
+  <div id="navbar"></div>
+
+  <main class="flex-1 pt-16 pb-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <section class="py-10">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-3xl font-extrabold text-gray-900">Meus favoritos</h1>
+            <p class="mt-1 text-gray-600">Acesso rápido aos cursos e universidades que você salvou.</p>
+          </div>
+          <p id="resumoFavoritos" class="text-sm text-gray-500" aria-live="polite"></p>
+        </div>
+        <div id="areaFavoritos" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="bg-gray-900 text-gray-400 text-center py-8 px-4">
+    <p class="text-sm">© 2026 Ingresso Universitário — Projeto Integrador I · Grupo 3</p>
+  </footer>
+
+  <script src="../js/util.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/dadosDemo.js"></script>
+  <script src="../js/componentes.js"></script>
+  <script src="../js/favoritos.js"></script>
+</body>
+</html>

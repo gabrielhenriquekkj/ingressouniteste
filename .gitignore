@@ -1,9 +1,11 @@
 node_modules/
-.env
+api/db/
+api/.env
 *.db-shm
 *.db-wal
 *.log
 *.err
+.DS_Store
 
 # Debug/temp files
 api/check*.js
@@ -20,3 +22,9 @@ api/verificar.js
 api/temp/
 
 # Dados grandes
+
+# Inner directory
+ingressouniteste/.git
+ingressouniteste/api/node_modules/
+ingressouniteste/api/db/
+ingressouniteste/api/.env

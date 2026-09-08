@@ -1,5 +1,4 @@
 node_modules/
-api/db/
 api/.env
 *.db-shm
 *.db-wal
@@ -21,10 +20,7 @@ api/validar.js
 api/verificar.js
 api/temp/
 
-# Dados grandes
-
 # Inner directory
 ingressouniteste/.git
 ingressouniteste/api/node_modules/
-ingressouniteste/api/db/
 ingressouniteste/api/.env

@@ -88,3 +88,40 @@ body {
   border-radius: 3px;
 }
 
+
+/* Google Translate - Botão flutuante */
+#google_translate_element {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 9999;
+}
+
+#google_translate_element .goog-te-gadget {
+  font-family: 'Inter', system-ui, sans-serif !important;
+  font-size: 0.875rem !important;
+}
+
+#google_translate_element .goog-te-gadget-simple {
+  background-color: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 9999px !important;
+  padding: 0.5rem 0.875rem !important;
+  box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.1), 0 4px 6px -4px rgba(79, 70, 229, 0.1) !important;
+  display: flex !important;
+  align-items: center !important;
+  transition: all 150ms ease-in-out !important;
+}
+
+#google_translate_element .goog-te-gadget-simple:hover {
+  background-color: #f8f7ff !important;
+  border-color: #c7d2fe !important;
+}
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+body {
+  top: 0px !important;
+}

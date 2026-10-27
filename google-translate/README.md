@@ -1,0 +1,151 @@
+# Google Translate API
+A [Node.JS](https://nodejs.org) library to consume Google Translate for free.
+
+[![GitHub release](https://img.shields.io/github/release/iamtraction/google-translate.svg?style=flat)](https://github.com/iamtraction/google-translate/releases)
+[![Known Vulnerabilities](https://snyk.io/test/github/iamtraction/google-translate/badge.svg?targetFile=package.json)](https://snyk.io/test/github/iamtraction/google-translate?targetFile=package.json)
+[![license](https://img.shields.io/github/license/iamtraction/google-translate.svg)](LICENSE)
+
+### Feature Highlights
+* Automatically detect source language
+* Automatic spelling corrections
+* Automatic language correction
+* Fast and reliable
+
+## Table of Contents
+* [Installation](#installation)
+* [Usage](#usage)
+* [Languages](#languages)
+* [Errors](#errors)
+* [Examples](#examples)
+* [Development](#development)
+* [Credits, etc](#extras)
+
+## Installation
+Requires Node.js 22.19.0 or later.
+
+```bash
+# Stable version, from npm repository
+npm install --save @iamtraction/google-translate
+
+# Latest version, from GitHub repository
+npm install --save iamtraction/google-translate
+```
+
+## Usage
+```js
+const translate = require('@iamtraction/google-translate');
+```
+
+#### Method: `translate(text, options)`
+```js
+translate(text, options).then(console.log).catch(console.error);
+```
+| Parameter | Type | Optional | Default | Description |
+|-|-|-|-|-|
+| `text` | `String` | No | - | The text you want to translate. |
+| `options` | `Object` | - | - | The options for translating. |
+| `options.from` | `String` | Yes | `'auto'` | The language name or code to translate from. If none is given, it will auto detect the source language. |
+| `options.to` | `String` | Yes | `'en'` | The language name or code to translate to. If none is given, it will translate to English. |
+| `options.raw` | `Boolean` | Yes | `false` | If `true`, it will return the raw output that was received from Google Translate. |
+| `options.dispatcher` | `Dispatcher` | Yes | - | The [undici](https://undici.nodejs.org) dispatcher to make the request with. |
+
+Behind a proxy, set `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY`. Pass `options.dispatcher` to take over entirely. Without either, undici's global dispatcher is used.
+
+#### Returns: `Promise<Object>`
+**Response Object:**
+
+| Key | Type | Description |
+|-|-|-|
+| `text` | `String` | The translated text. |
+| `from` | `Object` | - |
+| `from.language` | `Object` | - |
+| `from.language.didYouMean` | `Boolean` | Whether or not the API suggest a correction in the source language. |
+| `from.language.iso` | `String` | The code of the language that the API has recognized in the text. |
+| `from.text` | `Object` | - |
+| `from.text.autoCorrected` | `Boolean` | Whether or not the API has auto corrected the original text. |
+| `from.text.value` | `String` | The auto corrected text or the text with suggested corrections, or `""` unless `from.text.autoCorrected` or `from.text.didYouMean` is `true`. |
+| `from.text.didYouMean` | `Boolean` | Wherether or not the API has suggested corrections to the text |
+| `raw` | `Array` | The raw response from Google Translate servers, or `""` unless `options.raw` is `true` in the request options. |
+
+
+## Languages
+`translate.languages` is the table of supported languages, keyed by code, with two helpers attached.
+
+```js
+translate.languages['pa-Arab'];              // OUTPUT: Punjabi (Shahmukhi)
+translate.languages.getCode('Spanish');   // OUTPUT: es
+translate.languages.isSupported('klingon');  // OUTPUT: false
+```
+
+`getCode` accepts a code or a display name, case insensitively, and returns the code in its canonical casing or `null` if it isn't supported. The helpers are non-enumerable, so iterating the table yields only languages.
+
+
+## Errors
+Rejections carry a `name` to tell them apart and a `code` with HTTP semantics.
+
+| `name` | `code` | Thrown when |
+| --- | --- | --- |
+| `UnsupportedLanguageError` | `400` | `options.from` or `options.to` is not a supported language. No request is made. |
+| `TranslateResponseError` | The response status | Google Translate answered with a status other than `200`. |
+| `TranslateResponseError` | `502` | Google Translate answered `200` with a body that could not be parsed. The original parse error is on `err.cause`. |
+
+Match on `name` rather than `code`, as an upstream rejection also reports `400`.
+
+```js
+translate('Tu es incroyable!', { to: 'klingon' }).catch(err => {
+  if (err.name === 'UnsupportedLanguageError') console.error(err.message);
+});
+```
+
+
+## Examples
+#### From automatic language detection to English:
+```js
+translate('Tu es incroyable!', { to: 'en' }).then(res => {
+  console.log(res.text); // OUTPUT: You are amazing!
+}).catch(err => {
+  console.error(err);
+});
+```
+
+#### From English to French, with a typo:
+```js
+translate('Thnk you', { from: 'en', to: 'fr' }).then(res => {
+  console.log(res.text); // OUTPUT: Merci
+  console.log(res.from.text.autoCorrected); // OUTPUT: true
+  console.log(res.from.text.value); // OUTPUT: [Thank] you
+  console.log(res.from.text.didYouMean); // OUTPUT: false
+}).catch(err => {
+  console.error(err);
+});
+```
+
+#### Sometimes Google Translate won't auto correct:
+```js
+translate('I spea Dutch!', { from: 'en', to: 'nl' }).then(res => {
+  console.log(res.text); // OUTPUT: Ik spreek Nederlands!
+  console.log(res.from.text.autoCorrected); // OUTPUT: false
+  console.log(res.from.text.value); // OUTPUT: I [speak] Dutch!
+  console.log(res.from.text.didYouMean); // OUTPUT: true
+}).catch(err => {
+  console.error(err);
+});
+```
+
+## Development
+```bash
+npm run lint          # ESLint
+npm test              # the test suite
+npm run test:coverage # the test suite with a coverage report for src/
+```
+
+Lint is separate from tests and is not run by `npm test` — CI runs it as its own step, and a habit of running `npm test` alone will skip it.
+
+Most of the suite runs offline: `languages`, `request`, `parse`, and `errors` mock the transport through the public `dispatcher` option, so they assert what this library does — the request it builds, how it parses the response, how it validates and reports errors — without a network call. Only `test/smoke.test.js` reaches the real `translate.google.com`, so a red run there may be Google rate limiting rather than a regression. It checks only that a live response still parses into the expected shape; whether a translation is *correct* is Google's concern, not this library's, so no test asserts translated content.
+
+To run just the offline suites: `node --test test/languages.test.js test/request.test.js test/parse.test.js test/errors.test.js`.
+
+## Extras
+If you liked this project, please give it a ⭐ in [**GitHub**](https://github.com/iamtraction/google-translate).
+
+> Credits to [matheuss](https://github.com/matheuss) for writing the original version of this library. I rewrote this, with improvements and without using many external libraries, as his library was not actively developed and had vulnerabilities.

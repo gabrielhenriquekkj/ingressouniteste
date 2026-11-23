@@ -87,7 +87,7 @@ function definirIdioma(codigo) {
     aplicarTraducoesNoDocumento()
   }
   atualizarSeletoresIdioma()
-  window.dispatchEvent(new CustomEvent('idioma:alterado', { detail: { idioma: idiomaAtual } }))
+  document.dispatchEvent(new CustomEvent('idioma:alterado', { detail: { idioma: idiomaAtual } }))
 }
 
 function formatarNumero(valor) {

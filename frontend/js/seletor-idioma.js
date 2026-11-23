@@ -1,8 +1,9 @@
 function montarSeletorIdioma(sufixo) {
   const id = 'seletorIdioma' + (sufixo || '')
   const opcoes = IDIOMAS.map(function (idioma) {
-    return '<option value="' + idioma.codigo + '"' + (idioma.codigo === obterIdioma() ? ' selected' : '') + '>' +
-      escapeHTML(idioma.rotuloCurto) + '</option>'
+    return '<option value="' + idioma.codigo + '"' + (idioma.codigo === obterIdioma() ? ' selected' : '') +
+      ' title="' + escapeHTML(idioma.bandeira + ' ' + idioma.rotulo) + '">' +
+      escapeHTML(idioma.bandeira + ' ' + idioma.rotuloCurto) + '</option>'
   }).join('')
 
   return '<div class="flex shrink-0 items-center gap-0.5 sm:gap-1.5">' +
@@ -10,7 +11,7 @@ function montarSeletorIdioma(sufixo) {
     '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.7 5.7 3.7 9S14.5 18.3 12 21c-2.5-2.7-3.7-5.7-3.7-9S9.5 5.7 12 3z"/>' +
     '</svg>' +
     '<select id="' + id + '" data-seletor-idioma aria-label="' + escapeHTML(t('idioma.selecionar')) + '" ' +
-    'class="w-12 cursor-pointer rounded-full border border-gray-200 bg-white/90 px-1 py-1 text-xs font-bold text-indigo-700 transition hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:w-16 sm:px-2 sm:text-sm">' +
+    'class="w-16 cursor-pointer rounded-full border border-gray-200 bg-white/90 px-1 py-1 text-xs font-bold text-indigo-700 transition hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:w-20 sm:px-2 sm:text-sm">' +
     opcoes +
     '</select>' +
     '</div>'

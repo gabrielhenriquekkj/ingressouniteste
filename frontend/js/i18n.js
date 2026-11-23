@@ -64,7 +64,8 @@ function aplicarTraducoesNoDocumento() {
 }
 
 function atualizarSeletoresIdioma() {
-  const rotulo = t('idioma.selecionar') + ': ' + nomeIdioma(idiomaAtual)
+  const idioma = IDIOMAS.find(function (item) { return item.codigo === idiomaAtual })
+  const rotulo = t('idioma.selecionar') + ': ' + (idioma ? idioma.bandeira + ' ' + idioma.rotulo : nomeIdioma(idiomaAtual))
   document.querySelectorAll('[data-seletor-idioma]').forEach(function (seletor) {
     seletor.value = idiomaAtual
     seletor.setAttribute('aria-label', rotulo)

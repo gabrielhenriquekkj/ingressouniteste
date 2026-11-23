@@ -1,7 +1,7 @@
 const IDIOMAS = [
-  { codigo: 'pt', rotulo: 'Português', rotuloCurto: 'PT', htmlLang: 'pt-BR' },
-  { codigo: 'en', rotulo: 'English', rotuloCurto: 'EN', htmlLang: 'en' },
-  { codigo: 'es', rotulo: 'Español', rotuloCurto: 'ES', htmlLang: 'es' }
+  { codigo: 'pt', rotulo: 'Português', rotuloCurto: 'PT', bandeira: '🇧🇷', htmlLang: 'pt-BR' },
+  { codigo: 'en', rotulo: 'English', rotuloCurto: 'EN', bandeira: '🇬🇧', htmlLang: 'en' },
+  { codigo: 'es', rotulo: 'Español', rotuloCurto: 'ES', bandeira: '🇪🇸', htmlLang: 'es' }
 ]
 
 const TRADUCOES = {

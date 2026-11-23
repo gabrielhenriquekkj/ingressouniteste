@@ -19,7 +19,7 @@ function cardResultado(curso) {
     ? 'bg-amber-500 text-white border-amber-500'
     : 'bg-white text-indigo-700 border-indigo-200 hover:bg-indigo-50'
 
-  const favLabel = favoritado ? 'Favoritado' : 'Favoritar'
+  const favLabel = favoritado ? t('favoritos.botaoFavoritado') : t('favoritos.botaoFavoritar')
   const iconeFav = favoritado ? ICONES.estrela : ICONES.estrelaVazia
 
   const catCor = categoria === 'federal' ? 'bg-blue-50 text-blue-700'
@@ -82,25 +82,27 @@ function botaoFavorito(curso, grande) {
     'data-estado="' + escapeHTML(curso.uf || curso.estado || '') + '" ' +
     'data-grau="' + escapeHTML(curso.grau || '') + '" ' +
     'data-modalidade="' + escapeHTML(curso.modalidade || '') + '" ' +
-    'aria-label="' + (favoritado ? 'Remover' : 'Adicionar') + ' ' + escapeHTML(curso.nome) + ' dos favoritos" ' +
+    'aria-label="' + (favoritado
+      ? t('favoritos.removerAria', { nome: escapeHTML(curso.nome) })
+      : t('favoritos.adicionarAria', { nome: escapeHTML(curso.nome) })) + '" ' +
     'aria-pressed="' + favoritado + '" ' +
     'class="inline-flex items-center gap-2 rounded-full border font-semibold transition ' + cls + ' ' + tamanho + '">' +
     iconeFav +
-    '<span>' + (favoritado ? 'Favoritado' : 'Favoritar') + '</span>' +
+    '<span>' + (favoritado ? t('favoritos.botaoFavoritado') : t('favoritos.botaoFavoritar')) + '</span>' +
     '</button>'
 }
 
 function tabelaNotas(notas) {
   if (!notas || notas.length === 0) {
-    return estadoVazio('Nenhuma nota de corte registrada para este curso.')
+    return estadoVazio(t('notas.vazioCurso'))
   }
   let html = '<div class="overflow-x-auto"><table class="w-full text-sm">' +
     '<thead><tr class="border-b border-gray-200">' +
-    '<th class="text-left py-3 px-3 font-semibold text-gray-700">Processo</th>' +
-    '<th class="text-left py-3 px-3 font-semibold text-gray-700">Ano</th>' +
-    '<th class="text-left py-3 px-3 font-semibold text-gray-700">Chamada</th>' +
-    '<th class="text-right py-3 px-3 font-semibold text-gray-700">Nota de Corte</th>' +
-    '<th class="text-right py-3 px-3 font-semibold text-gray-700">Fonte</th>' +
+    '<th class="text-left py-3 px-3 font-semibold text-gray-700">' + t('notas.processo') + '</th>' +
+    '<th class="text-left py-3 px-3 font-semibold text-gray-700">' + t('notas.ano') + '</th>' +
+    '<th class="text-left py-3 px-3 font-semibold text-gray-700">' + t('notas.chamada') + '</th>' +
+    '<th class="text-right py-3 px-3 font-semibold text-gray-700">' + t('notas.notaCorte') + '</th>' +
+    '<th class="text-right py-3 px-3 font-semibold text-gray-700">' + t('notas.fonte') + '</th>' +
     '</tr></thead><tbody>'
 
   for (const nota of notas) {
@@ -109,14 +111,14 @@ function tabelaNotas(notas) {
       ? 'bg-blue-100 text-blue-700'
       : 'bg-purple-100 text-purple-700'
     const fonte = nota.fonte_tipo === 'oficial'
-      ? badge('SiSU - Fonte oficial', 'bg-green-100 text-green-700')
-      : badge('SiSU - Dados abertos', 'bg-blue-100 text-blue-700')
+      ? badge(t('notas.oficial'), 'bg-green-100 text-green-700')
+      : badge(t('notas.abertos'), 'bg-blue-100 text-blue-700')
     const notaValor = nota.nota_corte || nota.nota_minima
     html += '<tr class="border-b border-gray-100 hover:bg-gray-50">' +
       '<td class="py-3 px-3">' + badge(processo || '\u2014', cor) + '</td>' +
       '<td class="py-3 px-3">' + escapeHTML(String(nota.ano || '')) + '</td>' +
-      '<td class="py-3 px-3">' + escapeHTML(String(nota.chamada || '')) + '\u00aa chamada</td>' +
-      '<td class="py-3 px-3 text-right font-bold text-gray-900">' + (notaValor ? notaValor.toFixed(1) : 'Nota de corte não disponível') + '</td>' +
+      '<td class="py-3 px-3">' + escapeHTML(t('notas.chamadaNumero', { numero: nota.chamada || '' })) + '</td>' +
+      '<td class="py-3 px-3 text-right font-bold text-gray-900">' + (notaValor ? notaValor.toFixed(1) : t('notas.indisponivel')) + '</td>' +
       '<td class="py-3 px-3 text-right">' + fonte + '</td>' +
       '</tr>'
   }
@@ -127,14 +129,14 @@ function tabelaNotas(notas) {
 function linhaFonte(fonte, atualizado) {
   if (!fonte && !atualizado) return ''
   let texto = ''
-  if (fonte) texto += 'Fonte: ' + escapeHTML(String(fonte))
-  if (atualizado) texto += (texto ? ' · ' : '') + 'Atualizado em: ' + escapeHTML(String(atualizado))
+  if (fonte) texto += t('comum.fonte', { valor: escapeHTML(String(fonte)) })
+  if (atualizado) texto += (texto ? ' · ' : '') + t('comum.atualizadoEm', { valor: escapeHTML(String(atualizado)) })
   return '<p class="mt-4 text-xs text-gray-400">' + texto + '</p>'
 }
 
 function listaAuxilios(auxilios) {
   if (!auxilios || auxilios.length === 0) {
-    return estadoVazio('Nenhuma bolsa ou aux\u00edlio encontrado para esta institui\u00e7\u00e3o.')
+    return estadoVazio(t('auxilios.vazio'))
   }
   return '<div class="space-y-3">' +
     auxilios.map((a) => {
@@ -142,19 +144,19 @@ function listaAuxilios(auxilios) {
         ? 'bg-green-100 text-green-700'
         : 'bg-yellow-100 text-yellow-700'
       const urlSegura = a.url && (a.url.startsWith('http://') || a.url.startsWith('https://'))
-        ? '<a href="' + escapeHTML(a.url) + '" target="_blank" rel="noopener" class="text-indigo-600 text-sm hover:underline whitespace-nowrap">Mais info &#8599;</a>'
+        ? '<a href="' + escapeHTML(a.url) + '" target="_blank" rel="noopener" class="text-indigo-600 text-sm hover:underline whitespace-nowrap">' + t('comum.maisInfo') + '</a>'
         : ''
       return '<div class="bg-white rounded-xl ring-1 ring-gray-200 p-4">' +
         '<div class="flex items-start justify-between gap-3">' +
         '<div class="flex-1">' +
         '<h4 class="font-bold text-gray-900">' + escapeHTML(a.nome) + '</h4>' +
-        badge(a.tipo || 'aux\u00edlio', cor) +
+        badge(a.tipo === 'bolsa' ? t('auxilios.bolsa') : t('auxilios.auxilio'), cor) +
         (a.descricao ? '<p class="mt-2 text-sm text-gray-600">' + escapeHTML(a.descricao) + '</p>' : '') +
-        (a.publico_alvo ? '<p class="mt-1 text-xs text-gray-500">P\u00fablico-alvo: ' + escapeHTML(a.publico_alvo) + '</p>' : '') +
+        (a.publico_alvo ? '<p class="mt-1 text-xs text-gray-500">' + t('comum.publicoAlvo', { valor: escapeHTML(a.publico_alvo) }) + '</p>' : '') +
         '</div>' +
         '<div class="text-right shrink-0">' +
         urlSegura +
-        (a.coletado_em ? '<p class="mt-1 text-xs text-gray-400">' + badge('Dados abertos', 'bg-gray-100 text-gray-500') + '</p>' : '') +
+        (a.coletado_em ? '<p class="mt-1 text-xs text-gray-400">' + badge(t('comum.dadosAbertos'), 'bg-gray-100 text-gray-500') + '</p>' : '') +
         '</div>' +
         '</div></div>'
     }).join('') +
@@ -164,7 +166,7 @@ function listaAuxilios(auxilios) {
 function detalhesCampus(campi) {
   if (!campi || campi.length === 0) return ''
   let html = '<div class="mt-6">' +
-    '<h3 class="text-lg font-bold text-gray-900 mb-3">Campi</h3>' +
+    '<h3 class="text-lg font-bold text-gray-900 mb-3">' + t('comum.campi') + '</h3>' +
     '<div class="space-y-2">'
 
   for (const c of campi) {
@@ -173,7 +175,7 @@ function detalhesCampus(campi) {
     if (c.cidade) html += '<p class="text-sm text-gray-500">' + escapeHTML(c.cidade) + '/' + escapeHTML(c.uf || '') + '</p>'
     if (c.endereco) html += '<p class="text-xs text-gray-400 mt-1">' + escapeHTML(c.endereco) + '</p>'
     if (c.site_oficial) {
-      html += '<a href="' + escapeHTML(c.site_oficial) + '" target="_blank" rel="noopener" class="text-indigo-600 text-xs hover:underline mt-1 inline-block">Site oficial &#8599;</a>'
+      html += '<a href="' + escapeHTML(c.site_oficial) + '" target="_blank" rel="noopener" class="text-indigo-600 text-xs hover:underline mt-1 inline-block">' + t('comum.siteOficial') + '</a>'
     }
     html += '</div>'
   }

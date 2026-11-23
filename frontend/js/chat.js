@@ -29,7 +29,7 @@ function mostrarDigitando() {
   const div = document.createElement('div')
   div.id = 'bot-digitando'
   div.className = 'p-3 rounded-lg bg-gray-200 text-gray-800 mr-auto max-w-[80%] mb-2'
-  div.innerHTML = '<span class="text-sm">Bot está digitando...</span>'
+  div.textContent = t('chat.digitando')
   container.appendChild(div)
   container.scrollTop = container.scrollHeight
 }

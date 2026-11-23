@@ -84,7 +84,7 @@ function adicionarFavorito(curso) {
   lista.push(favoritoLocal)
   salvarFavoritosLocal(lista)
   atualizarBotoesFavorito(curso.id)
-  toast(curso.nome + ' adicionado aos favoritos.', 'sucesso')
+  toast(t('favoritos.adicionadoMensagem', { nome: curso.nome }), 'sucesso')
 
   api('POST', '/favoritos', {
     sessao_usuario: obterSessao(),
@@ -101,16 +101,16 @@ function adicionarFavorito(curso) {
 function removerFavorito(cursoId) {
   const lista = obterFavoritosLocal()
   const favorito = lista.find(function (f) { return String(f.curso_id) === String(cursoId) })
-  const nome = favorito ? favorito.nome : 'Curso'
+  const nome = favorito ? favorito.nome : t('comum.curso')
   const listaFiltrada = lista.filter(function (f) { return String(f.curso_id) !== String(cursoId) })
   salvarFavoritosLocal(listaFiltrada)
   atualizarBotoesFavorito(cursoId)
-  toast(nome + ' removido dos favoritos.', 'sucesso')
+  toast(t('favoritos.removidoMensagem', { nome: nome }), 'sucesso')
 
   if (favorito && favorito.id) {
     api('DELETE', '/favoritos/' + favorito.id + '?sessao_usuario=' + encodeURIComponent(obterSessao()))
       .catch(function () {
-        toast('Erro ao remover favorito no servidor.', 'erro')
+        toast(t('favoritos.erroRemocao'), 'erro')
       })
   }
 }
@@ -127,8 +127,11 @@ function atualizarBotoesFavorito(cursoId) {
   document.querySelectorAll('[data-favoritar="' + CSS.escape(String(cursoId)) + '"]').forEach(function (botao) {
     const favoritado = estaFavoritado(cursoId)
     botao.setAttribute('aria-pressed', String(favoritado))
+    botao.setAttribute('aria-label', favoritado
+      ? t('favoritos.removerAria', { nome: botao.dataset.nome || '' })
+      : t('favoritos.adicionarAria', { nome: botao.dataset.nome || '' }))
     const rotulo = botao.querySelector('span')
-    if (rotulo) rotulo.textContent = favoritado ? 'Favoritado' : 'Favoritar'
+    if (rotulo) rotulo.textContent = favoritado ? t('favoritos.botaoFavoritado') : t('favoritos.botaoFavoritar')
     const iconeSvg = botao.querySelector('svg')
     if (iconeSvg && favoritado === false) {
       iconeSvg.setAttribute('fill', 'none')
@@ -175,7 +178,7 @@ document.addEventListener('click', function (evento) {
       cartao.remove()
       const area = document.getElementById('areaFavoritos')
       if (area && area.querySelectorAll('[data-curso-id]').length === 0) {
-        area.innerHTML = estadoVazio('Você ainda não favoritou nenhum curso.')
+        area.innerHTML = estadoVazio(t('favoritos.vazioCurto'))
       }
     }, 300)
   }
@@ -185,7 +188,7 @@ function atualizarResumoFavoritos() {
   const resumo = document.getElementById('resumoFavoritos')
   if (!resumo) return
   const quantidade = obterFavoritosLocal().length
-  resumo.textContent = quantidade + (quantidade === 1 ? ' favorito' : ' favoritos')
+  resumo.textContent = tp('favoritos.resumo', quantidade)
 }
 
 function renderizarPaginaFavoritos() {
@@ -196,7 +199,7 @@ function renderizarPaginaFavoritos() {
   atualizarResumoFavoritos()
 
   if (lista.length === 0) {
-    area.innerHTML = estadoVazio('Você ainda não favoritou nenhum curso. Use o botão Favoritar na busca ou na página de detalhes.')
+    area.innerHTML = estadoVazio(t('favoritos.vazioCompleto'))
     return
   }
 
@@ -220,4 +223,8 @@ document.addEventListener('DOMContentLoaded', function () {
   montarNavbar('favoritos')
   renderizarPaginaFavoritos()
   sincronizarComAPI().then(function () { renderizarPaginaFavoritos() })
+})
+
+document.addEventListener('idioma:alterado', function () {
+  if (window.location.pathname.includes('favoritos.html')) renderizarPaginaFavoritos()
 })

@@ -1,15 +1,25 @@
 // detalhes.js — Página de detalhes do curso (RF2-RF5) com abas e botão de favoritar (RF6).
 
 let cursoDetalhe = null
+let chaveIndisponivel = null
 
 document.addEventListener('DOMContentLoaded', iniciarPaginaDetalhe)
+
+document.addEventListener('idioma:alterado', function () {
+  if (chaveIndisponivel) {
+    mostrarIndisponivel(chaveIndisponivel)
+  } else if (cursoDetalhe) {
+    renderizarCabecalho(cursoDetalhe)
+    renderizarAbas(cursoDetalhe)
+  }
+})
 
 function iniciarPaginaDetalhe() {
   montarNavbar('detalhes')
 
   const id = pegarParametroURL('id')
   if (!id) {
-    mostrarIndisponivel('Nenhum curso informado na URL.')
+    mostrarIndisponivel('detalhes.semId')
     return
   }
   carregarCurso(id)
@@ -66,11 +76,12 @@ try {
 
   if (!curso) {
     mostrarCarregando(false)
-    mostrarIndisponivel('Curso não encontrado.')
+    mostrarIndisponivel('detalhes.naoEncontrado')
     return
   }
 
   cursoDetalhe = curso
+  chaveIndisponivel = null
   renderizarCabecalho(curso)
   renderizarAbas(curso)
   mostrarCarregando(false)
@@ -78,8 +89,9 @@ try {
   sincronizarComAPI()
 }
 
-function mostrarIndisponivel(mensagem) {
-  document.getElementById('detalheSkeleton').innerHTML = estadoErro(mensagem).replace('col-span-full', '')
+function mostrarIndisponivel(chave) {
+  chaveIndisponivel = chave
+  document.getElementById('detalheSkeleton').innerHTML = estadoErro(t(chave)).replace('col-span-full', '')
   document.getElementById('detalheSkeleton').classList.remove('hidden')
   document.getElementById('cabecalhoCurso').classList.add('hidden')
   document.getElementById('conteudoDetalhe').classList.add('hidden')
@@ -110,15 +122,15 @@ function renderizarCabecalho(curso) {
     '<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-white ring-1 ring-gray-200 rounded-full font-semibold text-gray-700">' +
     ICONES.casa + ' ' + escapeHTML(curso.cidade || '') + '/' + escapeHTML(curso.estado || '') +
     '</span>' +
-    '<span class="px-3 py-1 bg-white ring-1 ring-gray-200 rounded-full font-semibold text-gray-700">' + escapeHTML(curso.modalidade || 'Presencial') + '</span>' +
+    '<span class="px-3 py-1 bg-white ring-1 ring-gray-200 rounded-full font-semibold text-gray-700">' + escapeHTML(curso.modalidade || t('detalhes.presencial')) + '</span>' +
     '<span class="px-3 py-1 bg-white ring-1 ring-gray-200 rounded-full font-semibold text-gray-700">' + escapeHTML(curso.grau || '\u2014') + '</span>' +
-    (curso.duracao_semestres ? '<span class="px-3 py-1 bg-white ring-1 ring-gray-200 rounded-full font-semibold text-gray-700">' + escapeHTML(String(curso.duracao_semestres)) + ' semestres</span>' : '') +
+    (curso.duracao_semestres ? '<span class="px-3 py-1 bg-white ring-1 ring-gray-200 rounded-full font-semibold text-gray-700">' + escapeHTML(t('detalhes.semestres', { quantidade: curso.duracao_semestres })) + '</span>' : '') +
     '</div>' +
     '</div>' +
     '<div class="flex flex-col gap-3 shrink-0">' +
     botaoFavorito(curso, true) +
     '<a href="' + base + '/index.html" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold bg-gray-100 text-gray-700 ring-1 ring-gray-200 hover:bg-gray-200 transition">' +
-    'Voltar para a busca</a>' +
+    escapeHTML(t('detalhes.voltarBusca')) + '</a>' +
     '</div></div>'
 }
 
@@ -128,26 +140,26 @@ function renderizarNotasInstituicao(curso) {
   const cursos = curso.cursos || []
 
   if (notas.length === 0 && cursos.length === 0) {
-    area.innerHTML = estadoVazio('Nenhuma nota de corte registrada para esta instituição.')
+    area.innerHTML = estadoVazio(t('detalhes.notasVaziasInstituicao'))
     return
   }
 
   if (notas.length === 0) {
-    area.innerHTML = estadoVazio('Nota de corte SiSU indisponível. Esta instituição pode não participar do SiSU ou os dados ainda não foram publicados.')
+    area.innerHTML = estadoVazio(t('detalhes.notasIndisponiveis'))
     return
   }
 
   const porCurso = {}
   for (const n of notas) {
     const cid = n.curso_id || 'desconhecido'
-    if (!porCurso[cid]) porCurso[cid] = { nome: n.curso_nome || 'Curso #' + cid, notas: [] }
+    if (!porCurso[cid]) porCurso[cid] = { nome: n.curso_nome || t('detalhes.cursoDesconhecido', { id: cid }), notas: [] }
     porCurso[cid].notas.push(n)
   }
 
-  const fonteLabel = notas[0]?.fonte_tipo === 'oficial' ? 'Fonte oficial MEC' : 'Dados abertos'
+  const fonteLabel = notas[0]?.fonte_tipo === 'oficial' ? t('detalhes.fonteOficialMec') : t('comum.dadosAbertos')
 
   let html = '<div class="flex items-center justify-between mb-3">' +
-    '<h3 class="text-lg font-bold text-gray-900">Notas de Corte SiSU (' + notas.length + ' registros)</h3>' +
+    '<h3 class="text-lg font-bold text-gray-900">' + escapeHTML(t('detalhes.notasTitulo', { quantidade: notas.length })) + '</h3>' +
     badge(fonteLabel, 'bg-green-100 text-green-700') +
     '</div>'
   html += '<div class="space-y-4">'
@@ -156,10 +168,14 @@ function renderizarNotasInstituicao(curso) {
     html += '<div class="bg-white rounded-xl ring-1 ring-gray-200 p-4">'
     html += '<h4 class="font-bold text-gray-900">' + escapeHTML(item.nome) + '</h4>'
     html += '<div class="mt-2 overflow-x-auto"><table class="w-full text-sm">'
-    html += '<thead><tr class="border-b border-gray-200"><th class="text-left py-2 px-2 font-semibold text-gray-700">Modalidade</th><th class="text-left py-2 px-2 font-semibold text-gray-700">Ano</th><th class="text-right py-2 px-2 font-semibold text-gray-700">Nota</th><th class="text-right py-2 px-2 font-semibold text-gray-700">Tipo</th></tr></thead><tbody>'
+    html += '<thead><tr class="border-b border-gray-200">' +
+      '<th class="text-left py-2 px-2 font-semibold text-gray-700">' + t('detalhes.modalidade') + '</th>' +
+      '<th class="text-left py-2 px-2 font-semibold text-gray-700">' + t('detalhes.ano') + '</th>' +
+      '<th class="text-right py-2 px-2 font-semibold text-gray-700">' + t('detalhes.nota') + '</th>' +
+      '<th class="text-right py-2 px-2 font-semibold text-gray-700">' + t('detalhes.tipo') + '</th></tr></thead><tbody>'
     for (const n of item.notas) {
       const modalidade = (n.modalidade_acesso || '').replace(/_/g, ' ')
-      const tipoNota = n.tipo_nota === 'final' ? 'Histórica' : n.tipo_nota === 'parcial' ? 'Parcial' : ''
+      const tipoNota = n.tipo_nota === 'final' ? t('detalhes.historica') : n.tipo_nota === 'parcial' ? t('detalhes.parcial') : ''
       html += '<tr class="border-b border-gray-50 hover:bg-gray-50">'
       html += '<td class="py-2 px-2">' + badge(modalidade, 'bg-blue-100 text-blue-700') + '</td>'
       html += '<td class="py-2 px-2">' + escapeHTML(String(n.ano || '')) + '</td>'
@@ -193,11 +209,11 @@ function renderizarCursosInstituicao(curso) {
   const cursos = curso.cursos || []
 
   if (cursos.length === 0) {
-    area.innerHTML = estadoVazio('Nenhum curso listado para esta instituição.')
+    area.innerHTML = estadoVazio(t('detalhes.cursosVazios'))
     return
   }
 
-  let html = '<h3 class="text-lg font-bold text-gray-900 mb-3">Cursos (' + cursos.length + ')</h3>'
+  let html = '<h3 class="text-lg font-bold text-gray-900 mb-3">' + escapeHTML(t('detalhes.cursosTitulo', { quantidade: cursos.length })) + '</h3>'
   html += '<div class="space-y-2">'
   for (const c of cursos) {
     html += '<div class="bg-white rounded-xl ring-1 ring-gray-200 p-4">' +
@@ -212,7 +228,7 @@ function renderizarCursosInstituicao(curso) {
 }
 
 function renderizarMercadoVazio() {
-  document.getElementById('atmMercado').innerHTML = estadoVazio('Informações de mercado ainda não disponíveis para esta instituição.')
+  document.getElementById('atmMercado').innerHTML = estadoVazio(t('detalhes.mercadoVazio'))
 }
 
 function renderizarCampiECustos(curso) {
@@ -223,14 +239,14 @@ function renderizarCampiECustos(curso) {
   let html = ''
 
   if (campi.length > 0) {
-    html += '<h3 class="text-lg font-bold text-gray-900 mb-3">Campi (' + campi.length + ')</h3>'
+    html += '<h3 class="text-lg font-bold text-gray-900 mb-3">' + escapeHTML(t('detalhes.campiTitulo', { quantidade: campi.length })) + '</h3>'
     html += '<div class="space-y-2">'
     for (const c of campi) {
       html += '<div class="bg-white rounded-xl ring-1 ring-gray-200 p-4">' +
         '<h4 class="font-bold text-gray-900">' + escapeHTML(c.nome) + '</h4>'
       if (c.cidade) html += '<p class="text-sm text-gray-500">' + escapeHTML(c.cidade) + '/' + escapeHTML(c.uf || c.estado || '') + '</p>'
       if (c.endereco) html += '<p class="text-xs text-gray-400 mt-1">' + escapeHTML(c.endereco) + '</p>'
-      if (c.site_oficial) html += '<a href="' + escapeHTML(c.site_oficial) + '" target="_blank" rel="noopener" class="text-indigo-600 text-xs hover:underline mt-1 inline-block">Site oficial &#8599;</a>'
+      if (c.site_oficial)       html += '<a href="' + escapeHTML(c.site_oficial) + '" target="_blank" rel="noopener" class="text-indigo-600 text-xs hover:underline mt-1 inline-block">' + t('comum.siteOficial') + '</a>'
       html += '</div>'
     }
     html += '</div>'
@@ -238,24 +254,24 @@ function renderizarCampiECustos(curso) {
 
   if (custos) {
     const fonteLabel = custos.tipo_fonte === 'estimativa_pib'
-      ? badge('Indicador econômico (PIB per capita)', 'bg-amber-100 text-amber-700')
-      : badge(custos.tipo_fonte || 'Dados', 'bg-blue-100 text-blue-700')
+      ? badge(t('detalhes.indicadorPib'), 'bg-amber-100 text-amber-700')
+      : badge(custos.tipo_fonte || t('comum.dadosAbertos'), 'bg-blue-100 text-blue-700')
     html += '<div class="flex items-center justify-between mb-4 mt-4">' +
-      '<h3 class="text-lg font-bold text-gray-900">Indicadores Econômicos</h3>' +
+      '<h3 class="text-lg font-bold text-gray-900">' + t('detalhes.indicadoresEconomicos') + '</h3>' +
       fonteLabel +
       '</div>' +
       '<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">' +
-      cardInfo(ICONES.casa, 'Moradia', formatarMoeda(custos.moradia)) +
-      cardInfo(ICONES.comida, 'Alimentação', formatarMoeda(custos.alimentacao)) +
-      cardInfo(ICONES.onibus, 'Transporte', formatarMoeda(custos.transporte)) +
-      cardInfo(ICONES.cartao, 'Outros', formatarMoeda(custos.outros)) +
+      cardInfo(ICONES.casa, t('detalhes.moradia'), formatarMoeda(custos.moradia)) +
+      cardInfo(ICONES.comida, t('detalhes.alimentacao'), formatarMoeda(custos.alimentacao)) +
+      cardInfo(ICONES.onibus, t('detalhes.transporte'), formatarMoeda(custos.transporte)) +
+      cardInfo(ICONES.cartao, t('detalhes.outros'), formatarMoeda(custos.outros)) +
       '</div>' +
       '<div class="mt-5">' +
-      cardInfo(ICONES.moeda, 'Total mensal estimado em ' + (custos.cidade || curso.cidade || '') + '/' + (custos.estado || curso.estado || ''), formatarMoeda(custos.custo_total), true) +
+      cardInfo(ICONES.moeda, t('detalhes.totalMensal', { cidade: custos.cidade || curso.cidade || '', estado: custos.estado || curso.estado || '' }), formatarMoeda(custos.custo_total), true) +
       '</div>' +
-      '<p class="mt-3 text-xs text-gray-400">Fonte: IBGE PIB per capita 2023 - Indicador econômico, não custo de vida real</p>'
+      '<p class="mt-3 text-xs text-gray-400">' + t('detalhes.fontePib') + '</p>'
   } else if (campi.length === 0) {
-    html = estadoVazio('Informações de campus e indicadores econômicos ainda não disponíveis.')
+    html = estadoVazio(t('detalhes.semCustosCampi'))
   }
 
   area.innerHTML = html
@@ -266,29 +282,29 @@ function renderizarCustos(curso) {
   const custos = curso.custos
 
   if (!custos) {
-    area.innerHTML = estadoVazio('Indicadores econômicos ainda não disponíveis para esta cidade.')
+    area.innerHTML = estadoVazio(t('detalhes.semIndicadores'))
     return
   }
 
   const fonteLabel = custos.tipo_fonte === 'estimativa_pib'
-    ? badge('Indicador economico (PIB per capita)', 'bg-amber-100 text-amber-700')
-    : badge(custos.tipo_fonte || 'Dados', 'bg-blue-100 text-blue-700')
+    ? badge(t('detalhes.indicadorPib'), 'bg-amber-100 text-amber-700')
+    : badge(custos.tipo_fonte || t('comum.dadosAbertos'), 'bg-blue-100 text-blue-700')
 
   area.innerHTML =
     '<div class="flex items-center justify-between mb-4">' +
-    '<h3 class="text-lg font-bold text-gray-900">Indicadores Econômicos</h3>' +
+    '<h3 class="text-lg font-bold text-gray-900">' + t('detalhes.indicadoresEconomicos') + '</h3>' +
     fonteLabel +
     '</div>' +
     '<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">' +
-    cardInfo(ICONES.casa, 'Moradia', formatarMoeda(custos.moradia)) +
-    cardInfo(ICONES.comida, 'Alimentação', formatarMoeda(custos.alimentacao)) +
-    cardInfo(ICONES.onibus, 'Transporte', formatarMoeda(custos.transporte)) +
-    cardInfo(ICONES.cartao, 'Outros', formatarMoeda(custos.outros)) +
+    cardInfo(ICONES.casa, t('detalhes.moradia'), formatarMoeda(custos.moradia)) +
+    cardInfo(ICONES.comida, t('detalhes.alimentacao'), formatarMoeda(custos.alimentacao)) +
+    cardInfo(ICONES.onibus, t('detalhes.transporte'), formatarMoeda(custos.transporte)) +
+    cardInfo(ICONES.cartao, t('detalhes.outros'), formatarMoeda(custos.outros)) +
     '</div>' +
     '<div class="mt-5">' +
-    cardInfo(ICONES.moeda, 'Total mensal estimado em ' + (custos.cidade || curso.cidade || '') + '/' + (custos.estado || curso.estado || ''), formatarMoeda(custos.custo_total), true) +
+    cardInfo(ICONES.moeda, t('detalhes.totalMensal', { cidade: custos.cidade || curso.cidade || '', estado: custos.estado || curso.estado || '' }), formatarMoeda(custos.custo_total), true) +
     '</div>' +
-    '<p class="mt-3 text-xs text-gray-400">Fonte: IBGE PIB per capita 2023 - Indicador economico, nao custo de vida real</p>'
+    '<p class="mt-3 text-xs text-gray-400">' + t('detalhes.fontePib') + '</p>'
 }
 
 function renderizarBolsas(curso) {
@@ -302,14 +318,14 @@ function renderizarMercado(curso) {
 
   const cards =
     '<div class="grid sm:grid-cols-3 gap-4">' +
-    cardInfo(ICONES.grafico, 'Demanda na região', mercado.regiao ? 'Mercado em ' + escapeHTML(mercado.regiao) : '\u2014') +
-    cardInfo(ICONES.moeda, 'Salário médio', formatarMoeda(mercado.salario_medio)) +
-    cardInfo(ICONES.mala, 'Vagas de estágio', mercado.vagas_estagio ? Number(mercado.vagas_estagio).toLocaleString('pt-BR') + ' vagas' : '\u2014') +
+    cardInfo(ICONES.grafico, t('detalhes.demandaRegiao'), mercado.regiao ? escapeHTML(t('detalhes.mercadoEm', { regiao: escapeHTML(mercado.regiao) })) : '\u2014') +
+    cardInfo(ICONES.moeda, t('detalhes.salarioMedio'), formatarMoeda(mercado.salario_medio)) +
+    cardInfo(ICONES.mala, t('detalhes.vagasEstagio'), mercado.vagas_estagio ? escapeHTML(t('detalhes.vagas', { quantidade: formatarNumero(mercado.vagas_estagio) })) : '\u2014') +
     '</div>'
 
   const demandaExtra = demanda
     ? '<div class="mt-5 flex items-center gap-2">' +
-      '<span class="text-sm font-semibold text-gray-600">Classificação da demanda:</span>' +
+      '<span class="text-sm font-semibold text-gray-600">' + t('detalhes.classificacaoDemanda') + '</span>' +
       badge(rotuloDemanda(demanda), corDemanda(demanda)) +
       '</div>'
     : ''

@@ -15,12 +15,12 @@ async function api(metodo, caminho, corpo) {
     }
     resposta = await fetch(`${URL_API}${caminho}`, opcoes)
   } catch {
-    throw new Error('Sem conexao com o servidor.')
+    throw new Error(t('api.semConexao'))
   }
 
   const dados = await resposta.json().catch(() => ({}))
   if (!resposta.ok || dados.sucesso === false) {
-    const mensagem = dados.mensagem || 'Falha ao concluir a operacao.'
+    const mensagem = dados.mensagem || t('api.falha')
     throw new Error(mensagem)
   }
   return dados

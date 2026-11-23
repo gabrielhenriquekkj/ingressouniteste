@@ -5,8 +5,15 @@ let cacheBusca = new Map()
 let listaCompleta = []
 let paginaAtual = 0
 let totalResultados = 0
+let buscaCarregada = false
 
 document.addEventListener('DOMContentLoaded', iniciarPaginaBusca)
+
+document.addEventListener('idioma:alterado', function () {
+  if (!buscaCarregada) return
+  renderizarResultados([], false)
+  fecharSugestoes()
+})
 
 function iniciarPaginaBusca() {
   montarNavbar('home')
@@ -138,8 +145,9 @@ async function executarBusca(adicionar) {
 
   if (!adicionar) {
     cacheBusca.clear()
+    buscaCarregada = false
     area.innerHTML = skeleton(3)
-    resumo.textContent = 'Buscando...'
+    resumo.textContent = t('resultados.buscando')
   }
 
   try {
@@ -158,7 +166,7 @@ async function executarBusca(adicionar) {
     renderizarResultados(cursos, adicionar)
   } catch (erro) {
     if (!adicionar) {
-      area.innerHTML = estadoErro(erro.message || 'Não foi possível buscar os cursos.')
+      area.innerHTML = estadoErro(erro.message || t('resultados.erro'))
       resumo.textContent = ''
     }
     atualizarBotaoCarregarMais()
@@ -170,11 +178,12 @@ function renderizarResultados(cursos, adicionar) {
   const resumo = document.getElementById('resumoResultados')
 
   if (!adicionar) {
+    buscaCarregada = true
     if (listaCompleta.length === 0) {
-      area.innerHTML = estadoVazio('Nenhum curso encontrado com os filtros selecionados. Tente modificar a busca.')
+      area.innerHTML = estadoVazio(t('resultados.vazio'))
       resumo.textContent = ''
     } else {
-      resumo.textContent = totalResultados + (totalResultados === 1 ? ' resultado encontrado' : ' resultados encontrados')
+      resumo.textContent = tp('resultados.resumo', totalResultados)
       area.innerHTML = listaCompleta.map(function (curso) { return cardResultado(curso) }).join('')
     }
   } else if (cursos.length > 0) {
@@ -228,8 +237,8 @@ function renderizarSugestoes(dados) {
       ? '<svg class="w-4 h-4 text-indigo-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15v4M10 11v8M16 7v12M22 4v16"/></svg>'
       : '<svg class="w-4 h-4 text-orange-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>'
     const tipoLabel = item.tipo === 'curso'
-      ? '<span class="text-[10px] font-bold uppercase tracking-wider text-indigo-500">Curso</span>'
-      : '<span class="text-[10px] font-bold uppercase tracking-wider text-orange-500">Institui\u00e7\u00e3o</span>'
+      ? '<span class="text-[10px] font-bold uppercase tracking-wider text-indigo-500">' + escapeHTML(t('resultados.tipoCurso')) + '</span>'
+      : '<span class="text-[10px] font-bold uppercase tracking-wider text-orange-500">' + escapeHTML(t('resultados.tipoInstituicao')) + '</span>'
 
     html += '<a href="' + href + '" data-sugestao class="flex items-center gap-3 px-4 py-2.5 hover:bg-indigo-50 transition cursor-pointer no-underline">' +
       icone +

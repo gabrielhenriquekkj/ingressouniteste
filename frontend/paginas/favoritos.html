@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Sua lista de cursos e universidades favoritos para acesso rápido.">
-  <title>Favoritos — Ingresso Universitário</title>
+  <meta name="description" content="Sua lista de cursos e universidades favoritos para acesso rápido." data-i18n-content="meta.favoritos.descricao">
+  <title data-i18n="meta.favoritos.titulo">Favoritos — Ingresso Universitário</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,8 +29,8 @@
       <section class="py-10">
         <div class="flex items-center justify-between mb-6">
           <div>
-            <h1 class="text-3xl font-extrabold text-gray-900">Meus favoritos</h1>
-            <p class="mt-1 text-gray-600">Acesso rápido aos cursos e universidades que você salvou.</p>
+            <h1 class="text-3xl font-extrabold text-gray-900" data-i18n="favoritos.titulo">Meus favoritos</h1>
+            <p class="mt-1 text-gray-600" data-i18n="favoritos.descricao">Acesso rápido aos cursos e universidades que você salvou.</p>
           </div>
           <p id="resumoFavoritos" class="text-sm text-gray-500" aria-live="polite"></p>
         </div>
@@ -40,17 +40,16 @@
   </main>
 
   <footer class="bg-gray-900 text-gray-400 text-center py-8 px-4">
-    <p class="text-sm">© 2026 Ingresso Universitário — Projeto Integrador I · Grupo 3</p>
+    <p class="text-sm" data-i18n="comum.rodapeProjeto">© 2026 Ingresso Universitário — Projeto Integrador I · Grupo 3</p>
   </footer>
 
-  <script src="../js/util.js"></script>
-  <script src="../js/api.js"></script>
+  <script src="../js/traducoes.js?v=1"></script>
+  <script src="../js/i18n.js?v=1"></script>
+  <script src="../js/seletor-idioma.js?v=1"></script>
+  <script src="../js/util.js?v=3"></script>
+  <script src="../js/api.js?v=3"></script>
   <script src="../js/dadosDemo.js"></script>
-  <script src="../js/componentes.js"></script>
-  <script src="../js/favoritos.js"></script>
-  <!-- Google Translate -->
-  <div id="google_translate_element"></div>
-  <script src="../js/google-translate-init.js"></script>
-  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script src="../js/componentes.js?v=3"></script>
+  <script src="../js/favoritos.js?v=3"></script>
 </body>
 </html>

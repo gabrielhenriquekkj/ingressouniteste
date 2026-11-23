@@ -56,7 +56,7 @@ function toast(mensagem, tipo) {
 
 function formatarMoeda(valor) {
   if (valor == null || valor === '' || isNaN(Number(valor))) return '\u2014'
-  return Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+  return Number(valor).toLocaleString(obterLocale(), { style: 'currency', currency: 'BRL' })
 }
 
 function badge(texto, classes) {
@@ -72,9 +72,9 @@ function corDemanda(demanda) {
 
 function rotuloDemanda(demanda) {
   const d = String(demanda).toLowerCase()
-  if (d === 'alta') return 'Alta demanda'
-  if (d === 'media' || d === 'm\u00e9dia') return 'M\u00e9dia demanda'
-  return 'Baixa demanda'
+  if (d === 'alta') return t('demanda.alta')
+  if (d === 'media' || d === 'm\u00e9dia') return t('demanda.media')
+  return t('demanda.baixa')
 }
 
 function skeleton(quantidade) {
@@ -124,29 +124,36 @@ const ICONES = {
 
 function montarNavbar(paginaAtiva) {
   const base = caminhoBase()
+  const chaveAtiva = paginaAtiva === 'detalhes' ? 'home' : paginaAtiva
   const qtdFavoritos = obterFavoritosLocal().length
   const badgeFav = qtdFavoritos > 0
     ? '<span id="contadorFavoritos" class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-amber-500 text-white rounded-full">' + qtdFavoritos + '</span>'
     : '<span id="contadorFavoritos" class="ml-1 hidden inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-amber-500 text-white rounded-full"></span>'
   const links = [
-    { chave: 'home', href: base + '/index.html', rotulo: 'Busca' },
-    { chave: 'favoritos', href: base + '/paginas/favoritos.html', rotulo: 'Favoritos' + badgeFav }
+    { chave: 'home', href: base + '/index.html', chaveRotulo: 'nav.busca', rotulo: t('nav.busca'), badge: '' },
+    { chave: 'favoritos', href: base + '/paginas/favoritos.html', chaveRotulo: 'nav.favoritos', rotulo: t('nav.favoritos'), badge: badgeFav }
   ]
   const itens = links.map((link) => {
-    const ativo = link.chave === paginaAtiva
+    const ativo = link.chave === chaveAtiva
     const cls = ativo
       ? 'text-indigo-700 font-bold border-b-2 border-indigo-700 pb-0.5'
       : 'text-gray-600 hover:text-indigo-600 font-medium'
-    return '<a href="' + link.href + '" class="text-sm ' + cls + '">' + link.rotulo + '</a>'
+    return '<a href="' + link.href + '" class="whitespace-nowrap text-[11px] sm:text-sm ' + cls + '">' +
+      '<span data-i18n="' + link.chaveRotulo + '">' + link.rotulo + '</span>' + link.badge + '</a>'
   }).join('')
 
   document.getElementById('navbar').innerHTML =
     '<header class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur z-50 border-b border-gray-100 shadow-sm">' +
-    '<div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">' +
-    '<a href="' + base + '/index.html" class="text-lg font-extrabold text-indigo-700 flex items-center gap-2">' +
-    '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 15v4M10 11v8M16 7v12M22 4v16"/></svg>' +
-    'Ingresso Universit\u00e1rio</a>' +
-    '<nav class="flex items-center gap-5">' + itens + '</nav>' +
+    '<div class="max-w-6xl mx-auto flex h-14 items-center justify-between gap-1 px-4 sm:gap-2">' +
+    '<a href="' + base + '/index.html" class="flex items-center gap-1 whitespace-nowrap text-xs font-extrabold text-indigo-700 sm:gap-2 sm:text-lg">' +
+    '<svg class="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 15v4M10 11v8M16 7v12M22 4v16"/></svg>' +
+    '<span class="sm:hidden" data-i18n="nav.marcaCurta">' + t('nav.marcaCurta') + '</span>' +
+    '<span class="hidden sm:inline" data-i18n="nav.marca">' + t('nav.marca') + '</span>' +
+    '</a>' +
+    '<div class="flex shrink-0 items-center gap-2 sm:gap-5">' +
+    '<nav class="flex items-center gap-2.5 sm:gap-5">' + itens + '</nav>' +
+    montarSeletorIdioma() +
+    '</div>' +
     '</div></header>'
 }
 

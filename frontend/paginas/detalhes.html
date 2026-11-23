@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Detalhes do curso: notas de corte, custos da cidade, bolsas, auxílios e mercado de trabalho.">
-  <title>Detalhes do Curso — Ingresso Universitário</title>
+  <meta name="description" content="Detalhes do curso: notas de corte, custos da cidade, bolsas, auxílios e mercado de trabalho." data-i18n-content="meta.detalhes.descricao">
+  <title data-i18n="meta.detalhes.titulo">Detalhes do Curso — Ingresso Universitário</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,18 +42,18 @@
 
       <!-- Abas com os detalhes RF2–RF5 -->
       <section id="conteudoDetalhe" class="hidden mt-10">
-        <div class="border-b border-gray-200 bg-white rounded-t-2xl px-2" role="tablist" aria-label="Informações do curso" aria-orientation="horizontal">
+        <div class="border-b border-gray-200 bg-white rounded-t-2xl px-2" role="tablist" aria-label="Informações do curso" data-i18n-aria-label="detalhes.abasAria" aria-orientation="horizontal">
 <div class="barra-guias flex overflow-x-auto">
            <button type="button" role="tab" aria-selected="true" aria-controls="atmNotas" id="guia-notas"
-             class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap">Notas de corte</button>
-           <button type="button" role="tab" aria-selected="false" aria-controls="atmCustos" id="guia-custos" tabindex="-1"
-             class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap">Custos da cidade</button>
-           <button type="button" role="tab" aria-selected="false" aria-controls="atmBolsas" id="guia-bolsas" tabindex="-1"
-             class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap">Bolsas e auxilios</button>
-           <button type="button" role="tab" aria-selected="false" aria-controls="atmMercado" id="guia-mercado" tabindex="-1"
-             class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap">Mercado e estagios</button>
-           <button type="button" role="tab" aria-selected="false" aria-controls="atmCursos" id="guia-cursos" tabindex="-1"
-             class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap">Cursos da instituicao</button>
+              class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap" data-i18n="detalhes.abaNotas">Notas de corte</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="atmCustos" id="guia-custos" tabindex="-1"
+              class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap" data-i18n="detalhes.abaCustos">Custos da cidade</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="atmBolsas" id="guia-bolsas" tabindex="-1"
+              class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap" data-i18n="detalhes.abaBolsas">Bolsas e auxílios</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="atmMercado" id="guia-mercado" tabindex="-1"
+              class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap" data-i18n="detalhes.abaMercado">Mercado e estágios</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="atmCursos" id="guia-cursos" tabindex="-1"
+              class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap" data-i18n="detalhes.abaCursos">Cursos da instituição</button>
          </div>
         </div>
 
@@ -70,18 +70,17 @@
   </main>
 
   <footer class="bg-gray-900 text-gray-400 text-center py-8 px-4">
-    <p class="text-sm">© 2026 Ingresso Universitário — Projeto Integrador I · Grupo 3</p>
+    <p class="text-sm" data-i18n="comum.rodapeProjeto">© 2026 Ingresso Universitário — Projeto Integrador I · Grupo 3</p>
   </footer>
 
-  <script src="../js/util.js?t=1"></script>
-  <script src="../js/api.js?t=1"></script>
+  <script src="../js/traducoes.js?v=1"></script>
+  <script src="../js/i18n.js?v=1"></script>
+  <script src="../js/seletor-idioma.js?v=1"></script>
+  <script src="../js/util.js?t=2"></script>
+  <script src="../js/api.js?t=2"></script>
   <script src="../js/dadosDemo.js?t=1"></script>
-  <script src="../js/componentes.js?t=1"></script>
-  <script src="../js/favoritos.js?t=1"></script>
-  <script src="../js/detalhes.js?t=5"></script>
-  <!-- Google Translate -->
-  <div id="google_translate_element"></div>
-  <script src="../js/google-translate-init.js"></script>
-  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script src="../js/componentes.js?t=2"></script>
+  <script src="../js/favoritos.js?t=2"></script>
+  <script src="../js/detalhes.js?t=6"></script>
 </body>
 </html>

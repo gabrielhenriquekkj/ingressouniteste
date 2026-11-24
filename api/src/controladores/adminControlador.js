@@ -8,6 +8,7 @@ const {
   gerarToken,
   hashToken,
   verificarSenha,
+  analisarAgente,
   DURACAO_SESSAO_MS,
   NOME_COOKIE_SESSAO,
   NOME_COOKIE_CSRF,
@@ -250,13 +251,20 @@ const registrarEventoPainel = ctrl((req, res) => {
   const evento = String(req.body?.evento || '').trim().toLowerCase()
   if (evento !== 'painel') throw erroHttp(400, 'Evento administrativo inválido.')
 
+  const agora = new Date()
+  const agente = analisarAgente(req.headers['user-agent'] || '')
   acessoModelo.registrar({
     rota: '/admin/painel-integrado',
     metodo: 'POST',
-    status: 200,
+    criado_em: agora.toISOString(),
+    dia: diaLocal(agora),
+    dispositivo: agente.dispositivo,
+    navegador: agente.navegador,
+    sistema: agente.sistema,
+    ip_hash: anonimizarIp(req),
+    status: 202,
     area: 'admin',
-    detalhes: 'origem=home',
-    ip: req.ip || req.socket?.remoteAddress
+    detalhes: 'origem=home'
   })
 
   res.status(202).json({ sucesso: true })

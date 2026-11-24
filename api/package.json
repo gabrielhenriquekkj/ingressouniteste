@@ -18,12 +18,12 @@
     "minerar:tudo": "node src/cli/minerarTudo.js",
     "test": "node --test src/testes/normalizadores.test.js",
     "test:admin": "node --test src/testes/admin.test.js",
-    "test:all": "node --test src/testes/**/*.test.js"
+    "test:all": "node --test src/testes/*.test.js"
   },
   "dependencies": {
     "axios": "^1.7.0",
-    "better-sqlite3": "^13.0.3",
-    "cheerio": "^1.0.0",
+    "better-sqlite3": "11.10.0",
+    "cheerio": "1.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",

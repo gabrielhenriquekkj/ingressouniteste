@@ -8,18 +8,19 @@ const COLUNAS_DISTRIBUICAO = {
 }
 
 function registrar(registro) {
+  const agora = new Date()
   const resultado = banco.prepare(`
     INSERT INTO acessos (rota, metodo, criado_em, dia, dispositivo, navegador, sistema, ip_hash, status, area, detalhes)
     VALUES (@rota, @metodo, @criado_em, @dia, @dispositivo, @navegador, @sistema, @ip_hash, @status, @area, @detalhes)
   `).run({
     rota: registro.rota,
     metodo: registro.metodo,
-    criado_em: registro.criado_em,
-    dia: registro.dia,
-    dispositivo: registro.dispositivo,
-    navegador: registro.navegador,
-    sistema: registro.sistema,
-    ip_hash: registro.ip_hash,
+    criado_em: registro.criado_em || agora.toISOString(),
+    dia: registro.dia || diaLocal(agora),
+    dispositivo: registro.dispositivo || 'desconhecido',
+    navegador: registro.navegador || 'desconhecido',
+    sistema: registro.sistema || 'desconhecido',
+    ip_hash: registro.ip_hash || 'desconhecido',
     status: registro.status ?? null,
     area: registro.area || 'publico',
     detalhes: registro.detalhes || ''

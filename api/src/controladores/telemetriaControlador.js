@@ -1,5 +1,5 @@
 const acessoModelo = require('../modelos/acessoModelo')
-const { analisarAgente, anonimizarIp } = require('../utilitarios/segurancaAdmin')
+const { analisarAgente, anonimizarIp, diaLocal } = require('../utilitarios/segurancaAdmin')
 
 const EVENTOS = {
   busca: { rota: '/publico/busca', area: 'publico' },
@@ -73,17 +73,20 @@ function registrar(requisicao, resposta) {
 
   const agente = analisarAgente(requisicao.headers['user-agent'] || '')
   const detalhes = detalhesSeguros(evento, requisicao.body?.detalhes)
+  const agora = new Date()
 
   acessoModelo.registrar({
     rota: configuracao.rota,
     metodo: 'POST',
+    criado_em: agora.toISOString(),
+    dia: diaLocal(agora),
     status: 202,
     area: configuracao.area,
     detalhes: texto(detalhes, 120),
     dispositivo: agente.dispositivo,
     navegador: agente.navegador,
     sistema: agente.sistema,
-    ip: anonimizarIp(requisicao.ip || requisicao.socket?.remoteAddress)
+    ip_hash: anonimizarIp(requisicao)
   })
 
   resposta.status(202).json({ sucesso: true })

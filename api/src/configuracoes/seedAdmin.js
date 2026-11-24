@@ -8,6 +8,7 @@ function garantirAdminInicial({ silencioso = false } = {}) {
   if (!validator.isEmail(email)) throw new Error('ADMIN_EMAIL inválido.')
 
   const producao = process.env.NODE_ENV === 'production'
+  const senhaExplicita = Boolean(process.env.ADMIN_SENHA)
   let senha = process.env.ADMIN_SENHA || ''
   let senhaGerada = false
 
@@ -22,7 +23,7 @@ function garantirAdminInicial({ silencioso = false } = {}) {
   const existente = banco.prepare('SELECT id, senha_hash FROM admin_usuarios WHERE email = ?').get(email)
 
   if (existente) {
-    if (!verificarSenha(senha, existente.senha_hash)) {
+    if (senhaExplicita && !verificarSenha(senha, existente.senha_hash)) {
       banco.prepare(`
         UPDATE admin_usuarios
         SET senha_hash = ?, role = 'admin', ativo = 1, tentativas = 0, bloqueado_ate = NULL

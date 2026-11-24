@@ -180,6 +180,22 @@ describe('Área administrativa', () => {
     assert.ok(Array.isArray(resposta.dados.dados.serie))
   })
 
+  it('registra a abertura do painel administrativo integrado', async () => {
+    const resposta = await requisicao('POST', '/api/admin/evento', { evento: 'painel' }, {
+      headers: { 'X-CSRF-Token': csrf }
+    })
+    assert.equal(resposta.status, 202)
+    assert.equal(resposta.dados.sucesso, true)
+
+    const banco = require('../configuracoes/conexaoBanco')
+    const acesso = banco.prepare("SELECT * FROM acessos WHERE rota = '/admin/painel-integrado' ORDER BY id DESC LIMIT 1").get()
+    assert.ok(acesso)
+    assert.equal(acesso.area, 'admin')
+    assert.equal(acesso.status, 202)
+    assert.match(acesso.ip_hash, /^[a-f0-9]{20}$/)
+    assert.ok(acesso.criado_em)
+  })
+
   it('encerra a sessão e invalida o cookie', async () => {
     const resposta = await requisicao('POST', '/api/admin/logout', null, {
       headers: { 'X-CSRF-Token': csrf }

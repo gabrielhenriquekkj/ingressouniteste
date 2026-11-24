@@ -1,5 +1,8 @@
 const banco = require('./src/configuracoes/conexaoBanco')
 const migracao001 = require('./migracoes/001_escala_nacional')
+const migracao002 = require('./migracoes/002_tipo_nota_fonte_tipo')
+const migracao003 = require('./migracoes/003_area_administrativa')
+const { garantirAdminInicial } = require('./src/configuracoes/seedAdmin')
 
 // DDL das tabelas para o sistema de Ingresso Universitário
 banco.exec(`
@@ -292,3 +295,8 @@ if (totalInstituicoes === 0) {
   console.log('Dados já existem no banco. Executando migrações...')
   migracao001.executar()
 }
+
+// Migrações da área administrativa e seed de acesso
+migracao002.executar()
+migracao003.executar()
+garantirAdminInicial({ silencioso: process.env.NODE_ENV === 'test' })

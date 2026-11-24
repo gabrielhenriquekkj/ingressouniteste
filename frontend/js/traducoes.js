@@ -20,6 +20,8 @@ const TRADUCOES = {
     'nav.marcaCurta': 'Ingresso',
     'nav.busca': 'Busca',
     'nav.favoritos': 'Favoritos',
+    'nav.admin': 'Área Admin',
+    'nav.tema': 'Alternar tema claro e escuro',
 
     'hero.tituloInicio': 'Escolha com segurança a sua',
     'hero.tituloDestaque': 'universidade',
@@ -173,6 +175,8 @@ const TRADUCOES = {
     'nav.marcaCurta': 'Admission',
     'nav.busca': 'Search',
     'nav.favoritos': 'Favorites',
+    'nav.admin': 'Admin Area',
+    'nav.tema': 'Toggle light and dark theme',
 
     'hero.tituloInicio': 'Choose your',
     'hero.tituloDestaque': 'university',
@@ -326,6 +330,8 @@ const TRADUCOES = {
     'nav.marcaCurta': 'Admisión',
     'nav.busca': 'Búsqueda',
     'nav.favoritos': 'Favoritos',
+    'nav.admin': 'Área Admin',
+    'nav.tema': 'Alternar tema claro y oscuro',
 
     'hero.tituloInicio': 'Elige tu',
     'hero.tituloDestaque': 'universidad',

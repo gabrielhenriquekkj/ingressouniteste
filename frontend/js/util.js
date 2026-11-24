@@ -1,6 +1,5 @@
-// util.js — Funções utilitárias compartilhadas por todas as páginas
-
 const _divEscape = document.createElement('div')
+
 function escapeHTML(texto) {
   if (texto == null) return ''
   _divEscape.textContent = String(texto)
@@ -41,12 +40,8 @@ function toast(mensagem, tipo) {
     elemento.setAttribute('aria-live', 'polite')
     document.body.appendChild(elemento)
   }
-  const cores = tipo === 'sucesso'
-    ? 'bg-green-600 text-white'
-    : tipo === 'erro'
-      ? 'bg-red-600 text-white'
-      : 'bg-gray-800 text-white'
-  elemento.className = 'fixed bottom-20 right-6 z-50 px-5 py-3 rounded-xl shadow-lg text-sm font-semibold ' + cores + ' mostrar'
+  elemento.className = 'mostrar'
+  elemento.dataset.tipo = tipo || 'info'
   elemento.textContent = mensagem
   clearTimeout(elemento._temporizador)
   elemento._temporizador = setTimeout(() => {
@@ -60,14 +55,18 @@ function formatarMoeda(valor) {
 }
 
 function badge(texto, classes) {
-  return '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ' + classes + '">' + escapeHTML(texto) + '</span>'
+  let extra = ''
+  if (/green|emerald|success/i.test(String(classes || ''))) extra = ' badge-sucesso'
+  else if (/yellow|amber|warn/i.test(String(classes || ''))) extra = ' badge-alerta'
+  else if (/red|rose|danger|error/i.test(String(classes || ''))) extra = ' badge-erro'
+  return '<span class="badge' + extra + '">' + escapeHTML(texto) + '</span>'
 }
 
 function corDemanda(demanda) {
   const d = String(demanda).toLowerCase()
-  if (d === 'alta') return 'bg-green-100 text-green-800'
-  if (d === 'media' || d === 'm\u00e9dia') return 'bg-yellow-100 text-yellow-800'
-  return 'bg-red-100 text-red-800'
+  if (d === 'alta') return 'badge-sucesso'
+  if (d === 'media' || d === 'm\u00e9dia') return 'badge-alerta'
+  return 'badge-erro'
 }
 
 function rotuloDemanda(demanda) {
@@ -79,47 +78,44 @@ function rotuloDemanda(demanda) {
 
 function skeleton(quantidade) {
   return Array.from({ length: quantidade }, () =>
-    '<div class="skeleton rounded-2xl h-44 w-full"></div>'
+    '<div class="skeleton" style="height:11rem"></div>'
   ).join('')
 }
 
 function estadoVazio(mensagem) {
-  return '<div class="col-span-full text-center py-16">' +
-    '<div class="text-5xl mb-4">&#128218;</div>' +
-    '<p class="text-gray-500 text-lg max-w-md mx-auto">' + escapeHTML(mensagem) + '</p>' +
+  return '<div class="estado-vazio">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 016.5 3H20v16H6.5A2.5 2.5 0 004 21.5z"/><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/></svg>' +
+    '<p>' + escapeHTML(mensagem) + '</p>' +
     '</div>'
 }
 
 function estadoErro(mensagem) {
-  return '<div class="col-span-full text-center py-16">' +
-    '<div class="text-5xl mb-4">&#9888;&#65039;</div>' +
-    '<p class="text-red-600 font-semibold text-lg">' + escapeHTML(mensagem) + '</p>' +
+  return '<div class="estado-vazio">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 9v5M12 17.5h.01"/></svg>' +
+    '<p style="color:var(--danger);font-weight:700">' + escapeHTML(mensagem) + '</p>' +
     '</div>'
 }
 
 function cardInfo(icone, titulo, valor, destaque) {
-  const classes = destaque
-    ? 'bg-indigo-50 ring-2 ring-indigo-300 col-span-full'
-    : 'bg-white ring-1 ring-gray-200'
-  return '<div class="' + classes + ' rounded-2xl p-5">' +
-    '<div class="flex items-center gap-2 text-gray-500 text-sm mb-1">' +
-    '<span class="text-indigo-600">' + icone + '</span>' +
-    escapeHTML(titulo) +
+  const classes = destaque ? 'kpi-card' : 'app-card'
+  return '<div class="' + classes + '">' +
+    '<div style="display:flex;align-items:center;gap:.5rem;color:var(--text-muted);font-size:.82rem;margin-bottom:.35rem">' +
+    '<span style="color:var(--primary)">' + icone + '</span>' + escapeHTML(titulo) +
     '</div>' +
-    '<p class="text-xl font-bold text-gray-900">' + escapeHTML(String(valor)) + '</p>' +
+    '<strong style="font-size:1.15rem;letter-spacing:-.02em">' + escapeHTML(String(valor)) + '</strong>' +
     '</div>'
 }
 
 const ICONES = {
-  casa: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>',
-  comida: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/></svg>',
-  onibus: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>',
-  cartao: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>',
-  moeda: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10h8"/></svg>',
-  grafico: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>',
-  mala: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>',
-  estrela: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
-  estrelaVazia: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
+  casa: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>',
+  comida: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/></svg>',
+  onibus: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>',
+  cartao: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>',
+  moeda: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10h8"/></svg>',
+  grafico: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>',
+  mala: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>',
+  estrela: '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
+  estrelaVazia: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
 }
 
 let paginaNavbarAtual = ''
@@ -134,31 +130,37 @@ function montarNavbar(paginaAtiva) {
   const chaveAtiva = paginaAtiva === 'detalhes' ? 'home' : paginaAtiva
   const qtdFavoritos = obterFavoritosLocal().length
   const badgeFav = qtdFavoritos > 0
-    ? '<span id="contadorFavoritos" class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-amber-500 text-white rounded-full">' + qtdFavoritos + '</span>'
-    : '<span id="contadorFavoritos" class="ml-1 hidden inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-amber-500 text-white rounded-full"></span>'
+    ? '<span id="contadorFavoritos" class="badge">' + qtdFavoritos + '</span>'
+    : '<span id="contadorFavoritos" class="badge" hidden></span>'
+  const tema = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'
+  const iconeTema = tema === 'dark'
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg>'
   const links = [
     { chave: 'home', href: base + '/index.html', chaveRotulo: 'nav.busca', rotulo: t('nav.busca'), badge: '' },
     { chave: 'favoritos', href: base + '/paginas/favoritos.html', chaveRotulo: 'nav.favoritos', rotulo: t('nav.favoritos'), badge: badgeFav }
   ]
   const itens = links.map((link) => {
     const ativo = link.chave === chaveAtiva
-    const cls = ativo
-      ? 'text-indigo-700 font-bold border-b-2 border-indigo-700 pb-0.5'
-      : 'text-gray-600 hover:text-indigo-600 font-medium'
-    return '<a href="' + link.href + '" class="whitespace-nowrap text-[11px] sm:text-sm ' + cls + '">' +
+    return '<a href="' + link.href + '" class="nav-link' + (ativo ? ' ativo' : '') + '"' + (ativo ? ' aria-current="page"' : '') + '>' +
       '<span data-i18n="' + link.chaveRotulo + '">' + link.rotulo + '</span>' + link.badge + '</a>'
   }).join('')
 
   document.getElementById('navbar').innerHTML =
-    '<header class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur z-50 border-b border-gray-100 shadow-sm">' +
-    '<div class="max-w-6xl mx-auto flex h-14 items-center justify-between gap-1 px-4 sm:gap-2">' +
-    '<a href="' + base + '/index.html" class="flex items-center gap-1 whitespace-nowrap text-xs font-extrabold text-indigo-700 sm:gap-2 sm:text-lg">' +
-    '<svg class="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 15v4M10 11v8M16 7v12M22 4v16"/></svg>' +
-    '<span class="sm:hidden" data-i18n="nav.marcaCurta">' + t('nav.marcaCurta') + '</span>' +
-    '<span class="hidden sm:inline" data-i18n="nav.marca">' + t('nav.marca') + '</span>' +
+    '<header class="app-header">' +
+    '<div class="app-container-wide navbar">' +
+    '<a href="' + base + '/index.html" class="brand" aria-label="' + escapeHTML(t('nav.marca')) + '">' +
+    '<span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 15v4M10 11v8M16 7v12M22 4v16"/></svg></span>' +
+    '<span class="brand-text"><span class="sm:hidden" data-i18n="nav.marcaCurta">' + t('nav.marcaCurta') + '</span>' +
+    '<span class="hidden sm:inline" data-i18n="nav.marca">' + t('nav.marca') + '</span></span>' +
     '</a>' +
-    '<div class="flex shrink-0 items-center gap-2 sm:gap-5">' +
-    '<nav class="flex items-center gap-2.5 sm:gap-5">' + itens + '</nav>' +
+    '<div class="nav-actions">' +
+    '<nav class="nav-links" aria-label="Navegação principal">' + itens + '</nav>' +
+    '<button type="button" id="btnAbrirAdmin" class="btn btn-quiet" data-abrir-admin aria-label="Abrir área administrativa">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>' +
+    '<span data-i18n="nav.admin">Área Admin</span></button>' +
+    '<button type="button" class="icon-btn" data-tema-toggle aria-label="' + escapeHTML(t('nav.tema')) + '" aria-pressed="' + (tema === 'dark') + '">' +
+    '<span data-tema-icone>' + iconeTema + '</span></button>' +
     montarSeletorIdioma() +
     '</div>' +
     '</div></header>'
@@ -169,5 +171,5 @@ function atualizarContadorFavoritos() {
   if (!contador) return
   const qtd = obterFavoritosLocal().length
   contador.textContent = qtd > 0 ? qtd : ''
-  contador.classList.toggle('hidden', qtd === 0)
+  contador.hidden = qtd === 0
 }

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="Acesso restrito à área administrativa do Ingresso Universitário.">
+  <title>Acesso administrativo | Ingresso Universitário</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <script src="/admin/js/admin.js" defer></script>
+  <script src="/admin/js/login.js" defer></script>
+</head>
+<body class="login-page">
+  <main class="login-shell">
+    <aside class="login-aside" aria-label="Sobre a área administrativa">
+      <div class="login-brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.4 8.6 8 9 4.6-.4 8-4 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        </span>
+        <span class="brand-copy">
+          <strong>Ingresso Universitário</strong>
+          <span>Central de controle</span>
+        </span>
+      </div>
+      <h2>Decisões melhores começam com dados claros.</h2>
+      <p>Acompanhe o tráfego das páginas, identifique rotas mais acessadas e gere relatórios auditáveis em poucos cliques.</p>
+      <ul>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>
+          <span>Sessão protegida com cookies HttpOnly e CSRF.</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-5 3 3 5-7"/></svg>
+          <span>Dashboard analítico com atualização automática.</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>
+          <span>Histórico de relatórios em CSV, JSON e PDF.</span>
+        </li>
+      </ul>
+    </aside>
+
+    <section class="login-main">
+      <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-pressed="false">
+        <span class="sr-only">Alternar tema</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+
+      <div class="login-brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.4 8.6 8 9 4.6-.4 8-4 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        </span>
+        <span class="brand-copy">
+          <strong>Área administrativa</strong>
+          <span>Acesso restrito</span>
+        </span>
+      </div>
+
+      <form class="login-form" data-login-form novalidate>
+        <h1>Bem-vindo de volta</h1>
+        <p>Use as credenciais administrativas para acessar o painel.</p>
+
+        <div class="error-summary" data-erro-login role="alert" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+          <span></span>
+        </div>
+
+        <div class="field">
+          <label for="email">E-mail administrativo</label>
+          <input id="email" name="email" type="email" inputmode="email" autocomplete="username" placeholder="admin@instituicao.br" required maxlength="120">
+        </div>
+
+        <div class="field">
+          <label for="senha">Senha</label>
+          <div class="senha-wrap">
+            <input id="senha" name="senha" type="password" autocomplete="current-password" placeholder="••••••••••" required maxlength="128">
+            <button type="button" data-toggle-senha aria-label="Mostrar senha">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+            </button>
+          </div>
+          <span class="field-help">A senha é armazenada com hash scrypt e nunca trafega em texto claro.</span>
+        </div>
+
+        <label class="checkbox-line">
+          <input type="checkbox" checked disabled>
+          <span>Sessão segura com SameSite=Strict e validação de origem.</span>
+        </label>
+
+        <div class="form-actions" style="margin-top: 24px;">
+          <button class="btn btn-primary" type="submit" data-submit>
+            Entrar no painel
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

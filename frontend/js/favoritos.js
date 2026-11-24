@@ -142,13 +142,7 @@ function atualizarBotoesFavorito(cursoId) {
       iconeSvg.removeAttribute('stroke')
       iconeSvg.removeAttribute('stroke-width')
     }
-    botao.classList.toggle('bg-amber-500', favoritado)
-    botao.classList.toggle('text-white', favoritado)
-    botao.classList.toggle('border-amber-500', favoritado)
-    botao.classList.toggle('bg-white', !favoritado)
-    botao.classList.toggle('text-indigo-700', !favoritado)
-    botao.classList.toggle('border-indigo-200', !favoritado)
-    botao.classList.toggle('hover:bg-indigo-50', !favoritado)
+    botao.dataset.favoritado = String(favoritado)
   })
 }
 
@@ -167,6 +161,10 @@ document.addEventListener('click', function (evento) {
     grau: alvo.dataset.grau,
     modalidade: alvo.dataset.modalidade
   })
+
+  if (typeof trackEvento === 'function') {
+    trackEvento('favoritos', { acao: estaFavoritado(alvo.dataset.favoritar) ? 'adicionar' : 'remover' })
+  }
 
   const paginaFavoritos = window.location.pathname.includes('favoritos.html')
   const cartao = alvo.closest('[data-curso-id]')

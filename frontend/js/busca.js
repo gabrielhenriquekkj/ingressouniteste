@@ -48,8 +48,8 @@ function vincularEventos() {
   })
 
   inputNome.addEventListener('keydown', function (evento) {
-    const lista = document.getElementById('listaSugestoes')
-    if (!lista || lista.classList.contains('hidden')) return
+    const lista = document.getElementById('areaSugestoes')
+    if (!lista || lista.hidden) return
     const itens = lista.querySelectorAll('[data-sugestao]')
     const ativo = lista.querySelector('[data-ativo="true"]')
     let indice = Array.from(itens).indexOf(ativo)
@@ -143,6 +143,14 @@ async function executarBusca(adicionar) {
   const resumo = document.getElementById('resumoResultados')
   const filtros = obterFiltros()
 
+  if (!adicionar && (filtros.q || filtros.uf || filtros.categoria) && typeof trackEvento === 'function') {
+    trackEvento('busca', {
+      uf: filtros.uf,
+      categoria: filtros.categoria,
+      temTermo: Boolean(filtros.q)
+    })
+  }
+
   if (!adicionar) {
     cacheBusca.clear()
     buscaCarregada = false
@@ -197,7 +205,7 @@ function atualizarBotaoCarregarMais() {
   const areaCarregarMais = document.getElementById('areaCarregarMais')
   if (!areaCarregarMais) return
   const temMais = listaCompleta.length < totalResultados
-  areaCarregarMais.classList.toggle('hidden', !temMais)
+  areaCarregarMais.hidden = !temMais
 }
 
 let sugestoesCache = new Map()
@@ -234,33 +242,35 @@ function renderizarSugestoes(dados) {
       ? base + '/paginas/detalhes.html?id=' + item.id
       : base + '/paginas/detalhes.html?id=' + item.id
     const icone = item.tipo === 'curso'
-      ? '<svg class="w-4 h-4 text-indigo-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15v4M10 11v8M16 7v12M22 4v16"/></svg>'
-      : '<svg class="w-4 h-4 text-orange-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>'
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="width:16px;height:16px;color:var(--primary);flex:0 0 auto"><path d="M4 15v4M10 11v8M16 7v12M22 4v16"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="width:16px;height:16px;color:var(--warn);flex:0 0 auto"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>'
     const tipoLabel = item.tipo === 'curso'
-      ? '<span class="text-[10px] font-bold uppercase tracking-wider text-indigo-500">' + escapeHTML(t('resultados.tipoCurso')) + '</span>'
-      : '<span class="text-[10px] font-bold uppercase tracking-wider text-orange-500">' + escapeHTML(t('resultados.tipoInstituicao')) + '</span>'
+      ? '<span class="eyebrow">' + escapeHTML(t('resultados.tipoCurso')) + '</span>'
+      : '<span class="eyebrow" style="color:var(--warn)">' + escapeHTML(t('resultados.tipoInstituicao')) + '</span>'
 
-    html += '<a href="' + href + '" data-sugestao class="flex items-center gap-3 px-4 py-2.5 hover:bg-indigo-50 transition cursor-pointer no-underline">' +
+    html += '<a href="' + href + '" data-sugestao data-track-event="sugestao-curso" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">' +
       icone +
-      '<div class="flex-1 min-w-0">' +
-      '<div class="flex items-center gap-2">' +
+      '<span style="flex:1;min-width:0">' +
+      '<span style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">' +
       tipoLabel +
-      '<span class="text-sm font-semibold text-gray-900 truncate">' + escapeHTML(item.texto) + '</span>' +
-      '</div>' +
-      (item.subtitulo ? '<span class="text-xs text-gray-500 truncate block">' + escapeHTML(item.subtitulo) + '</span>' : '') +
-      '</div>' +
-      '<svg class="w-4 h-4 text-gray-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>' +
+      '<strong style="font-size:.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHTML(item.texto) + '</strong>' +
+      '</span>' +
+      (item.subtitulo ? '<small style="display:block;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHTML(item.subtitulo) + '</small>' : '') +
+      '</span>' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="width:16px;height:16px;color:var(--text-subtle);flex:0 0 auto"><path d="M9 18l6-6-6-6"/></svg>' +
       '</a>'
   }
 
   area.innerHTML = html
-  area.classList.remove('hidden')
+  area.hidden = false
+  document.getElementById('filtroNome')?.setAttribute('aria-expanded', 'true')
 }
 
 function fecharSugestoes() {
   const area = document.getElementById('areaSugestoes')
   if (area) {
-    area.classList.add('hidden')
+    area.hidden = true
     area.innerHTML = ''
+    document.getElementById('filtroNome')?.setAttribute('aria-expanded', 'false')
   }
 }

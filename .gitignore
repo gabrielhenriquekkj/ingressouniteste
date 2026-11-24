@@ -4,6 +4,7 @@ api/.env
 *.db-wal
 *.log
 *.err
+api/db/test_*.db
 .DS_Store
 
 # Debug/temp files

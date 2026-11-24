@@ -2,9 +2,19 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#143f8f">
   <meta name="description" content="Detalhes do curso: notas de corte, custos da cidade, bolsas, auxílios e mercado de trabalho." data-i18n-content="meta.detalhes.descricao">
   <title data-i18n="meta.detalhes.titulo">Detalhes do Curso — Ingresso Universitário</title>
+  <script>
+    (function () {
+      try {
+        var tema = localStorage.getItem('ingresso_tema')
+        if (!tema) tema = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        document.documentElement.dataset.theme = tema
+      } catch (erro) { document.documentElement.dataset.theme = 'light' }
+    })()
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,44 +30,40 @@
     }
   </script>
 </head>
-<body class="font-sans antialiased text-gray-800 bg-gray-50 min-h-screen flex flex-col">
+<body>
 
   <div id="navbar"></div>
 
-  <main class="flex-1 pt-16 pb-16">
-    <div class="max-w-6xl mx-auto px-4">
+  <main class="app-main">
+    <div class="app-container">
 
       <!-- Skeleton durante o carregamento (RNF2) -->
-      <div id="detalheSkeleton" class="py-10">
-        <div class="space-y-4">
-          <div class="skeleton h-4 w-24 rounded"></div>
-          <div class="skeleton h-10 w-2/3 rounded"></div>
-          <div class="skeleton h-4 w-1/2 rounded"></div>
-          <div class="skeleton h-4 w-1/3 rounded"></div>
-        </div>
+      <div id="detalheSkeleton" style="padding-top:2rem;display:grid;gap:1rem">
+        <div class="skeleton" style="width:6rem"></div>
+        <div class="skeleton" style="width:66%;height:2.5rem"></div>
+        <div class="skeleton" style="width:50%"></div>
+        <div class="skeleton" style="width:33%"></div>
       </div>
 
-      <!-- Cabeçalho do curso -->
-      <section id="cabecalhoCurso" class="hidden bg-gradient-to-br from-indigo-50 via-white to-white rounded-3xl ring-1 ring-gray-200 p-6 md:p-10 shadow-sm mt-6"></section>
+      <section id="cabecalhoCurso" class="app-card" style="margin-top:1.5rem" hidden></section>
 
-      <!-- Abas com os detalhes RF2–RF5 -->
-      <section id="conteudoDetalhe" class="hidden mt-10">
-        <div class="border-b border-gray-200 bg-white rounded-t-2xl px-2" role="tablist" aria-label="Informações do curso" data-i18n-aria-label="detalhes.abasAria" aria-orientation="horizontal">
-<div class="barra-guias flex overflow-x-auto">
+      <section id="conteudoDetalhe" style="margin-top:2.5rem" hidden>
+        <div class="app-card" role="tablist" aria-label="Informações do curso" data-i18n-aria-label="detalhes.abasAria" aria-orientation="horizontal" style="border-radius:20px 20px 0 0;padding:.5rem">
+<div class="barra-guias">
            <button type="button" role="tab" aria-selected="true" aria-controls="atmNotas" id="guia-notas"
-              class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap" data-i18n="detalhes.abaNotas">Notas de corte</button>
+               class="guia" data-track-secao="notas" data-i18n="detalhes.abaNotas">Notas de corte</button>
             <button type="button" role="tab" aria-selected="false" aria-controls="atmCustos" id="guia-custos" tabindex="-1"
-              class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap" data-i18n="detalhes.abaCustos">Custos da cidade</button>
+               class="guia" data-track-secao="custos" data-i18n="detalhes.abaCustos">Custos da cidade</button>
             <button type="button" role="tab" aria-selected="false" aria-controls="atmBolsas" id="guia-bolsas" tabindex="-1"
-              class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap" data-i18n="detalhes.abaBolsas">Bolsas e auxílios</button>
+               class="guia" data-track-secao="bolsas" data-i18n="detalhes.abaBolsas">Bolsas e auxílios</button>
             <button type="button" role="tab" aria-selected="false" aria-controls="atmMercado" id="guia-mercado" tabindex="-1"
-              class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap" data-i18n="detalhes.abaMercado">Mercado e estágios</button>
+               class="guia" data-track-secao="mercado" data-i18n="detalhes.abaMercado">Mercado e estágios</button>
             <button type="button" role="tab" aria-selected="false" aria-controls="atmCursos" id="guia-cursos" tabindex="-1"
-              class="guia px-4 md:px-6 py-4 text-sm font-medium whitespace-nowrap" data-i18n="detalhes.abaCursos">Cursos da instituição</button>
+               class="guia" data-track-secao="geral" data-i18n="detalhes.abaCursos">Cursos da instituição</button>
          </div>
         </div>
 
-        <div class="bg-gray-50 rounded-b-2xl ring-1 ring-gray-200 p-5 md:p-8">
+        <div class="app-card" style="border-radius:0 0 20px 20px;box-shadow:none">
 <section id="atmNotas" role="tabpanel" aria-labelledby="guia-notas"></section>
            <section id="atmCustos" role="tabpanel" aria-labelledby="guia-custos" hidden></section>
            <section id="atmBolsas" role="tabpanel" aria-labelledby="guia-bolsas" hidden></section>
@@ -69,18 +75,21 @@
     </div>
   </main>
 
-  <footer class="bg-gray-900 text-gray-400 text-center py-8 px-4">
-    <p class="text-sm" data-i18n="comum.rodapeProjeto">© 2026 Ingresso Universitário — Projeto Integrador I · Grupo 3</p>
+  <footer class="app-footer">
+    <p data-i18n="comum.rodapeProjeto">© 2026 Ingresso Universitário — Projeto Integrador I · Grupo 3</p>
   </footer>
 
-  <script src="../js/traducoes.js?v=2"></script>
-  <script src="../js/i18n.js?v=2"></script>
-  <script src="../js/seletor-idioma.js?v=2"></script>
-  <script src="../js/util.js?t=2"></script>
-  <script src="../js/api.js?t=2"></script>
-  <script src="../js/dadosDemo.js?t=1"></script>
-  <script src="../js/componentes.js?t=2"></script>
-  <script src="../js/favoritos.js?t=2"></script>
-  <script src="../js/detalhes.js?t=6"></script>
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../js/traducoes.js?v=3"></script>
+  <script src="../js/i18n.js?v=3"></script>
+  <script src="../js/seletor-idioma.js?v=3"></script>
+  <script src="../js/util.js?v=4"></script>
+  <script src="../js/api.js?v=3"></script>
+  <script src="../js/dadosDemo.js?v=2"></script>
+  <script src="../js/componentes.js?v=4"></script>
+  <script src="../js/favoritos.js?v=3"></script>
+  <script src="../js/admin-integrado.js?v=1"></script>
+  <script src="../js/detalhes.js?v=7"></script>
 </body>
 </html>

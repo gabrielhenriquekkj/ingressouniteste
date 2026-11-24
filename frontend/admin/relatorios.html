@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="Geração e histórico de relatórios de acesso da área administrativa.">
+  <title>Relatórios | Ingresso Universitário</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <script src="/admin/js/admin.js" defer></script>
+  <script src="/admin/js/relatorios.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegação administrativa">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.4 8.6 8 9 4.6-.4 8-4 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        </span>
+        <span class="brand-copy">
+          <strong>Ingresso Universitário</strong>
+          <span>Central de controle</span>
+        </span>
+      </div>
+
+      <p class="nav-label">Painel</p>
+      <ul class="nav-list">
+        <li>
+          <a class="nav-item" href="/admin/dashboard/">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+            <span>Visão geral</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="/admin/relatorios/" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>
+            <span>Relatórios</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <span class="avatar" data-user-initial aria-hidden="true">A</span>
+          <span class="user-copy">
+            <strong data-user-name>Administrador</strong>
+            <span data-user-email>admin@ingresso.local</span>
+          </span>
+        </div>
+        <button class="btn btn-ghost btn-sm sidebar-logout" type="button" data-action="logout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M21 19V5a2 2 0 0 0-2-2h-6"/></svg>
+          <span>Encerrar sessão</span>
+        </button>
+      </div>
+    </aside>
+
+    <div class="sidebar-backdrop" data-sidebar-backdrop aria-hidden="true"></div>
+
+    <div class="app-main">
+      <header class="topbar">
+        <button class="icon-button" type="button" data-menu-toggle aria-label="Abrir menu lateral">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="breadcrumb">
+          <span>Administração</span>
+          <strong>Relatórios</strong>
+        </div>
+        <div class="topbar-actions">
+          <span class="status-pill">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span>Ambiente auditável</span>
+          </span>
+          <button class="icon-button" type="button" data-theme-toggle aria-pressed="false">
+            <span class="sr-only">Alternar tema</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="page-head">
+          <div>
+            <span class="eyebrow">Exportação e auditoria</span>
+            <h1>Relatórios de acesso</h1>
+            <p>Gere snapshots consultáveis do tráfego registrado, exporte em CSV, JSON ou PDF e acompanhe todo o histórico de geração.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn" type="button" data-atualizar-historico>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>
+              Atualizar histórico
+            </button>
+          </div>
+        </div>
+
+        <section class="bento">
+          <form class="card form-panel" data-form-relatorio style="grid-column: span 12;">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">Novo relatório</h2>
+                <p class="card-subtitle">Defina o período, o filtro de rota e o formato de exportação preferido.</p>
+              </div>
+              <span class="badge" data-tipo="ok" data-contagem>Calculando…</span>
+            </div>
+
+            <div class="filter-grid">
+              <div class="field filter-grid-full">
+                <label for="nome">Nome do relatório</label>
+                <input id="nome" name="nome" type="text" maxlength="80" placeholder="Ex.: Acessos de novembro" required>
+              </div>
+
+              <div class="field">
+                <label for="inicio">Data inicial</label>
+                <input id="inicio" name="inicio" type="date" required>
+              </div>
+
+              <div class="field">
+                <label for="fim">Data final</label>
+                <input id="fim" name="fim" type="date" required>
+              </div>
+
+              <div class="field filter-grid-full">
+                <label for="rota">Rota</label>
+                <select id="rota" name="rota">
+                  <option value="">Todas as rotas</option>
+                </select>
+                <span class="field-help">O filtro é opcional. O período pode abranger até 366 dias.</span>
+              </div>
+
+              <fieldset class="field filter-grid-full" style="border: 0; padding: 0; margin: 0;">
+                <legend class="sr-only">Formato preferido</legend>
+                <span class="field-label" style="display: block; font-size: 0.78rem; font-weight: 800; margin-bottom: 7px;">Formato preferido</span>
+                <div class="segmented">
+                  <label><input type="radio" name="formato" value="json" checked><span>JSON</span></label>
+                  <label><input type="radio" name="formato" value="csv"><span>CSV</span></label>
+                  <label><input type="radio" name="formato" value="pdf"><span>PDF</span></label>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="error-summary" data-erro-relatorio role="alert" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+              <span></span>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" type="submit" data-gerar>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M12 18v-6M9 15h6"/></svg>
+                Gerar e salvar relatório
+              </button>
+              <span class="field-help">O snapshot permanece disponível no histórico mesmo após alterações nos dados.</span>
+            </div>
+          </form>
+
+          <article class="card" style="grid-column: span 12;">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">Histórico de relatórios</h2>
+                <p class="card-subtitle">Últimos 30 snapshots gerados, com download e exclusão controlados por CSRF.</p>
+              </div>
+            </div>
+            <div class="history" data-historico>
+              <div class="empty-state">Carregando histórico…</div>
+            </div>
+          </article>
+
+          <article class="card" data-detalhe style="grid-column: span 12;" hidden>
+            <div class="card-head">
+              <div>
+                <h2 class="card-title" data-detalhe-titulo>Detalhes do relatório</h2>
+                <p class="card-subtitle" data-detalhe-subtitulo></p>
+              </div>
+              <button class="btn btn-sm" type="button" data-fechar-detalhe>Fechar detalhes</button>
+            </div>
+            <div data-detalhe-conteudo></div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

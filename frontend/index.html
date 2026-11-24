@@ -2,9 +2,21 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Busque cursos e universidades com notas de corte, custos da cidade, bolsas e mercado de trabalho em um só lugar." data-i18n-content="meta.home.descricao">
+  <meta name="theme-color" content="#143f8f">
   <title data-i18n="meta.home.titulo">Ingresso Universitário — Escolha a sua universidade</title>
+  <script>
+    (function () {
+      try {
+        var tema = localStorage.getItem('ingresso_tema')
+        if (!tema) tema = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        document.documentElement.dataset.theme = tema
+      } catch (erro) {
+        document.documentElement.dataset.theme = 'light'
+      }
+    })()
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,143 +32,368 @@
     }
   </script>
 </head>
-<body class="font-sans antialiased text-gray-800 bg-gray-50 min-h-screen flex flex-col">
+<body>
 
   <div id="navbar"></div>
 
-  <main class="flex-1 pt-16">
+  <main id="viewPublica" class="app-main" role="tabpanel" aria-labelledby="abaPublica">
+    <div class="app-container-wide">
 
-    <!-- Hero -->
-    <section class="bg-gradient-to-br from-indigo-50 via-white to-indigo-100">
-      <div class="max-w-6xl mx-auto px-4 py-12 md:py-16">
-        <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight">
-          <span data-i18n="hero.tituloInicio">Escolha com segurança a sua</span> <span class="text-indigo-700" data-i18n="hero.tituloDestaque">universidade</span>
-        </h1>
-        <p class="mt-3 text-gray-600 text-lg max-w-2xl" data-i18n="hero.descricao">
-          Compare notas de corte, custos de moradia, bolsas, auxílios e mercado de trabalho antes de tomar a sua decisão.
-        </p>
-
-        <!-- Resumo dos 4 pilares -->
-        <ul class="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-3" aria-label="O que você encontra no app" data-i18n-aria-label="hero.pilaresAria">
-          <li class="bg-white/80 ring-1 ring-gray-200 rounded-2xl p-4 flex items-start gap-3">
-            <span class="text-indigo-600 shrink-0"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15v4M10 11v8M16 7v12M22 4v16"/></svg></span>
-            <span>
-              <span class="block font-bold text-gray-900 text-sm" data-i18n="hero.notasTitulo">Notas de corte</span>
-              <span class="block text-xs text-gray-500 mt-0.5" data-i18n="hero.notasDescricao">SiSU e ProUni por chamada</span>
-            </span>
-          </li>
-          <li class="bg-white/80 ring-1 ring-gray-200 rounded-2xl p-4 flex items-start gap-3">
-            <span class="text-indigo-600 shrink-0"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span>
-            <span>
-              <span class="block font-bold text-gray-900 text-sm" data-i18n="hero.custosTitulo">Custos da cidade</span>
-              <span class="block text-xs text-gray-500 mt-0.5" data-i18n="hero.custosDescricao">Moradia, alimentação e transporte</span>
-            </span>
-          </li>
-          <li class="bg-white/80 ring-1 ring-gray-200 rounded-2xl p-4 flex items-start gap-3">
-            <span class="text-indigo-600 shrink-0"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
-            <span>
-              <span class="block font-bold text-gray-900 text-sm" data-i18n="hero.bolsasTitulo">Bolsas e auxílios</span>
-              <span class="block text-xs text-gray-500 mt-0.5" data-i18n="hero.bolsasDescricao">Permanência, bolsas e apoio</span>
-            </span>
-          </li>
-          <li class="bg-white/80 ring-1 ring-gray-200 rounded-2xl p-4 flex items-start gap-3">
-            <span class="text-indigo-600 shrink-0"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span>
-            <span>
-              <span class="block font-bold text-gray-900 text-sm" data-i18n="hero.mercadoTitulo">Mercado e estágios</span>
-              <span class="block text-xs text-gray-500 mt-0.5" data-i18n="hero.mercadoDescricao">Demanda na região e salários</span>
-            </span>
-          </li>
-        </ul>
+      <div class="segmented" role="tablist" aria-label="Visualizações disponíveis">
+        <button type="button" id="abaPublica" role="tab" aria-selected="true" aria-controls="viewPublica" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          Busca pública
+        </button>
+        <button type="button" id="abaAdmin" role="tab" aria-selected="false" aria-controls="viewAdmin" tabindex="-1" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+          Painel administrativo
+        </button>
       </div>
-    </section>
 
-    <!-- Filtros de busca (RF1) -->
-    <section class="max-w-6xl mx-auto px-4 py-10">
-      <form id="formBusca" class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-5 md:p-6" aria-label="Filtros de busca de cursos" data-i18n-aria-label="filtros.aria">
-        <div class="grid md:grid-cols-4 gap-4">
+      <section class="hero" aria-labelledby="tituloHero">
+        <div class="app-card hero-copy">
+          <span class="eyebrow">Guia universitário 2026</span>
+          <h1 id="tituloHero">
+            <span data-i18n="hero.tituloInicio">Escolha com segurança a sua</span>
+            <span data-i18n="hero.tituloDestaque">universidade</span>
+          </h1>
+          <p data-i18n="hero.descricao">
+            Compare notas de corte, custos de moradia, bolsas, auxílios e mercado de trabalho antes de tomar a sua decisão.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#formBusca">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              Começar busca
+            </a>
+            <a class="btn btn-outline" href="paginas/favoritos.html">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              Ver favoritos
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-lateral" aria-label="Resumo dos dados" data-i18n-aria-label="hero.pilaresAria">
+          <div class="app-card mini-stat">
+            <div><strong>4</strong><span>eixos de análise</span></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 15v4M10 11v8M16 7v12M22 4v16"/></svg>
+          </div>
+          <div class="app-card mini-stat">
+            <div><strong>3</strong><span>idiomas disponíveis</span></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
+          </div>
+          <div class="app-card mini-stat">
+            <div><strong>24/7</strong><span>dados atualizados</span></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          </div>
+        </div>
+      </section>
+
+      <section class="bento" aria-label="O que você encontra no app" data-i18n-aria-label="hero.pilaresAria">
+        <a class="bento-item" href="paginas/detalhes.html" data-track-event="notas-corte">
+          <span class="bento-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 15v4M10 11v8M16 7v12M22 4v16"/></svg></span>
           <div>
-            <label for="filtroNome" class="block text-sm font-semibold text-gray-700 mb-1.5" data-i18n="filtros.nome">Curso ou instituição</label>
-            <div class="relative">
-              <input type="search" id="filtroNome" name="nome" placeholder="Ex.: Ciência da Computação, UFMT..." autocomplete="off" data-i18n-placeholder="filtros.nomePlaceholder"
-                class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
-                aria-autocomplete="list" aria-controls="areaSugestoes" aria-expanded="false">
-              <div id="areaSugestoes" class="absolute z-40 w-full mt-1 bg-white rounded-xl shadow-lg ring-1 ring-gray-200 max-h-80 overflow-y-auto hidden" role="listbox"></div>
+            <h3 data-i18n="hero.notasTitulo">Notas de corte</h3>
+            <p data-i18n="hero.notasDescricao">SiSU e ProUni por chamada</p>
+            <span class="bento-seta">Explorar →</span>
+          </div>
+        </a>
+        <a class="bento-item" href="paginas/detalhes.html" data-track-event="custos-cidade">
+          <span class="bento-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span>
+          <div>
+            <h3 data-i18n="hero.custosTitulo">Custos da cidade</h3>
+            <p data-i18n="hero.custosDescricao">Moradia, alimentação e transporte</p>
+            <span class="bento-seta">Explorar →</span>
+          </div>
+        </a>
+        <a class="bento-item" href="paginas/detalhes.html" data-track-event="bolsas-auxilios">
+          <span class="bento-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
+          <div>
+            <h3 data-i18n="hero.bolsasTitulo">Bolsas e auxílios</h3>
+            <p data-i18n="hero.bolsasDescricao">Permanência, bolsas e apoio</p>
+            <span class="bento-seta">Explorar →</span>
+          </div>
+        </a>
+        <a class="bento-item" href="paginas/detalhes.html" data-track-event="mercado-estagios">
+          <span class="bento-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span>
+          <div>
+            <h3 data-i18n="hero.mercadoTitulo">Mercado e estágios</h3>
+            <p data-i18n="hero.mercadoDescricao">Demanda na região e salários</p>
+            <span class="bento-seta">Explorar →</span>
+          </div>
+        </a>
+      </section>
+
+      <section class="section-heading">
+        <div>
+          <span class="eyebrow">Busca inteligente</span>
+          <h2>Encontre o curso ideal</h2>
+          <p>Filtre por nome, estado e categoria em instituições públicas.</p>
+        </div>
+      </section>
+
+      <form id="formBusca" class="app-card form-busca" aria-label="Filtros de busca de cursos" data-i18n-aria-label="filtros.aria">
+        <div class="campo">
+          <label for="filtroNome" data-i18n="filtros.nome">Curso ou instituição</label>
+          <div style="position:relative">
+            <input type="search" id="filtroNome" name="nome" placeholder="Ex.: Ciência da Computação, UFMT..." autocomplete="off" data-i18n-placeholder="filtros.nomePlaceholder"
+              aria-autocomplete="list" aria-controls="areaSugestoes" aria-expanded="false">
+            <div id="areaSugestoes" hidden role="listbox" aria-label="Sugestões de cursos"></div>
+          </div>
+        </div>
+        <div class="campo">
+          <label for="filtroEstado" data-i18n="filtros.estado">Estado (UF)</label>
+          <select id="filtroEstado" name="uf">
+            <option value="" data-i18n="filtros.todasUfs">Todas as UFs</option>
+            <option value="AC">AC - Acre</option><option value="AL">AL - Alagoas</option>
+            <option value="AP">AP - Amapá</option><option value="AM">AM - Amazonas</option>
+            <option value="BA">BA - Bahia</option><option value="CE">CE - Ceará</option>
+            <option value="DF">DF - Distrito Federal</option><option value="ES">ES - Espírito Santo</option>
+            <option value="GO">GO - Goiás</option><option value="MA">MA - Maranhão</option>
+            <option value="MT">MT - Mato Grosso</option><option value="MS">MS - Mato Grosso do Sul</option>
+            <option value="MG">MG - Minas Gerais</option><option value="PA">PA - Pará</option>
+            <option value="PB">PB - Paraíba</option><option value="PR">PR - Paraná</option>
+            <option value="PE">PE - Pernambuco</option><option value="PI">PI - Piauí</option>
+            <option value="RJ">RJ - Rio de Janeiro</option><option value="RN">RN - Rio Grande do Norte</option>
+            <option value="RS">RS - Rio Grande do Sul</option><option value="RO">RO - Rondônia</option>
+            <option value="RR">RR - Roraima</option><option value="SC">SC - Santa Catarina</option>
+            <option value="SP">SP - São Paulo</option><option value="SE">SE - Sergipe</option>
+            <option value="TO">TO - Tocantins</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="filtroCategoria" data-i18n="filtros.categoria">Categoria</label>
+          <select id="filtroCategoria" name="categoria">
+            <option value="" data-i18n="filtros.todas">Todas</option>
+            <option value="federal" data-i18n="filtros.federal">Federal</option>
+            <option value="estadual" data-i18n="filtros.estadual">Estadual</option>
+            <option value="municipal" data-i18n="filtros.municipal">Municipal</option>
+          </select>
+        </div>
+        <div class="buscar-campo">
+          <button type="submit" class="btn btn-primary" style="width:100%">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <span data-i18n="filtros.buscar">Buscar</span>
+          </button>
+        </div>
+        <div style="grid-column:1/-1">
+          <button type="button" id="btnLimparFiltros" class="btn btn-quiet btn-sm" data-i18n="filtros.limpar">Limpar filtros</button>
+        </div>
+      </form>
+
+      <section class="section-heading">
+        <div><h2 data-i18n="resultados.titulo">Resultados</h2><p id="resumoResultados" aria-live="polite"></p></div>
+        <span class="badge" id="totalResultadosBadge" hidden></span>
+      </section>
+
+      <div id="areaResultados" class="resultados-grid" aria-live="polite"></div>
+      <div id="areaCarregarMais" class="section-heading" style="justify-content:center" hidden>
+        <button id="btnCarregarMais" type="button" class="btn btn-outline">
+          <span data-i18n="resultados.carregarMais">Carregar mais resultados</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <section id="viewAdmin" class="app-main" role="tabpanel" aria-labelledby="abaAdmin" hidden>
+    <div class="app-container-wide">
+      <div class="segmented" role="tablist" aria-label="Visualizações disponíveis">
+        <button type="button" role="tab" aria-selected="false" tabindex="-1" disabled aria-controls="viewPublica">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          Busca pública
+        </button>
+        <button type="button" role="tab" aria-selected="true" tabindex="0" aria-controls="viewAdmin">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+          Painel administrativo
+        </button>
+      </div>
+
+      <div class="admin-intro app-card">
+        <div>
+          <span class="eyebrow">Acesso restrito</span>
+          <h2>Painel de acompanhamento</h2>
+          <p id="adminSaudacao">Dados de navegação, buscas e interações em tempo real.</p>
+        </div>
+        <div class="admin-actions">
+          <button type="button" id="btnAtualizarAdmin" class="btn btn-outline">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 11a8 8 0 10-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+            Atualizar
+          </button>
+          <button type="button" id="btnLogoutAdmin" class="btn btn-quiet">Sair</button>
+        </div>
+      </div>
+
+      <div class="admin-toolbar">
+        <div class="campo">
+          <label for="selectPeriodo">Período do dashboard</label>
+          <select id="selectPeriodo">
+            <option value="7">Últimos 7 dias</option>
+            <option value="30" selected>Últimos 30 dias</option>
+            <option value="90">Últimos 90 dias</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="filtroRotaAdmin">Filtrar acessos por rota</label>
+          <select id="filtroRotaAdmin"><option value="">Todas as rotas</option></select>
+        </div>
+        <button type="button" id="btnFiltrarAcessos" class="btn btn-outline">Aplicar filtro</button>
+        <span id="adminAtualizadoEm" class="badge" aria-live="polite">Aguardando dados</span>
+      </div>
+
+      <div id="adminCarregando" class="app-card admin-vazio" hidden>Carregando dados administrativos...</div>
+
+      <div id="adminConteudo" aria-live="polite">
+        <div class="admin-grid">
+          <div class="kpi-grid">
+            <article class="app-card kpi-card"><span>Hoje</span><strong id="kpiHoje">—</strong><small>acessos no dia</small></article>
+            <article class="app-card kpi-card"><span>7 dias</span><strong id="kpi7">—</strong><small>acessos na semana</small></article>
+            <article class="app-card kpi-card"><span id="kpi30Rotulo">30 dias</span><strong id="kpi30">—</strong><small>acessos no período</small></article>
+            <article class="app-card kpi-card"><span>Total</span><strong id="kpiTotal">—</strong><small>registros salvos</small></article>
+          </div>
+
+          <article class="app-card admin-card chart-card">
+            <h3>Evolução de acessos</h3>
+            <p class="card-subtitulo">Passe o mouse ou use o teclado nos pontos para ver Detalhes.</p>
+            <div id="graficoAcessos" aria-label="Gráfico de acessos por dia"></div>
+          </article>
+
+          <article class="app-card admin-card ranking-card">
+            <h3>Ranking de páginas</h3>
+            <p class="card-subtitulo">Rotas mais acessadas no período.</p>
+            <div id="rankingBarras" class="barras"></div>
+          </article>
+
+          <article class="app-card admin-card distribuicao-card">
+            <h3>Dispositivos</h3>
+            <p class="card-subtitulo">Perfil de acesso dos visitantes.</p>
+            <div id="distDispositivos" class="barras"></div>
+          </article>
+
+          <article class="app-card admin-card distribuicao-card">
+            <h3>Navegadores e sistemas</h3>
+            <p class="card-subtitulo">Distribuição por cliente e sistema operacional.</p>
+            <div id="distNavegadores" class="barras"></div>
+            <div id="distSistemas" class="barras" style="margin-top:1rem"></div>
+          </article>
+
+          <article class="app-card admin-card acessos-card">
+            <h3>Acessos recentes</h3>
+            <p class="card-subtitulo">Clique nos cabeçalhos para ordenar. Dados anonimizados.</p>
+            <div class="tabela-wrap">
+              <table class="tabela">
+                <thead>
+                  <tr>
+                    <th scope="col"><button type="button" data-ordem="criado_em">Data/hora <span aria-hidden="true">↕</span></button></th>
+                    <th scope="col"><button type="button" data-ordem="rota">Rota <span aria-hidden="true">↕</span></button></th>
+                    <th scope="col"><button type="button" data-ordem="dispositivo">Dispositivo <span aria-hidden="true">↕</span></button></th>
+                    <th scope="col"><button type="button" data-ordem="navegador">Navegador <span aria-hidden="true">↕</span></button></th>
+                    <th scope="col"><button type="button" data-ordem="status">Status <span aria-hidden="true">↕</span></button></th>
+                    <th scope="col"><button type="button" data-ordem="area">Área <span aria-hidden="true">↕</span></button></th>
+                    <th scope="col">Detalhes</th>
+                  </tr>
+                </thead>
+                <tbody id="tabelaAcessosCorpo"><tr><td colspan="7" class="admin-vazio">Carregando...</td></tr></tbody>
+              </table>
             </div>
-          </div>
-          <div>
-            <label for="filtroEstado" class="block text-sm font-semibold text-gray-700 mb-1.5" data-i18n="filtros.estado">Estado (UF)</label>
-            <select id="filtroEstado" name="uf"
-              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
-              <option value="" data-i18n="filtros.todasUfs">Todas as UFs</option>
-              <option value="AC">AC - Acre</option><option value="AL">AL - Alagoas</option>
-              <option value="AP">AP - Amapá</option><option value="AM">AM - Amazonas</option>
-              <option value="BA">BA - Bahia</option><option value="CE">CE - Ceará</option>
-              <option value="DF">DF - Distrito Federal</option><option value="ES">ES - Espírito Santo</option>
-              <option value="GO">GO - Goiás</option><option value="MA">MA - Maranhão</option>
-              <option value="MT">MT - Mato Grosso</option><option value="MS">MS - Mato Grosso do Sul</option>
-              <option value="MG">MG - Minas Gerais</option><option value="PA">PA - Pará</option>
-              <option value="PB">PB - Paraíba</option><option value="PR">PR - Paraná</option>
-              <option value="PE">PE - Pernambuco</option><option value="PI">PI - Piauí</option>
-              <option value="RJ">RJ - Rio de Janeiro</option><option value="RN">RN - Rio Grande do Norte</option>
-              <option value="RS">RS - Rio Grande do Sul</option><option value="RO">RO - Rondônia</option>
-              <option value="RR">RR - Roraima</option><option value="SC">SC - Santa Catarina</option>
-              <option value="SP">SP - São Paulo</option><option value="SE">SE - Sergipe</option>
-              <option value="TO">TO - Tocantins</option>
-            </select>
-          </div>
-          <div>
-            <label for="filtroCategoria" class="block text-sm font-semibold text-gray-700 mb-1.5" data-i18n="filtros.categoria">Categoria</label>
-            <select id="filtroCategoria" name="categoria"
-              class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
-              <option value="" data-i18n="filtros.todas">Todas</option>
-              <option value="federal" data-i18n="filtros.federal">Federal</option>
-              <option value="estadual" data-i18n="filtros.estadual">Estadual</option>
-              <option value="municipal" data-i18n="filtros.municipal">Municipal</option>
-            </select>
-          </div>
-          <div class="flex items-end">
-            <button type="submit" class="w-full inline-flex items-center justify-center gap-2 bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-indigo-800 transition">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-              <span data-i18n="filtros.buscar">Buscar</span>
+            <div class="paginacao">
+              <span id="paginaInfo">—</span>
+              <div class="paginacao-acoes">
+                <button type="button" id="btnPaginaAnterior" class="btn btn-quiet btn-sm">Anterior</button>
+                <button type="button" id="btnPaginaProxima" class="btn btn-quiet btn-sm">Próxima</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="section-heading">
+          <div><h2>Relatórios</h2><p>Gere, exporte e acompanhe o histórico de relatórios de acesso.</p></div>
+        </div>
+
+        <div class="reports-grid">
+          <article class="app-card admin-card">
+            <h3>Gerar novo relatório</h3>
+            <p class="card-subtitulo">Escolha o período, a rota e o formato de exportação.</p>
+            <form id="formRelatorio" class="reports-form">
+              <div class="campo"><label for="relatorioNome">Nome</label><input id="relatorioNome" name="nome" maxlength="80" placeholder="Ex.: Acessos de novembro"></div>
+              <div class="campo"><label for="relatorioInicio">De</label><input id="relatorioInicio" name="inicio" type="date" required></div>
+              <div class="campo"><label for="relatorioFim">Até</label><input id="relatorioFim" name="fim" type="date" required></div>
+              <div class="campo"><label for="relatorioRota">Rota</label><select id="relatorioRota" name="rota"><option value="">Todas as rotas</option></select></div>
+              <div class="campo"><span class="campo-label">Formato</span>
+                <div class="formato-opcoes">
+                  <label><input type="radio" name="formato" value="csv"> CSV</label>
+                  <label><input type="radio" name="formato" value="json" checked> JSON</label>
+                  <label><input type="radio" name="formato" value="pdf"> PDF</label>
+                </div>
+              </div>
+              <p id="relatorioErro" class="campo-erro" role="alert" hidden></p>
+              <button type="submit" id="btnGerarRelatorio" class="btn btn-primary">Gerar relatório</button>
+            </form>
+          </article>
+
+          <article class="app-card admin-card">
+            <h3>Histórico</h3>
+            <p class="card-subtitulo">Relatórios gerados pela área administrativa.</p>
+            <div id="historicoRelatorios" class="historico-lista" aria-live="polite"><p class="admin-vazio">Carregando...</p></div>
+            <div id="detalheRelatorio" class="detalhe-relatorio" hidden></div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="app-footer">
+    <p data-i18n="comum.rodapeProjeto">© 2026 Ingresso Universitário — Projeto Integrador I · Grupo 3</p>
+    <p data-i18n="comum.rodapeDados">Dados de demonstração. A fonte de cada informação é exibida nas páginas de detalhes.</p>
+  </footer>
+
+  <div id="modalAdmin" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="tituloModalAdmin" aria-describedby="descricaoModalAdmin" hidden>
+    <div class="modal-card">
+      <button type="button" id="btnFecharModal" class="icon-btn modal-close" aria-label="Fechar login">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <div class="modal-header">
+        <span class="modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg></span>
+        <h2 id="tituloModalAdmin">Acesso administrativo</h2>
+        <p id="descricaoModalAdmin">Entre com uma conta autorizada para acompanhar métricas e gerar relatórios.</p>
+      </div>
+      <form id="formLoginAdmin" class="modal-form" novalidate>
+        <div class="campo">
+          <label for="loginAdminEmail">E-mail</label>
+          <input id="loginAdminEmail" name="email" type="email" inputmode="email" autocomplete="username" placeholder="admin@exemplo.local" required aria-describedby="loginAdminErro">
+        </div>
+        <div class="campo">
+          <label for="loginAdminSenha">Senha</label>
+          <div class="senha-wrap">
+            <input id="loginAdminSenha" name="senha" type="password" autocomplete="current-password" placeholder="Sua senha" required aria-describedby="loginAdminErro">
+            <button type="button" id="btnMostrarSenha" aria-label="Mostrar senha" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/></svg>
             </button>
           </div>
         </div>
-        <div class="mt-3 flex gap-2">
-          <button type="button" id="btnLimparFiltros" class="text-xs text-gray-500 hover:text-indigo-600 underline" data-i18n="filtros.limpar">Limpar filtros</button>
+        <p id="loginAdminErro" class="mensagem-erro" role="alert" hidden></p>
+        <div class="modal-aviso">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5h.01"/></svg>
+          <span>A sessão é protegida por cookie HttpOnly, CSRF e limite de tentativas. Nunca compartilhe suas credenciais.</span>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btnCancelarLogin" class="btn btn-quiet">Cancelar</button>
+          <button type="submit" id="btnLoginAdmin" class="btn btn-primary">Entrar</button>
         </div>
       </form>
-    </section>
+    </div>
+  </div>
 
-    <!-- Resultados -->
-    <section class="max-w-6xl mx-auto px-4 pb-16">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold text-gray-900" data-i18n="resultados.titulo">Resultados</h2>
-        <p id="resumoResultados" class="text-sm text-gray-500" aria-live="polite"></p>
-      </div>
-      <div id="areaResultados" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
-      <div id="areaCarregarMais" class="mt-8 text-center hidden">
-        <button id="btnCarregarMais" type="button" class="inline-flex items-center gap-2 bg-white ring-1 ring-gray-300 text-indigo-700 font-semibold px-6 py-2.5 rounded-full hover:bg-indigo-50 transition">
-          <span data-i18n="resultados.carregarMais">Carregar mais resultados</span>
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-        </button>
-      </div>
-    </section>
+  <div id="toast" role="status" aria-live="polite"></div>
 
-  </main>
-
-  <footer class="bg-gray-900 text-gray-400 text-center py-8 px-4">
-    <p class="text-sm" data-i18n="comum.rodapeProjeto">© 2026 Ingresso Universitário — Projeto Integrador I · Grupo 3</p>
-    <p class="text-xs mt-1 text-gray-500" data-i18n="comum.rodapeDados">Dados de demonstração. A fonte de cada informação é exibida nas páginas de detalhes.</p>
-  </footer>
-
-  <script src="js/traducoes.js?v=2"></script>
-  <script src="js/i18n.js?v=2"></script>
-  <script src="js/seletor-idioma.js?v=2"></script>
-  <script src="js/util.js?v=3"></script>
+  <script src="js/traducoes.js?v=3"></script>
+  <script src="js/i18n.js?v=3"></script>
+  <script src="js/seletor-idioma.js?v=3"></script>
+  <script src="js/util.js?v=4"></script>
   <script src="js/api.js?v=3"></script>
   <script src="js/dadosDemo.js?v=2"></script>
-  <script src="js/componentes.js?v=3"></script>
+  <script src="js/componentes.js?v=4"></script>
   <script src="js/favoritos.js?v=3"></script>
-  <script src="js/busca.js?v=3"></script>
+  <script src="js/admin-integrado.js?v=1"></script>
+  <script src="js/busca.js?v=4"></script>
 </body>
 </html>

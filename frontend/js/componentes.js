@@ -1,5 +1,3 @@
-// componentes.js — Componentes de UI reutilizáveis
-
 function cardResultado(curso) {
   const base = caminhoBase()
   const demanda = curso.demanda || ''
@@ -14,29 +12,19 @@ function cardResultado(curso) {
   const turno = curso.turno || ''
   const tipoInst = curso.tipo_instituicao || ''
   const favoritado = estaFavoritado(curso.id)
-
-  const favClasses = favoritado
-    ? 'bg-amber-500 text-white border-amber-500'
-    : 'bg-white text-indigo-700 border-indigo-200 hover:bg-indigo-50'
-
   const favLabel = favoritado ? t('favoritos.botaoFavoritado') : t('favoritos.botaoFavoritar')
   const iconeFav = favoritado ? ICONES.estrela : ICONES.estrelaVazia
+  const destino = base + '/paginas/detalhes.html?id=' + encodeURIComponent(curso.id)
 
-  const catCor = categoria === 'federal' ? 'bg-blue-50 text-blue-700'
-    : categoria === 'estadual' ? 'bg-orange-50 text-orange-700'
-    : categoria === 'municipal' ? 'bg-teal-50 text-teal-700'
-    : 'bg-gray-100 text-gray-600'
-
-  return '<div data-curso-id="' + curso.id + '" ' +
-    'class="block bg-white rounded-2xl ring-1 ring-gray-200 p-5 hover:shadow-lg hover:ring-indigo-300 transition group cursor-pointer" ' +
-    'onclick="window.location.href=\'' + base + '/paginas/detalhes.html?id=' + curso.id + '\'" role="link" tabindex="0">' +
-    '<div class="flex items-start justify-between gap-2">' +
-    '<div class="flex-1 min-w-0">' +
-    '<span class="text-xs font-bold uppercase tracking-wide text-indigo-600">' + escapeHTML(sigla || nomeInst) + '</span>' +
-    '<h3 class="mt-1 text-base font-bold text-gray-900 group-hover:text-indigo-700 transition truncate">' + escapeHTML(curso.nome) + '</h3>' +
-    '<p class="text-sm text-gray-500 truncate">' + escapeHTML(nomeInst) + '</p>' +
+  return '<article data-curso-id="' + escapeHTML(curso.id) + '" data-destino="' + escapeHTML(destino) + '" ' +
+    'class="app-card curso-card" role="link" tabindex="0" aria-label="Ver detalhes de ' + escapeHTML(curso.nome) + '">' +
+    '<div class="curso-card-topo">' +
+    '<div style="min-width:0">' +
+    '<span class="eyebrow">' + escapeHTML(sigla || nomeInst) + '</span>' +
+    '<h3>' + escapeHTML(curso.nome) + '</h3>' +
+    '<p class="instituicao">' + escapeHTML(nomeInst) + '</p>' +
     '</div>' +
-    '<button type="button" data-favoritar="' + curso.id + '" ' +
+    '<button type="button" data-favoritar="' + escapeHTML(curso.id) + '" ' +
     'data-nome="' + escapeHTML(curso.nome) + '" ' +
     'data-instituicao="' + escapeHTML(nomeInst) + '" ' +
     'data-sigla="' + escapeHTML(sigla) + '" ' +
@@ -45,36 +33,33 @@ function cardResultado(curso) {
     'data-grau="' + escapeHTML(grau) + '" ' +
     'data-modalidade="' + escapeHTML(modalidade) + '" ' +
     'aria-label="' + favLabel + ' ' + escapeHTML(curso.nome) + '" ' +
-    'aria-pressed="' + favoritado + '" ' +
-    'class="shrink-0 p-2 rounded-full border transition ' + favClasses + '" title="' + favLabel + '">' +
-    '<span class="sr-only">' + favLabel + '</span>' +
-    iconeFav +
-    '</button>' +
+    'aria-pressed="' + favoritado + '" data-favoritado="' + favoritado + '" ' +
+    'class="icon-btn" title="' + favLabel + '">' + iconeFav + '</button>' +
     '</div>' +
-    '<div class="mt-3 flex flex-wrap gap-1.5">' +
-    (categoria ? '<span class="text-xs ' + catCor + ' px-2 py-0.5 rounded-full font-medium">' + escapeHTML(categoria) + '</span>' : '') +
-    (tipoInst ? '<span class="text-xs bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full font-medium">' + escapeHTML(tipoInst.replace('_', ' ')) + '</span>' : '') +
-    (grau ? '<span class="text-xs bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full font-medium">' + escapeHTML(grau) + '</span>' : '') +
-    (modalidade ? '<span class="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-medium">' + escapeHTML(modalidade) + '</span>' : '') +
-    (turno ? '<span class="text-xs bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full font-medium">' + escapeHTML(turno) + '</span>' : '') +
-    (cidade ? '<span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">' + escapeHTML(cidade) + '/' + escapeHTML(uf) + '</span>' : '') +
-    (campus ? '<span class="text-xs bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded-full font-medium">' + escapeHTML(campus) + '</span>' : '') +
+    '<div class="metadados">' +
+    (categoria ? '<span class="badge">' + escapeHTML(categoria) + '</span>' : '') +
+    (tipoInst ? '<span class="badge">' + escapeHTML(String(tipoInst).replace(/_/g, ' ')) + '</span>' : '') +
+    (grau ? '<span class="badge">' + escapeHTML(grau) + '</span>' : '') +
+    (modalidade ? '<span class="badge badge-sucesso">' + escapeHTML(modalidade) + '</span>' : '') +
+    (turno ? '<span class="badge">' + escapeHTML(turno) + '</span>' : '') +
+    (cidade ? '<span class="badge">' + escapeHTML(cidade) + '/' + escapeHTML(uf) + '</span>' : '') +
+    (campus ? '<span class="badge badge-alerta">' + escapeHTML(campus) + '</span>' : '') +
     (demanda ? badge(rotuloDemanda(demanda), corDemanda(demanda)) : '') +
     '</div>' +
-    '</div>'
+    '<div class="acoes"><span class="bento-seta">Ver detalhes →</span></div>' +
+    '</article>'
 }
 
 function botaoFavorito(curso, grande) {
   const favoritado = estaFavoritado(curso.id)
-  const cls = grande
-    ? (favoritado ? 'bg-amber-500 text-white border-amber-500 hover:bg-amber-600' : 'bg-white text-indigo-700 border-indigo-200 hover:bg-indigo-50')
-    : (favoritado ? 'bg-amber-500 text-white border-amber-500' : 'bg-white text-indigo-700 border-indigo-200 hover:bg-indigo-50')
-  const tamanho = grande ? 'px-5 py-2.5 text-sm' : 'px-3 py-1.5 text-xs'
+  const classe = favoritado ? 'btn-primary' : 'btn-outline'
+  const nomeInst = curso.instituicao_nome || curso.instituicao || ''
+  const rotulo = favoritado
+    ? t('favoritos.removerAria', { nome: curso.nome })
+    : t('favoritos.adicionarAria', { nome: curso.nome })
   const iconeFav = favoritado ? ICONES.estrela : ICONES.estrelaVazia
 
-  const nomeInst = curso.instituicao_nome || curso.instituicao || ''
-
-  return '<button type="button" data-favoritar="' + curso.id + '" ' +
+  return '<button type="button" data-favoritar="' + escapeHTML(curso.id) + '" ' +
     'data-nome="' + escapeHTML(curso.nome) + '" ' +
     'data-instituicao="' + escapeHTML(nomeInst) + '" ' +
     'data-sigla="' + escapeHTML(curso.sigla || '') + '" ' +
@@ -82,48 +67,39 @@ function botaoFavorito(curso, grande) {
     'data-estado="' + escapeHTML(curso.uf || curso.estado || '') + '" ' +
     'data-grau="' + escapeHTML(curso.grau || '') + '" ' +
     'data-modalidade="' + escapeHTML(curso.modalidade || '') + '" ' +
-    'aria-label="' + (favoritado
-      ? t('favoritos.removerAria', { nome: escapeHTML(curso.nome) })
-      : t('favoritos.adicionarAria', { nome: escapeHTML(curso.nome) })) + '" ' +
-    'aria-pressed="' + favoritado + '" ' +
-    'class="inline-flex items-center gap-2 rounded-full border font-semibold transition ' + cls + ' ' + tamanho + '">' +
-    iconeFav +
-    '<span>' + (favoritado ? t('favoritos.botaoFavoritado') : t('favoritos.botaoFavoritar')) + '</span>' +
+    'aria-label="' + escapeHTML(rotulo) + '" aria-pressed="' + favoritado + '" data-favoritado="' + favoritado + '" ' +
+    'class="btn ' + classe + (grande ? '' : ' btn-sm') + '">' +
+    iconeFav + '<span>' + (favoritado ? t('favoritos.botaoFavoritado') : t('favoritos.botaoFavoritar')) + '</span>' +
     '</button>'
 }
 
 function tabelaNotas(notas) {
-  if (!notas || notas.length === 0) {
-    return estadoVazio(t('notas.vazioCurso'))
-  }
-  let html = '<div class="overflow-x-auto"><table class="w-full text-sm">' +
-    '<thead><tr class="border-b border-gray-200">' +
-    '<th class="text-left py-3 px-3 font-semibold text-gray-700">' + t('notas.processo') + '</th>' +
-    '<th class="text-left py-3 px-3 font-semibold text-gray-700">' + t('notas.ano') + '</th>' +
-    '<th class="text-left py-3 px-3 font-semibold text-gray-700">' + t('notas.chamada') + '</th>' +
-    '<th class="text-right py-3 px-3 font-semibold text-gray-700">' + t('notas.notaCorte') + '</th>' +
-    '<th class="text-right py-3 px-3 font-semibold text-gray-700">' + t('notas.fonte') + '</th>' +
+  if (!notas || notas.length === 0) return estadoVazio(t('notas.vazioCurso'))
+
+  let html = '<div class="tabela-wrap"><table class="tabela"><thead><tr>' +
+    '<th scope="col">' + t('notas.processo') + '</th>' +
+    '<th scope="col">' + t('notas.ano') + '</th>' +
+    '<th scope="col">' + t('notas.chamada') + '</th>' +
+    '<th scope="col">' + t('notas.notaCorte') + '</th>' +
+    '<th scope="col">' + t('notas.fonte') + '</th>' +
     '</tr></thead><tbody>'
 
   for (const nota of notas) {
     const processo = nota.processo || nota.modalidade_acesso || ''
-    const cor = processo.toLowerCase() === 'sisu'
-      ? 'bg-blue-100 text-blue-700'
-      : 'bg-purple-100 text-purple-700'
+    const cor = String(processo).toLowerCase() === 'sisu' ? 'badge-sucesso' : ''
     const fonte = nota.fonte_tipo === 'oficial'
-      ? badge(t('notas.oficial'), 'bg-green-100 text-green-700')
-      : badge(t('notas.abertos'), 'bg-blue-100 text-blue-700')
+      ? badge(t('notas.oficial'), 'badge-sucesso')
+      : badge(t('notas.abertos'), '')
     const notaValor = nota.nota_corte || nota.nota_minima
-    html += '<tr class="border-b border-gray-100 hover:bg-gray-50">' +
-      '<td class="py-3 px-3">' + badge(processo || '\u2014', cor) + '</td>' +
-      '<td class="py-3 px-3">' + escapeHTML(String(nota.ano || '')) + '</td>' +
-      '<td class="py-3 px-3">' + escapeHTML(t('notas.chamadaNumero', { numero: nota.chamada || '' })) + '</td>' +
-      '<td class="py-3 px-3 text-right font-bold text-gray-900">' + (notaValor ? notaValor.toFixed(1) : t('notas.indisponivel')) + '</td>' +
-      '<td class="py-3 px-3 text-right">' + fonte + '</td>' +
+    html += '<tr>' +
+      '<td>' + badge(processo || '\u2014', cor) + '</td>' +
+      '<td>' + escapeHTML(String(nota.ano || '')) + '</td>' +
+      '<td>' + escapeHTML(t('notas.chamadaNumero', { numero: nota.chamada || '' })) + '</td>' +
+      '<td><strong>' + (notaValor ? Number(notaValor).toFixed(1) : t('notas.indisponivel')) + '</strong></td>' +
+      '<td>' + fonte + '</td>' +
       '</tr>'
   }
-  html += '</tbody></table></div>'
-  return html
+  return html + '</tbody></table></div>'
 }
 
 function linhaFonte(fonte, atualizado) {
@@ -131,55 +107,53 @@ function linhaFonte(fonte, atualizado) {
   let texto = ''
   if (fonte) texto += t('comum.fonte', { valor: escapeHTML(String(fonte)) })
   if (atualizado) texto += (texto ? ' · ' : '') + t('comum.atualizadoEm', { valor: escapeHTML(String(atualizado)) })
-  return '<p class="mt-4 text-xs text-gray-400">' + texto + '</p>'
+  return '<p style="margin-top:1rem;color:var(--text-subtle);font-size:.76rem">' + texto + '</p>'
 }
 
 function listaAuxilios(auxilios) {
-  if (!auxilios || auxilios.length === 0) {
-    return estadoVazio(t('auxilios.vazio'))
-  }
-  return '<div class="space-y-3">' +
-    auxilios.map((a) => {
-      const cor = a.tipo === 'bolsa'
-        ? 'bg-green-100 text-green-700'
-        : 'bg-yellow-100 text-yellow-700'
-      const urlSegura = a.url && (a.url.startsWith('http://') || a.url.startsWith('https://'))
-        ? '<a href="' + escapeHTML(a.url) + '" target="_blank" rel="noopener" class="text-indigo-600 text-sm hover:underline whitespace-nowrap">' + t('comum.maisInfo') + '</a>'
-        : ''
-      return '<div class="bg-white rounded-xl ring-1 ring-gray-200 p-4">' +
-        '<div class="flex items-start justify-between gap-3">' +
-        '<div class="flex-1">' +
-        '<h4 class="font-bold text-gray-900">' + escapeHTML(a.nome) + '</h4>' +
-        badge(a.tipo === 'bolsa' ? t('auxilios.bolsa') : t('auxilios.auxilio'), cor) +
-        (a.descricao ? '<p class="mt-2 text-sm text-gray-600">' + escapeHTML(a.descricao) + '</p>' : '') +
-        (a.publico_alvo ? '<p class="mt-1 text-xs text-gray-500">' + t('comum.publicoAlvo', { valor: escapeHTML(a.publico_alvo) }) + '</p>' : '') +
-        '</div>' +
-        '<div class="text-right shrink-0">' +
-        urlSegura +
-        (a.coletado_em ? '<p class="mt-1 text-xs text-gray-400">' + badge(t('comum.dadosAbertos'), 'bg-gray-100 text-gray-500') + '</p>' : '') +
-        '</div>' +
-        '</div></div>'
-    }).join('') +
-    '</div>'
+  if (!auxilios || auxilios.length === 0) return estadoVazio(t('auxilios.vazio'))
+
+  return '<div class="resultados-grid">' + auxilios.map((a) => {
+    const cor = a.tipo === 'bolsa' ? 'badge-sucesso' : 'badge-alerta'
+    const urlSegura = a.url && /^https?:\/\//i.test(a.url)
+      ? '<a href="' + escapeHTML(a.url) + '" target="_blank" rel="noopener noreferrer" class="btn btn-quiet btn-sm">' + t('comum.maisInfo') + '</a>'
+      : ''
+    return '<article class="app-card">' +
+      '<div class="curso-card-topo"><h3>' + escapeHTML(a.nome) + '</h3>' + badge(a.tipo === 'bolsa' ? t('auxilios.bolsa') : t('auxilios.auxilio'), cor) + '</div>' +
+      (a.descricao ? '<p style="color:var(--text-muted)">' + escapeHTML(a.descricao) + '</p>' : '') +
+      (a.publico_alvo ? '<p style="color:var(--text-subtle);font-size:.78rem">' + escapeHTML(t('comum.publicoAlvo', { valor: a.publico_alvo })) + '</p>' : '') +
+      '<div class="acoes">' + urlSegura + (a.coletado_em ? badge(t('comum.dadosAbertos'), '') : '') + '</div>' +
+      '</article>'
+  }).join('') + '</div>'
 }
 
 function detalhesCampus(campi) {
   if (!campi || campi.length === 0) return ''
-  let html = '<div class="mt-6">' +
-    '<h3 class="text-lg font-bold text-gray-900 mb-3">' + t('comum.campi') + '</h3>' +
-    '<div class="space-y-2">'
 
+  let html = '<section style="margin-top:1.5rem"><h2>' + t('comum.campi') + '</h2><div class="resultados-grid">'
   for (const c of campi) {
-    html += '<div class="bg-white rounded-xl ring-1 ring-gray-200 p-4">' +
-      '<h4 class="font-bold text-gray-900">' + escapeHTML(c.nome) + '</h4>'
-    if (c.cidade) html += '<p class="text-sm text-gray-500">' + escapeHTML(c.cidade) + '/' + escapeHTML(c.uf || '') + '</p>'
-    if (c.endereco) html += '<p class="text-xs text-gray-400 mt-1">' + escapeHTML(c.endereco) + '</p>'
-    if (c.site_oficial) {
-      html += '<a href="' + escapeHTML(c.site_oficial) + '" target="_blank" rel="noopener" class="text-indigo-600 text-xs hover:underline mt-1 inline-block">' + t('comum.siteOficial') + '</a>'
-    }
-    html += '</div>'
+    html += '<article class="app-card">' +
+      '<h3>' + escapeHTML(c.nome) + '</h3>' +
+      (c.cidade ? '<p style="color:var(--text-muted)">' + escapeHTML(c.cidade) + '/' + escapeHTML(c.uf || '') + '</p>' : '') +
+      (c.endereco ? '<p style="color:var(--text-subtle);font-size:.78rem">' + escapeHTML(c.endereco) + '</p>' : '') +
+      (c.site_oficial && /^https?:\/\//i.test(c.site_oficial)
+        ? '<a href="' + escapeHTML(c.site_oficial) + '" target="_blank" rel="noopener noreferrer" class="btn btn-quiet btn-sm">' + t('comum.siteOficial') + '</a>'
+        : '') +
+      '</article>'
   }
-
-  html += '</div></div>'
-  return html
+  return html + '</div></section>'
 }
+
+document.addEventListener('click', function (evento) {
+  const cartao = evento.target.closest('[data-curso-id][data-destino]')
+  if (!cartao || evento.target.closest('button, a')) return
+  window.location.href = cartao.getAttribute('data-destino')
+})
+
+document.addEventListener('keydown', function (evento) {
+  if (evento.key !== 'Enter' && evento.key !== ' ') return
+  const cartao = evento.target.closest('[data-curso-id][data-destino]')
+  if (!cartao) return
+  evento.preventDefault()
+  window.location.href = cartao.getAttribute('data-destino')
+})

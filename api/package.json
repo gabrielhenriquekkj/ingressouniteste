@@ -13,8 +13,11 @@
     "minerar:auxilios": "node -e \"require('./src/mineracao/coletores/coletorAuxilios').coletar()\"",
     "minerar:mercado": "node -e \"require('./src/mineracao/coletores/coletorMercado').coletar()\"",
     "migrar": "node migracoes/002_tipo_nota_fonte_tipo.js",
+    "migrar:admin": "node migracoes/003_area_administrativa.js",
+    "admin:criar": "node src/cli/criarAdmin.js",
     "minerar:tudo": "node src/cli/minerarTudo.js",
     "test": "node --test src/testes/normalizadores.test.js",
+    "test:admin": "node --test src/testes/admin.test.js",
     "test:all": "node --test src/testes/**/*.test.js"
   },
   "dependencies": {

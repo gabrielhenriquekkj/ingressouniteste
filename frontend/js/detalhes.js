@@ -92,15 +92,15 @@ try {
 function mostrarIndisponivel(chave) {
   chaveIndisponivel = chave
   document.getElementById('detalheSkeleton').innerHTML = estadoErro(t(chave)).replace('col-span-full', '')
-  document.getElementById('detalheSkeleton').classList.remove('hidden')
-  document.getElementById('cabecalhoCurso').classList.add('hidden')
-  document.getElementById('conteudoDetalhe').classList.add('hidden')
+  document.getElementById('detalheSkeleton').hidden = false
+  document.getElementById('cabecalhoCurso').hidden = true
+  document.getElementById('conteudoDetalhe').hidden = true
 }
 
 function mostrarCarregando(ativo) {
-  document.getElementById('detalheSkeleton').classList.toggle('hidden', !ativo)
-  document.getElementById('cabecalhoCurso').classList.toggle('hidden', ativo)
-  document.getElementById('conteudoDetalhe').classList.toggle('hidden', ativo)
+  document.getElementById('detalheSkeleton').hidden = !ativo
+  document.getElementById('cabecalhoCurso').hidden = ativo
+  document.getElementById('conteudoDetalhe').hidden = ativo
 }
 
 function renderizarCabecalho(curso) {

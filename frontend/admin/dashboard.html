@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="Dashboard analítico da área administrativa do Ingresso Universitário.">
+  <title>Dashboard | Ingresso Universitário</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <script src="/admin/js/admin.js" defer></script>
+  <script src="/admin/js/dashboard.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegação administrativa">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.4 8.6 8 9 4.6-.4 8-4 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        </span>
+        <span class="brand-copy">
+          <strong>Ingresso Universitário</strong>
+          <span>Central de controle</span>
+        </span>
+      </div>
+
+      <p class="nav-label">Painel</p>
+      <ul class="nav-list">
+        <li>
+          <a class="nav-item" href="/admin/dashboard/" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+            <span>Visão geral</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="/admin/relatorios/">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>
+            <span>Relatórios</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <span class="avatar" data-user-initial aria-hidden="true">A</span>
+          <span class="user-copy">
+            <strong data-user-name>Administrador</strong>
+            <span data-user-email>admin@ingresso.local</span>
+          </span>
+        </div>
+        <button class="btn btn-ghost btn-sm sidebar-logout" type="button" data-action="logout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M21 19V5a2 2 0 0 0-2-2h-6"/></svg>
+          <span>Encerrar sessão</span>
+        </button>
+      </div>
+    </aside>
+
+    <div class="sidebar-backdrop" data-sidebar-backdrop aria-hidden="true"></div>
+
+    <div class="app-main">
+      <header class="topbar">
+        <button class="icon-button" type="button" data-menu-toggle aria-label="Abrir menu lateral">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="breadcrumb">
+          <span>Administração</span>
+          <strong>Visão geral</strong>
+        </div>
+        <div class="topbar-actions">
+          <span class="status-pill" data-status-pill>
+            <span class="status-dot" aria-hidden="true"></span>
+            <span data-status-texto>Atualizando…</span>
+          </span>
+          <button class="icon-button" type="button" data-theme-toggle aria-pressed="false">
+            <span class="sr-only">Alternar tema</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="page-head">
+          <div>
+            <span class="eyebrow">Monitoramento em tempo real</span>
+            <h1>Visão geral de acessos</h1>
+            <p>Acompanhe volume de navegação, distribuição de dispositivos e rotas mais visitadas. Os dados são atualizados automaticamente a cada 30 segundos.</p>
+          </div>
+          <div class="page-actions">
+            <label class="sr-only" for="periodo">Período do dashboard</label>
+            <select id="periodo" class="btn" data-periodo style="min-width: 150px;">
+              <option value="7">Últimos 7 dias</option>
+              <option value="30" selected>Últimos 30 dias</option>
+              <option value="90">Últimos 90 dias</option>
+              <option value="365">Últimos 365 dias</option>
+            </select>
+            <button class="btn btn-primary" type="button" data-atualizar>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>
+              Atualizar agora
+            </button>
+          </div>
+        </div>
+
+        <section class="bento" aria-label="Indicadores principais">
+          <article class="card kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Acessos hoje</span>
+              <span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            </div>
+            <p class="kpi-value" data-kpi="hoje">—</p>
+            <span class="kpi-note">Registrados no dia de hoje</span>
+            <svg class="sparkline" data-spark="hoje" viewBox="0 0 160 36" preserveAspectRatio="none" aria-hidden="true"></svg>
+          </article>
+
+          <article class="card kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Últimos 7 dias</span>
+              <span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="m7 15 4-5 3 3 5-7"/></svg></span>
+            </div>
+            <p class="kpi-value" data-kpi="seteDias">—</p>
+            <span class="kpi-note">Janela móvel de 7 dias</span>
+            <svg class="sparkline" data-spark="seteDias" viewBox="0 0 160 36" preserveAspectRatio="none" aria-hidden="true"></svg>
+          </article>
+
+          <article class="card kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Últimos 30 dias</span>
+              <span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span>
+            </div>
+            <p class="kpi-value" data-kpi="trintaDias">—</p>
+            <span class="kpi-note">Janela móvel de 30 dias</span>
+            <svg class="sparkline" data-spark="trintaDias" viewBox="0 0 160 36" preserveAspectRatio="none" aria-hidden="true"></svg>
+          </article>
+
+          <article class="card kpi-card">
+            <div class="kpi-top">
+              <span class="kpi-label">Acumulado</span>
+              <span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span>
+            </div>
+            <p class="kpi-value" data-kpi="total">—</p>
+            <span class="kpi-note">Total desde o início do monitoramento</span>
+            <span class="delta" data-delta hidden></span>
+          </article>
+
+          <article class="card chart-card">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">Volume diário de acessos</h2>
+                <p class="card-subtitle" data-periodo-label>Últimos 30 dias</p>
+              </div>
+              <span class="badge" data-tipo="ok">Série temporal</span>
+            </div>
+            <div class="chart-wrap" data-grafico></div>
+          </article>
+
+          <article class="card distribution-card">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">Perfil de navegação</h2>
+                <p class="card-subtitle">Distribuição percentual no período</p>
+              </div>
+            </div>
+            <div class="distribution" data-distribuicoes></div>
+          </article>
+
+          <article class="card ranking-card">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">Rotas mais acessadas</h2>
+                <p class="card-subtitle">Ordenadas por volume no período selecionado</p>
+              </div>
+              <span class="badge">Top 10</span>
+            </div>
+            <div class="ranking-layout">
+              <ol class="bars" data-ranking aria-label="Ranking de rotas"></ol>
+              <div>
+                <h3 class="card-title" style="font-size: 0.88rem; margin-bottom: 10px;">Acessos mais recentes</h3>
+                <div class="table-wrap">
+                  <table class="data-table">
+                    <caption class="sr-only">Últimos acessos registrados</caption>
+                    <thead><tr><th scope="col">Rota</th><th scope="col">Horário</th><th scope="col">Origem</th></tr></thead>
+                    <tbody data-recentes></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="card" style="grid-column: span 12;">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">Monitoramento detalhado</h2>
+                <p class="card-subtitle">Consulte os registros individualmente e aplique filtros</p>
+              </div>
+              <div class="card-action">
+                <label class="sr-only" for="filtro-rota">Filtrar por rota</label>
+                <select id="filtro-rota" class="btn btn-sm" data-filtro-rota style="min-width: 170px;">
+                  <option value="">Todas as rotas</option>
+                </select>
+                <button class="btn btn-sm" type="button" data-limpar-filtro>Limpar</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <caption class="sr-only">Registros de acesso paginados</caption>
+                <thead>
+                  <tr>
+                    <th scope="col"><button type="button" data-ordenar="criado_em">Data e hora</button></th>
+                    <th scope="col"><button type="button" data-ordenar="rota">Rota</button></th>
+                    <th scope="col"><button type="button" data-ordenar="area">Área</button></th>
+                    <th scope="col"><button type="button" data-ordenar="dispositivo">Dispositivo</button></th>
+                    <th scope="col"><button type="button" data-ordenar="navegador">Navegador</button></th>
+                    <th scope="col"><button type="button" data-ordenar="status">Status</button></th>
+                    <th scope="col">IP (anonimizado)</th>
+                  </tr>
+                </thead>
+                <tbody data-acessos>
+                  <tr><td colspan="7"><div class="empty-state">Carregando registros…</div></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="form-actions" style="justify-content: space-between;">
+              <span class="card-subtitle" data-pagina-info>Página 1</span>
+              <div class="card-action">
+                <button class="btn btn-sm" type="button" data-pagina-anterior disabled>Anterior</button>
+                <button class="btn btn-sm" type="button" data-pagina-proxima disabled>Próxima</button>
+              </div>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
